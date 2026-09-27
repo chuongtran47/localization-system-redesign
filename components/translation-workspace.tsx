@@ -141,7 +141,7 @@ export function TranslationWorkspace({ project }: { project: Project }) {
 
   const handleCreated = (key: string) => {
     refresh()
-    setParams({ q: key, status: null, group: null })
+    setParams({ q: key, status: null, group: null, version: null })
   }
 
   return (
