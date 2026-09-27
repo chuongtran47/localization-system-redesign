@@ -67,7 +67,7 @@ export function GroupFilter({
                   <span className="truncate font-mono text-xs">{option.group}</span>
                   <span className="ml-auto flex items-center gap-1.5 text-xs tabular-nums">
                     {option.outstanding > 0 && (
-                      <span className="rounded-full bg-warning/15 px-1.5 font-semibold text-warning-foreground">
+                      <span className="rounded-full bg-warning/15 px-1.5 font-semibold text-warning-foreground dark:text-warning">
                         {option.outstanding}
                       </span>
                     )}

@@ -21,7 +21,7 @@ const config: Record<TranslationStatus, { icon: typeof CheckCircle2; className: 
   },
   needs_fix: {
     icon: AlertTriangle,
-    className: "bg-warning/15 text-warning-foreground border-warning/30",
+    className: "bg-warning/15 text-warning-foreground border-warning/30 dark:text-warning",
     dot: "bg-warning",
   },
 }
