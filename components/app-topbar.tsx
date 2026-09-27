@@ -1,18 +1,79 @@
 "use client"
 
-import { useState } from "react"
-import { Search, ChevronDown, Bell, Check } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { languages, type Language } from "@/lib/data"
+import { useEffect, useRef, useState } from "react"
+import { usePathname } from "next/navigation"
+import { Bell, Check, ChevronDown, RotateCcw, Search } from "lucide-react"
+import { toast } from "sonner"
 
-export function AppTopbar({
-  language,
-  onLanguageChange,
-}: {
-  language: Language
-  onLanguageChange: (lang: Language) => void
-}) {
-  const [open, setOpen] = useState(false)
+import { useDrafts } from "@/components/draft-provider"
+import { PopoverMenu, PopoverMenuItem } from "@/components/popover-menu"
+import { ThemeToggle } from "@/components/theme-toggle"
+import { useCoverage } from "@/hooks/use-coverage"
+import { useWorkspaceParams } from "@/hooks/use-workspace-params"
+import { messageOf, resetData } from "@/lib/api"
+import { targetLanguageCoverage } from "@/lib/coverage"
+import { emptyDrafts } from "@/lib/drafts"
+import { languages, type LanguageCode } from "@/lib/locale-data"
+import { findProjectByPath, targetOf } from "@/lib/projects"
+
+const flags: Record<LanguageCode, string> = {
+  en: "🇺🇸",
+  "zh-Hans": "🇨🇳",
+  ms: "🇲🇾",
+  ja: "🇯🇵",
+  ko: "🇰🇷",
+  ru: "🇷🇺",
+  vi: "🇻🇳",
+  mn: "🇲🇳",
+  es: "🇪🇸",
+  "ar-SA": "🇸🇦",
+  th: "🇹🇭",
+  my: "🇲🇲",
+  km: "🇰🇭",
+}
+
+export function AppTopbar() {
+  const { filters, setParam } = useWorkspaceParams()
+  const project = findProjectByPath(usePathname())
+  const { coverage, refresh } = useCoverage()
+  const { update } = useDrafts()
+  const searchRef = useRef<HTMLInputElement>(null)
+
+  // Typed text is local while the field has focus, so a slow URL update never
+  // eats a keystroke; an outside change to `q` (the add-key dialog) shows up
+  // once the field is not being typed in.
+  const [search, setSearch] = useState(filters.q)
+  const [isSearchFocused, setSearchFocused] = useState(false)
+  if (!isSearchFocused && search !== filters.q) {
+    setSearch(filters.q)
+  }
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault()
+        searchRef.current?.focus()
+      }
+    }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [])
+
+  const current = languages.find((item) => item.code === filters.language) ?? languages[0]
+  const countsOf = (code: LanguageCode) =>
+    project ? targetLanguageCoverage(coverage, targetOf(project), code) : null
+  const currentCounts = countsOf(current.code)
+
+  const handleReset = async () => {
+    try {
+      await resetData()
+      update(() => emptyDrafts)
+      refresh()
+      toast.success("Demo data reset", { description: "Every project is back to the sample data." })
+    } catch (cause: unknown) {
+      toast.error("Could not reset", { description: messageOf(cause) })
+    }
+  }
 
   return (
     <header className="flex h-16 shrink-0 items-center gap-4 border-b border-border bg-card/60 px-6 backdrop-blur">
@@ -20,6 +81,14 @@ export function AppTopbar({
       <div className="relative max-w-xl flex-1">
         <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <input
+          ref={searchRef}
+          value={search}
+          onFocus={() => setSearchFocused(true)}
+          onBlur={() => setSearchFocused(false)}
+          onChange={(event) => {
+            setSearch(event.target.value)
+            setParam("q", event.target.value || null)
+          }}
           placeholder="Search keys, source text, or translations…"
           className="h-9 w-full rounded-lg border border-input bg-background pl-9 pr-16 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30"
         />
@@ -30,54 +99,54 @@ export function AppTopbar({
 
       <div className="ml-auto flex items-center gap-2">
         {/* Language selector */}
-        <div className="relative">
-          <button
-            onClick={() => setOpen((v) => !v)}
-            className="flex items-center gap-2 rounded-lg border border-input bg-background px-3 py-2 text-sm font-medium outline-none transition-colors hover:bg-accent/40 focus-visible:ring-2 focus-visible:ring-ring/30"
-          >
-            <span className="text-base leading-none">{language.flag}</span>
-            <span>{language.name}</span>
-            <span className="rounded-full bg-muted px-1.5 py-0.5 text-[11px] font-semibold tabular-nums text-muted-foreground">
-              {language.translated}/{language.total}
-            </span>
-            <ChevronDown className="size-3.5 text-muted-foreground" />
-          </button>
-
-          {open && (
-            <>
-              <button
-                className="fixed inset-0 z-10 cursor-default"
-                aria-label="Close language menu"
-                onClick={() => setOpen(false)}
-              />
-              <div className="absolute right-0 z-20 mt-2 w-64 overflow-hidden rounded-xl border border-border bg-popover p-1 shadow-lg shadow-black/5">
-                <p className="px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  Target language
-                </p>
-                {languages.map((lang) => {
-                  const pct = Math.round((lang.translated / lang.total) * 100)
-                  return (
-                    <button
-                      key={lang.code}
-                      onClick={() => {
-                        onLanguageChange(lang)
-                        setOpen(false)
-                      }}
-                      className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-sm transition-colors hover:bg-accent/50"
-                    >
-                      <span className="text-base leading-none">{lang.flag}</span>
-                      <span className="flex-1">{lang.name}</span>
-                      <span className="text-xs tabular-nums text-muted-foreground">{pct}%</span>
-                      {lang.code === language.code && (
-                        <Check className="size-4 text-primary" />
-                      )}
-                    </button>
-                  )
-                })}
-              </div>
-            </>
+        <PopoverMenu
+          label="language menu"
+          widthClass="w-64"
+          trigger={(toggle) => (
+            <button
+              type="button"
+              onClick={toggle}
+              className="flex items-center gap-2 rounded-lg border border-input bg-background px-3 py-2 text-sm font-medium outline-none transition-colors hover:bg-accent/40 focus-visible:ring-2 focus-visible:ring-ring/30"
+            >
+              <span className="text-base leading-none">{flags[current.code]}</span>
+              <span>{current.name}</span>
+              <span className="rounded-full bg-muted px-1.5 py-0.5 text-[11px] font-semibold tabular-nums text-muted-foreground">
+                {currentCounts ? `${currentCounts.translated}/${currentCounts.total}` : "—"}
+              </span>
+              <ChevronDown className="size-3.5 text-muted-foreground" />
+            </button>
           )}
-        </div>
+        >
+          {(close) => (
+            <div className="max-h-96 overflow-y-auto">
+              <p className="px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                Target language
+              </p>
+              {languages.map((lang) => {
+                const counts = countsOf(lang.code)
+                const pct = counts && counts.total ? Math.round((counts.translated / counts.total) * 100) : null
+                return (
+                  <button
+                    key={lang.code}
+                    type="button"
+                    onClick={() => {
+                      setParam("lang", lang.code)
+                      close()
+                    }}
+                    className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-sm transition-colors hover:bg-accent/50"
+                  >
+                    <span className="text-base leading-none">{flags[lang.code]}</span>
+                    <span className="flex-1">{lang.name}</span>
+                    <span className="text-xs tabular-nums text-muted-foreground">{pct === null ? "—" : `${pct}%`}</span>
+                    {lang.code === current.code && <Check className="size-4 text-primary" />}
+                  </button>
+                )
+              })}
+            </div>
+          )}
+        </PopoverMenu>
+
+        <ThemeToggle />
 
         <button className="relative flex size-9 items-center justify-center rounded-lg border border-input bg-background text-muted-foreground transition-colors hover:bg-accent/40 hover:text-foreground">
           <Bell className="size-4" />
@@ -85,20 +154,38 @@ export function AppTopbar({
         </button>
 
         {/* User */}
-        <button className="flex items-center gap-2 rounded-lg py-1 pl-1 pr-2 transition-colors hover:bg-accent/40">
-          <span
-            className={cn(
-              "flex size-8 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground",
-            )}
-          >
-            LL
-          </span>
-          <span className="hidden text-left leading-tight sm:block">
-            <span className="block text-xs font-medium">Logan Le</span>
-            <span className="block text-[11px] text-muted-foreground">Maintainer</span>
-          </span>
-          <ChevronDown className="size-3.5 text-muted-foreground" />
-        </button>
+        <PopoverMenu
+          label="user menu"
+          widthClass="w-60"
+          trigger={(toggle) => (
+            <button
+              type="button"
+              onClick={toggle}
+              className="flex items-center gap-2 rounded-lg py-1 pl-1 pr-2 transition-colors hover:bg-accent/40"
+            >
+              <span className="flex size-8 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
+                LL
+              </span>
+              <span className="hidden text-left leading-tight sm:block">
+                <span className="block text-xs font-medium">Logan Le</span>
+                <span className="block text-[11px] text-muted-foreground">Maintainer</span>
+              </span>
+              <ChevronDown className="size-3.5 text-muted-foreground" />
+            </button>
+          )}
+        >
+          {(close) => (
+            <PopoverMenuItem
+              icon={RotateCcw}
+              label="Reset demo data"
+              hint="Re-seed every project from the sample data"
+              onClick={() => {
+                close()
+                void handleReset()
+              }}
+            />
+          )}
+        </PopoverMenu>
       </div>
     </header>
   )

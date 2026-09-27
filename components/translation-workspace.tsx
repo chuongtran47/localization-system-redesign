@@ -12,7 +12,6 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import {
-  projects,
   versions,
   sections,
   translations,
@@ -20,17 +19,13 @@ import {
   languages,
   type Language,
 } from "@/lib/data"
-import { AppSidebar } from "@/components/app-sidebar"
-import { AppTopbar } from "@/components/app-topbar"
+import { groupLabel, type Project } from "@/lib/projects"
 import { TranslationTable } from "@/components/translation-table"
 
-export function TranslationWorkspace() {
-  const [activeProject, setActiveProject] = useState(projects[0].id)
+export function TranslationWorkspace({ project }: { project: Project }) {
   const [version, setVersion] = useState("All")
   const [section, setSection] = useState("home")
-  const [language, setLanguage] = useState<Language>(languages[0])
-
-  const project = projects.find((p) => p.id === activeProject)!
+  const language: Language = languages[0]
 
   const rows = useMemo(
     () => translations.filter((t) => t.section === section),
@@ -46,19 +41,12 @@ export function TranslationWorkspace() {
   }, [])
 
   return (
-    <div className="flex h-screen overflow-hidden bg-background text-foreground">
-      <AppSidebar activeId={activeProject} onSelect={setActiveProject} />
-
-      <div className="flex min-w-0 flex-1 flex-col">
-        <AppTopbar language={language} onLanguageChange={setLanguage} />
-
-        <main className="min-h-0 flex-1 overflow-y-auto">
           <div className="mx-auto max-w-[1400px] px-6 py-6">
             {/* Page header */}
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <span>{project.group}</span>
+                  <span>{groupLabel[project.group]}</span>
                   <span>/</span>
                   <span className="text-foreground">Translations</span>
                 </div>
@@ -156,9 +144,6 @@ export function TranslationWorkspace() {
               <TranslationTable rows={rows} />
             </div>
           </div>
-        </main>
-      </div>
-    </div>
   )
 }
 

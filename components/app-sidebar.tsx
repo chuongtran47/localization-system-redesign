@@ -1,22 +1,29 @@
 "use client"
 
 import { useState } from "react"
-import { Languages, Search, ChevronsUpDown, Plus } from "lucide-react"
+import Link from "next/link"
+import { usePathname, useSearchParams } from "next/navigation"
+import { ChevronsUpDown, Languages, Plus, Search } from "lucide-react"
+
+import { useCoverage } from "@/hooks/use-coverage"
+import { useWorkspaceParams } from "@/hooks/use-workspace-params"
+import { outstandingOf, targetLanguageCoverage } from "@/lib/coverage"
+import { findProjectByPath, projectGroups, projectPath, projects, targetOf, type Project } from "@/lib/projects"
 import { cn } from "@/lib/utils"
-import { projects, projectGroups, type AppProject } from "@/lib/data"
 
-export function AppSidebar({
-  activeId,
-  onSelect,
-}: {
-  activeId: string
-  onSelect: (id: string) => void
-}) {
+export function AppSidebar() {
   const [query, setQuery] = useState("")
+  const active = findProjectByPath(usePathname())
+  const lang = useSearchParams().get("lang")
+  const { filters } = useWorkspaceParams()
+  const { coverage } = useCoverage()
 
-  const filtered = projects.filter((p) =>
-    p.name.toLowerCase().includes(query.toLowerCase()),
-  )
+  const filtered = projects.filter((p) => p.name.toLowerCase().includes(query.toLowerCase()))
+
+  const pendingOf = (project: Project) => {
+    const entry = targetLanguageCoverage(coverage, targetOf(project), filters.language)
+    return entry ? outstandingOf(entry) : 0
+  }
 
   return (
     <aside className="flex h-full w-72 shrink-0 flex-col border-r border-sidebar-border bg-sidebar">
@@ -61,20 +68,21 @@ export function AppSidebar({
       {/* Project list */}
       <nav className="min-h-0 flex-1 overflow-y-auto px-3 pb-3">
         {projectGroups.map((group) => {
-          const items = filtered.filter((p) => p.group === group)
+          const items = filtered.filter((p) => p.group === group.id)
           if (items.length === 0) return null
           return (
-            <div key={group} className="mb-3">
+            <div key={group.id} className="mb-3">
               <p className="px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                {group}
+                {group.label}
               </p>
               <ul className="space-y-0.5">
                 {items.map((p) => (
                   <SidebarItem
                     key={p.id}
                     project={p}
-                    active={p.id === activeId}
-                    onSelect={() => onSelect(p.id)}
+                    href={lang ? `${projectPath(p)}?lang=${encodeURIComponent(lang)}` : projectPath(p)}
+                    active={p === active}
+                    pending={pendingOf(p)}
                   />
                 ))}
               </ul>
@@ -96,44 +104,37 @@ export function AppSidebar({
 
 function SidebarItem({
   project,
+  href,
   active,
-  onSelect,
+  pending,
 }: {
-  project: AppProject
+  project: Project
+  href: string
   active: boolean
-  onSelect: () => void
+  pending: number
 }) {
   return (
     <li>
-      <button
-        onClick={onSelect}
+      <Link
+        href={href}
         className={cn(
           "flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-[13px] transition-colors",
-          active
-            ? "bg-sidebar-accent font-medium text-sidebar-accent-foreground"
-            : "text-foreground hover:bg-accent/40",
+          active ? "bg-sidebar-accent font-medium text-sidebar-accent-foreground" : "text-foreground hover:bg-accent/40"
         )}
       >
-        <span
-          className={cn(
-            "size-1.5 shrink-0 rounded-full",
-            active ? "bg-primary" : "bg-muted-foreground/30",
-          )}
-        />
+        <span className={cn("size-1.5 shrink-0 rounded-full", active ? "bg-primary" : "bg-muted-foreground/30")} />
         <span className="min-w-0 flex-1 truncate">{project.name}</span>
-        {project.pending > 0 && (
+        {pending > 0 && (
           <span
             className={cn(
               "shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums",
-              active
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground",
+              active ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
             )}
           >
-            {project.pending}
+            {pending.toLocaleString()}
           </span>
         )}
-      </button>
+      </Link>
     </li>
   )
 }
