@@ -1,0 +1,479 @@
+/**
+ * Per-row checks on a translation.
+ *
+ * `statusOf` catches a value that is absent, empty or a verbatim copy of the
+ * English source. What it cannot catch is a bundle holding the wrong language
+ * altogether - `ms.json` in the sample data holds Chinese - so for that, and
+ * for placeholders, markup and links, these checks are the only automatic
+ * signal that a translated value is wrong.
+ *
+ * `statusIssues` is the subset that decides a row's status: the checks the
+ * server can run from the two texts and the language alone. The row shows
+ * everything `checkTranslation` finds; only `statusIssues` moves a count.
+ */
+
+import type { LanguageCode } from "@/lib/locale-data"
+// Relative and extension-ful, like `api-types.ts`: the mock server imports this
+// module directly, and only the type-only import above can use the `@` alias.
+import { VOID_TAGS } from "./template-preview"
+
+export type IssueLevel = "error" | "warning"
+
+export type RowIssue = {
+  id:
+    | "placeholder"
+    | "whitespace"
+    | "script"
+    | "length"
+    | "max-length"
+    | "html"
+    | "link"
+  level: IssueLevel
+  message: string
+}
+
+/** The only placeholder syntax in the data: `{name}`, `{0}`, `{startDate}`. */
+export function placeholdersOf(value: string): string[] {
+  return (value.match(/\{[^{}]*\}/g) ?? []).sort()
+}
+
+const sameMembers = (a: string[], b: string[]) =>
+  a.length === b.length && a.every((item, index) => item === b[index])
+
+/**
+ * Expected dominant script per language, for the mislabelled-bundle check.
+ *
+ * `allows` lists other scripts that are legitimate in the language - Japanese
+ * is written in kana *and* kanji, and kanji sit in the same Unicode block as
+ * Chinese, so without it every Japanese string reads as Chinese.
+ */
+const scriptOf: Record<
+  LanguageCode,
+  { label: string; pattern: RegExp; allows?: string[] }
+> = {
+  en: { label: "Latin", pattern: /[A-Za-zÀ-ɏ]/ },
+  es: { label: "Latin", pattern: /[A-Za-zÀ-ɏ]/ },
+  ms: { label: "Latin", pattern: /[A-Za-zÀ-ɏ]/ },
+  vi: { label: "Latin", pattern: /[A-Za-zÀ-ɏẠ-ỹ]/ },
+  "zh-Hans": { label: "Chinese", pattern: /[一-鿿]/ },
+  ja: {
+    label: "Japanese",
+    pattern: /[぀-ヿ一-鿿]/,
+    allows: ["Chinese", "Japanese kana"],
+  },
+  ko: { label: "Hangul", pattern: /[가-힯]/ },
+  ru: { label: "Cyrillic", pattern: /[Ѐ-ӿ]/ },
+  mn: { label: "Cyrillic", pattern: /[Ѐ-ӿ]/ },
+  "ar-SA": { label: "Arabic", pattern: /[؀-ۿ]/ },
+  th: { label: "Thai", pattern: /[฀-๿]/ },
+  my: { label: "Burmese", pattern: /[က-႟]/ },
+  km: { label: "Khmer", pattern: /[ក-៿]/ },
+}
+
+/** Scripts a value can carry that are not the expected one - each a red flag. */
+const foreignScripts: { label: string; pattern: RegExp }[] = [
+  { label: "Chinese", pattern: /[一-鿿]/ },
+  { label: "Japanese kana", pattern: /[぀-ヿ]/ },
+  { label: "Hangul", pattern: /[가-힯]/ },
+  { label: "Cyrillic", pattern: /[Ѐ-ӿ]/ },
+  { label: "Arabic", pattern: /[؀-ۿ]/ },
+  { label: "Thai", pattern: /[฀-๿]/ },
+  { label: "Khmer", pattern: /[ក-៿]/ },
+  { label: "Burmese", pattern: /[က-႟]/ },
+]
+
+/**
+ * Two rules, both needed to catch the swap in the sample data:
+ * `ms.json` holds Chinese (a script the language never uses), and
+ * `zh-Hans.json` holds English (no Chinese at all).
+ */
+function scriptIssue(value: string, language: LanguageCode): RowIssue | null {
+  const expected = scriptOf[language]
+  if (!expected) {
+    return null
+  }
+
+  for (const script of foreignScripts) {
+    if (
+      script.label === expected.label ||
+      expected.allows?.includes(script.label)
+    ) {
+      continue
+    }
+    if (script.pattern.test(value)) {
+      return {
+        id: "script",
+        level: "warning",
+        message: `Contains ${script.label} characters - expected ${expected.label}`,
+      }
+    }
+  }
+
+  // Latin is allowed everywhere (product names, codes), so "no expected script"
+  // only reads as a problem for languages that do not write in Latin.
+  const letters = value.replace(/[^\p{L}]/gu, "")
+  if (
+    expected.label !== "Latin" &&
+    letters.length >= 4 &&
+    !expected.pattern.test(value)
+  ) {
+    return {
+      id: "script",
+      level: "warning",
+      message: `No ${expected.label} characters - this may still be English`,
+    }
+  }
+
+  return null
+}
+
+/* --------------------------------------------------------------------------
+ * HTML - email bodies only
+ * ------------------------------------------------------------------------ */
+
+const TAG = /<(\/?)([a-zA-Z][a-zA-Z0-9]*)[^>]*>/g
+
+/**
+ * Tag balance, as a stack.
+ *
+ * An email body is the one field where a translation can be grammatically
+ * perfect and still ship broken: a dropped `</p>` collapses the rest of the
+ * mail into one paragraph, and a stray `</div>` closes the template's own
+ * wrapper. Void tags are skipped because `<br>` never closes.
+ */
+function tagIssue(value: string): RowIssue | null {
+  const open: string[] = []
+
+  for (const match of value.matchAll(TAG)) {
+    const tag = match[2].toLowerCase()
+    if (VOID_TAGS.has(tag)) {
+      continue
+    }
+
+    if (match[1]) {
+      const last = open.pop()
+      if (last !== tag) {
+        return {
+          id: "html",
+          level: "error",
+          message: last
+            ? `</${tag}> closes <${last}> - tags are crossed`
+            : `</${tag}> has no opening tag`,
+        }
+      }
+    } else {
+      open.push(tag)
+    }
+  }
+
+  if (open.length > 0) {
+    return {
+      id: "html",
+      level: "error",
+      message: `<${open[open.length - 1]}> is never closed`,
+    }
+  }
+
+  return null
+}
+
+const hrefsOf = (value: string) =>
+  [...value.matchAll(/href\s*=\s*["']?([^"'\s>]+)/gi)]
+    .map((match) => match[1])
+    .sort()
+
+/**
+ * A link a translator retyped, dropped or localised by hand is a dead link in
+ * a mail that has already been sent. The English URLs are the ones that work,
+ * so the target's set has to match them exactly - placeholders included, since
+ * most of them are `{link}`.
+ */
+function linkIssue(source: string, target: string): RowIssue | null {
+  const wanted = hrefsOf(source)
+  const found = hrefsOf(target)
+
+  if (sameMembers(wanted, found)) {
+    return null
+  }
+
+  if (found.length < wanted.length) {
+    return {
+      id: "link",
+      level: "error",
+      message: `${wanted.length} link${wanted.length === 1 ? "" : "s"} in the English, ${found.length} here`,
+    }
+  }
+
+  return {
+    id: "link",
+    level: "error",
+    message: "A link address differs from the English one",
+  }
+}
+
+type CheckOptions = {
+  language: LanguageCode
+  /** Ratio over the source length past which the row warns. */
+  lengthBudget: number
+  /** Hard ceiling the backend enforces, where one is known. */
+  maxLength?: number
+  /**
+   * `html` adds the tag-balance and link checks - an email body is markup, and
+   * a lost `</p>` or a rewritten `href` breaks the mail rather than the
+   * sentence. Everything else is `text`, the default.
+   */
+  format?: "text" | "html"
+}
+
+/**
+ * Shortest English source worth reviewing.
+ *
+ * Below this, a row is a label, a button or a single word: the checks fire
+ * often and say little - a two-word string in Thai carries no Latin letters,
+ * and a short one legitimately runs several times the English length - so the
+ * review queue fills with rows a translator cannot act on. Review starts once
+ * the English is long enough for the checks to mean something.
+ */
+const MIN_SOURCE_LENGTH = 50
+
+/**
+ * Ratio below which a length warning says nothing.
+ *
+ * A translation under twice the English length still fits every layout we
+ * measured, so a tighter per-target budget only crowds the queue with rows a
+ * translator would leave as they are.
+ */
+const MIN_LENGTH_RATIO = 2
+
+export function effectiveLengthBudget(lengthBudget: number): number {
+  return Math.max(lengthBudget, MIN_LENGTH_RATIO)
+}
+
+/** Ordered most severe first, so a row can show the worst one inline. */
+export function checkTranslation(
+  source: string,
+  target: string,
+  { language, lengthBudget, maxLength, format = "text" }: CheckOptions
+): RowIssue[] {
+  if (!target || source.length <= MIN_SOURCE_LENGTH) {
+    return []
+  }
+
+  const issues: RowIssue[] = []
+
+  const wanted = placeholdersOf(source)
+  const found = placeholdersOf(target)
+  if (!sameMembers(wanted, found)) {
+    const missing = wanted.filter((item) => !found.includes(item))
+    const extra = found.filter((item) => !wanted.includes(item))
+    const parts = [
+      missing.length ? `missing ${missing.join(" ")}` : "",
+      extra.length ? `unexpected ${extra.join(" ")}` : "",
+    ].filter(Boolean)
+
+    issues.push({
+      id: "placeholder",
+      level: "error",
+      message: `Placeholders ${parts.join(", ")}`,
+    })
+  }
+
+  if (maxLength && target.length > maxLength) {
+    issues.push({
+      id: "max-length",
+      level: "error",
+      message: `${target.length.toLocaleString()} characters, over the ${maxLength.toLocaleString()} limit`,
+    })
+  }
+
+  if (format === "html") {
+    const tag = tagIssue(target)
+    if (tag) {
+      issues.push(tag)
+    }
+    const link = linkIssue(source, target)
+    if (link) {
+      issues.push(link)
+    }
+  }
+
+  const script = scriptIssue(target, language)
+  if (script) {
+    issues.push(script)
+  }
+
+  if (target !== target.trim() && source === source.trim()) {
+    issues.push({
+      id: "whitespace",
+      level: "warning",
+      message: "Leading or trailing space the English source does not have",
+    })
+  }
+
+  if (target.length > source.length * effectiveLengthBudget(lengthBudget)) {
+    const ratio = (target.length / source.length).toFixed(1)
+    issues.push({
+      id: "length",
+      level: "warning",
+      message: `${ratio}× the English length - may not fit the layout`,
+    })
+  }
+
+  return issues
+}
+
+/**
+ * The checks that decide status, the same on the server, the dashboard and
+ * the template tallies. The length ratio needs a screen's profile, so it is
+ * left out; `maxLength` is passed only where the server knows the limit - a
+ * template field's.
+ */
+export function statusIssues(
+  source: string,
+  target: string,
+  { language, maxLength, format }: Omit<CheckOptions, "lengthBudget">
+): RowIssue[] {
+  return checkTranslation(source, target, {
+    language,
+    lengthBudget: Number.POSITIVE_INFINITY,
+    maxLength,
+    format,
+  })
+}
+
+/* --------------------------------------------------------------------------
+ * SMS
+ * ------------------------------------------------------------------------ */
+
+const GSM7 =
+  "@£$¥èéùìòÇ\nØø\rÅåΔ_ΦΓΛΩΠΨΣΘΞÆæßÉ !\"#¤%&'()*+,-./0123456789:;<=>?¡ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÑÜ§¿abcdefghijklmnopqrstuvwxyzäöñüà"
+/** Sent as an escape pair, so each costs two GSM-7 characters. */
+const GSM7_EXTENDED = "^{}\\[~]|€"
+
+const gsm7 = new Set(GSM7)
+const gsm7Extended = new Set(GSM7_EXTENDED)
+
+export type SmsInfo = {
+  encoding: "GSM-7" | "UCS-2"
+  /** Billed units, which is not the same as `value.length` for GSM-7 escapes. */
+  units: number
+  segments: number
+  /** Units left in the current segment. */
+  remaining: number
+}
+
+const SINGLE = { "GSM-7": 160, "UCS-2": 70 } as const
+/** Lower, because each part of a split message carries a concatenation header. */
+const CONCATENATED = { "GSM-7": 153, "UCS-2": 67 } as const
+
+function encodingOf(value: string): SmsInfo["encoding"] {
+  for (const char of value) {
+    if (!gsm7.has(char) && !gsm7Extended.has(char)) {
+      return "UCS-2"
+    }
+  }
+
+  return "GSM-7"
+}
+
+/**
+ * What one character costs against the segment budget.
+ *
+ * UCS-2 bills per UTF-16 code unit, so an emoji costs two. GSM-7 bills one,
+ * except for the nine characters sent as an escape pair.
+ */
+function unitCost(char: string, encoding: SmsInfo["encoding"]): number {
+  if (encoding === "UCS-2") {
+    return char.length
+  }
+
+  return gsm7Extended.has(char) ? 2 : 1
+}
+
+function unitsOf(value: string, encoding: SmsInfo["encoding"]): number {
+  let units = 0
+
+  for (const char of value) {
+    units += unitCost(char, encoding)
+  }
+
+  return units
+}
+
+/**
+ * Where a carrier actually breaks a message, as the text of each part.
+ *
+ * Splitting is by billed unit rather than by character: an escape pair or a
+ * surrogate pair is never torn across a boundary, so a part can close one unit
+ * short rather than split a character in half. Counting the parts is therefore
+ * the only honest way to reach a segment count - dividing the units by the
+ * capacity misses the unit a straddling character leaves behind.
+ *
+ * A message that fits in a single segment comes back as one part.
+ */
+function smsSegments(value: string): string[] {
+  if (!value) {
+    return []
+  }
+
+  const encoding = encodingOf(value)
+  if (unitsOf(value, encoding) <= SINGLE[encoding]) {
+    return [value]
+  }
+
+  const capacity = CONCATENATED[encoding]
+  const parts: string[] = []
+  let current = ""
+  let used = 0
+
+  for (const char of value) {
+    const cost = unitCost(char, encoding)
+    if (used + cost > capacity) {
+      parts.push(current)
+      current = ""
+      used = 0
+    }
+    current += char
+    used += cost
+  }
+
+  if (current) {
+    parts.push(current)
+  }
+
+  return parts
+}
+
+/**
+ * A segment holds 160 GSM-7 characters or 70 UCS-2 ones, dropping to 153 / 67
+ * once a message splits, because each part carries a concatenation header.
+ *
+ * Nine of the twelve target languages have no GSM-7 representation at all, so
+ * for them every message is UCS-2 and the budget is 70 - which is why this
+ * meter sits on the row rather than in a validation report nobody opens.
+ */
+export function smsInfo(value: string): SmsInfo {
+  const encoding = encodingOf(value)
+  const units = unitsOf(value, encoding)
+
+  if (units === 0) {
+    return {
+      encoding: "GSM-7",
+      units: 0,
+      segments: 0,
+      remaining: SINGLE["GSM-7"],
+    }
+  }
+
+  const parts = smsSegments(value)
+  const capacity =
+    parts.length === 1 ? SINGLE[encoding] : CONCATENATED[encoding]
+  const last = unitsOf(parts[parts.length - 1], encoding)
+
+  return {
+    encoding,
+    units,
+    segments: parts.length,
+    remaining: capacity - last,
+  }
+}
