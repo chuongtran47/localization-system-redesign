@@ -1,6 +1,6 @@
 "use client"
 
-import { useLayoutEffect, useRef, useState, type ReactNode } from "react"
+import { useRef, type ReactNode } from "react"
 import { useVirtualizer } from "@tanstack/react-virtual"
 
 import { ROW_GRID } from "@/components/translation-row"
@@ -28,15 +28,12 @@ export function TranslationList({
   renderRow: (row: TranslationRow) => ReactNode
 }) {
   const listRef = useRef<HTMLDivElement>(null)
-  const [scrollElement, setScrollElement] = useState<HTMLElement | null>(null)
 
-  useLayoutEffect(() => {
-    setScrollElement(listRef.current?.closest("main") ?? null)
-  }, [])
-
+  // Looked up on every call rather than once on mount: the list first mounts
+  // empty whenever a filter matches nothing, and the ref only attaches later.
   const virtualizer = useVirtualizer({
     count: rows.length,
-    getScrollElement: () => scrollElement,
+    getScrollElement: () => listRef.current?.closest("main") ?? null,
     estimateSize: () => 72,
     overscan: 8,
     scrollMargin: listRef.current?.offsetTop ?? 0,
