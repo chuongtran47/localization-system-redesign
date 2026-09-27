@@ -1,0 +1,1604 @@
+[
+  {
+    "id": "invite_coach",
+    "name": "Coach invitation",
+    "channel": "email",
+    "category": "coach",
+    "target": "messages/email",
+    "owner": {
+      "kind": "web",
+      "app": "school"
+    },
+    "createdBy": "Anna bel",
+    "createdAt": "2026-02-11T03:20:00.000Z",
+    "source": {
+      "subject": "You are invited to coach at {schoolName}",
+      "body": "<h1>Welcome, {firstName}</h1><p>{senderName} has invited you to join <strong>{schoolName}</strong> as a coach.</p><p>Coaches review unit plans, schedule visitations and leave feedback for teachers. Accept the invitation below to set your password and see your campuses.</p><p>Your invitation code is <strong>{code}</strong>. It expires in {days} days.</p>",
+      "cta": "Accept invitation",
+      "footer": "You received this because {senderName} added {email} to {schoolName}. If this was not meant for you, ignore this mail and nothing will happen."
+    },
+    "translations": {
+      "vi": {
+        "subject": "Bạn được mời làm coach tại {schoolName}",
+        "body": "<h1>Xin chào {firstName}</h1><p>{senderName} đã mời bạn tham gia <strong>{schoolName}</strong> với vai trò coach.</p><p>Coach xem xét kế hoạch bài học, xếp lịch dự giờ và gửi nhận xét cho giáo viên. Hãy nhận lời mời bên dưới để đặt mật khẩu và xem các cơ sở của bạn.</p><p>Mã lời mời của bạn là <strong>{code}</strong>, hết hạn sau {days} ngày.</p>",
+        "cta": "Nhận lời mời",
+        "footer": "Bạn nhận được thư này vì {senderName} đã thêm {email} vào {schoolName}. Nếu đây không phải thư dành cho bạn, hãy bỏ qua."
+      },
+      "ja": {
+        "subject": "{schoolName} のコーチとして招待されました",
+        "cta": "招待を受ける",
+        "body": "<h1>{firstName} さん、ようこそ</h1>",
+        "footer": "このメールは、{senderName}が{email}を{schoolName}に追加したために送信されました。心当たりがない場合は、このメールを無視していただければ、何も起こりません。"
+      },
+      "ar-SA": {
+        "subject": "أنت مدعو لتكون مدربًا في {schoolName}",
+        "body": "<h1>مرحبًا، {firstName}</h1><p>دعاك {senderName} للانضمام إلى <strong>{schoolName}</strong> بصفتك مدربًا.</p><p>يراجع المدربون خطط الوحدات، ويجدولون الزيارات، ويتركون ملاحظات للمعلمين. اقبل الدعوة أدناه لتعيين كلمة المرور الخاصة بك ورؤية فروعك.</p><p>رمز دعوتك هو <strong>{code}</strong>. تنتهي صلاحيته خلال {days} يومًا.</p>",
+        "cta": "قبول الدعوة",
+        "footer": "تلقيت هذه الرسالة لأن {senderName} أضاف {email} إلى {schoolName}. إذا لم تكن هذه الرسالة موجهة إليك، فتجاهلها ولن يحدث شيء."
+      },
+      "es": {
+        "subject": "Se le invita a ser coach en {schoolName}",
+        "body": "<h1>Bienvenido, {firstName}</h1><p>{senderName} le ha invitado a unirse a <strong>{schoolName}</strong> como coach.</p><p>Los coaches revisan los planes de unidad, programan visitas y dejan comentarios para los docentes. Acepte la invitación a continuación para establecer su contraseña y ver sus sedes.</p><p>Su código de invitación es <strong>{code}</strong>. Vence en {days} días.</p>",
+        "cta": "Aceptar invitación",
+        "footer": "Recibió este mensaje porque {senderName} agregó a {email} a {schoolName}. Si esto no era para usted, ignore este correo y no ocurrirá nada."
+      },
+      "km": {
+        "subject": "អ្នកត្រូវបានអញ្ជើញឱ្យធ្វើជាគ្រូបង្វឹកនៅ {schoolName}",
+        "body": "<h1>សូមស្វាគមន៍ {firstName}</h1><p>{senderName} បានអញ្ជើញអ្នកឱ្យចូលរួមជាមួយ <strong>{schoolName}</strong> ក្នុងនាមជាគ្រូបង្វឹក។</p><p>គ្រូបង្វឹកត្រួតពិនិត្យផែនការមេរៀន កំណត់កាលវិភាគទស្សនកិច្ច និងផ្តល់មតិកែលម្អដល់គ្រូបង្រៀន។ សូមទទួលយកការអញ្ជើញខាងក្រោមដើម្បីកំណត់ពាក្យសម្ងាត់របស់អ្នក និងមើលសាខារបស់អ្នក។</p><p>លេខកូដអញ្ជើញរបស់អ្នកគឺ <strong>{code}</strong>។ វានឹងផុតកំណត់ក្នុងរយៈពេល {days} ថ្ងៃ។</p>",
+        "cta": "ទទួលយកការអញ្ជើញ",
+        "footer": "អ្នកទទួលបានសារនេះ ព្រោះ {senderName} បានបន្ថែម {email} ទៅកាន់ {schoolName}។ ប្រសិនបើសារនេះមិនមែនសម្រាប់អ្នកទេ សូមមិនអើពើនឹងអ៊ីមែលនេះ ហើយនឹងគ្មានអ្វីកើតឡើងឡើយ។"
+      },
+      "ko": {
+        "subject": "{schoolName}에서 코치로 초대되었습니다",
+        "body": "<h1>환영합니다, {firstName}님</h1><p>{senderName}님이 <strong>{schoolName}</strong>에 코치로 합류하도록 회원님을 초대했습니다.</p><p>코치는 유닛 계획을 검토하고, 방문 일정을 잡고, 교사에게 피드백을 남깁니다. 아래 초대를 수락하여 비밀번호를 설정하고 담당 캠퍼스를 확인하세요.</p><p>초대 코드는 <strong>{code}</strong>입니다. {days}일 후 만료됩니다.</p>",
+        "cta": "초대 수락",
+        "footer": "{senderName}님이 {email}을(를) {schoolName}에 추가하여 이 메일을 받으셨습니다. 본인에게 해당하지 않는다면 이 메일을 무시하셔도 되며, 아무 일도 일어나지 않습니다."
+      },
+      "mn": {
+        "subject": "Та {schoolName} сургуульд дасгалжуулагчаар ажиллахаар урьгдлаа",
+        "body": "<h1>Тавтай морил, {firstName}</h1><p>{senderName} таныг <strong>{schoolName}</strong>-д дасгалжуулагчаар нэгдэхийг урьж байна.</p><p>Дасгалжуулагчид хичээлийн төлөвлөгөөг хянаж, айлчлалын хуваарь гаргаж, багш нарт санал хүсэлт үлдээдэг. Нууц үгээ тохируулж, кампусуудаа харахын тулд доорх урилгыг хүлээн авна уу.</p><p>Таны урилгын код бол <strong>{code}</strong>. Энэ нь {days} хоногийн дараа хүчингүй болно.</p>",
+        "cta": "Урилгыг хүлээн авах",
+        "footer": "{senderName} нь {email}-г {schoolName}-д нэмсэн тул та энэ мэйлийг хүлээн авлаа. Хэрэв энэ нь танд зориулагдаагүй бол мэйлийг үл тоомсорлоорой, юу ч болохгүй."
+      },
+      "ms": {
+        "subject": "Anda dijemput untuk menjadi jurulatih di {schoolName}",
+        "body": "<h1>Selamat datang, {firstName}</h1><p>{senderName} telah menjemput anda untuk menyertai <strong>{schoolName}</strong> sebagai jurulatih.</p><p>Jurulatih menyemak rancangan unit, menjadualkan lawatan dan memberi maklum balas kepada guru. Terima jemputan di bawah untuk menetapkan kata laluan anda dan melihat kampus anda.</p><p>Kod jemputan anda ialah <strong>{code}</strong>. Ia luput dalam {days} hari.</p>",
+        "cta": "Terima jemputan",
+        "footer": "Anda menerima ini kerana {senderName} telah menambah {email} ke {schoolName}. Jika ini bukan untuk anda, abaikan sahaja e-mel ini dan tiada apa-apa akan berlaku."
+      },
+      "my": {
+        "subject": "{schoolName} တွင် နည်းပြအဖြစ် ဖိတ်ခေါ်ခံရသည်",
+        "body": "<h1>ကြိုဆိုပါတယ်၊ {firstName}</h1><p>{senderName} က သင့်အား <strong>{schoolName}</strong> တွင် နည်းပြတစ်ဦးအဖြစ် ပါဝင်ရန် ဖိတ်ခေါ်ထားပါသည်။</p><p>နည်းပြများသည် ယူနစ်စီမံချက်များကို စစ်ဆေးခြင်း၊ ကြည့်ရှုစစ်ဆေးမှုများ စီစဉ်ခြင်းနှင့် ဆရာ/ဆရာမများအတွက် အကြံပြုချက်ပေးခြင်းတို့ ပြုလုပ်ကြပါသည်။ သင့်စကားဝှက် သတ်မှတ်ရန်နှင့် သင့်ကျောင်းဝင်းများကို ကြည့်ရှုရန် အောက်ပါဖိတ်ခေါ်မှုကို လက်ခံပါ။</p><p>သင့်ဖိတ်ခေါ်မှုကုဒ်မှာ <strong>{code}</strong> ဖြစ်ပါသည်။ ၎င်းသည် {days} ရက်အတွင်း သက်တမ်းကုန်ဆုံးပါမည်။</p>",
+        "cta": "ဖိတ်ခေါ်မှု လက်ခံရန်",
+        "footer": "{senderName} က {email} ကို {schoolName} သို့ ထည့်သွင်းခဲ့သောကြောင့် ဤစာကို လက်ခံရရှိခြင်း ဖြစ်ပါသည်။ သင့်အတွက် ရည်ရွယ်ထားခြင်း မဟုတ်ပါက ဤအီးမေးလ်ကို လျစ်လျူရှု၍ ရပါသည်၊ ဘာမှ ပြောင်းလဲသွားမည် မဟုတ်ပါ။"
+      },
+      "ru": {
+        "subject": "Вас пригласили стать тренером в {schoolName}",
+        "body": "<h1>Добро пожаловать, {firstName}</h1><p>{senderName} пригласил(а) вас присоединиться к <strong>{schoolName}</strong> в качестве тренера.</p><p>Тренеры проверяют планы занятий, назначают визиты и оставляют отзывы учителям. Примите приглашение ниже, чтобы задать пароль и увидеть свои кампусы.</p><p>Ваш код приглашения: <strong>{code}</strong>. Он действителен ещё {days} дней.</p>",
+        "cta": "Принять приглашение",
+        "footer": "Вы получили это письмо, потому что {senderName} добавил(а) {email} в {schoolName}. Если это письмо предназначено не вам, просто проигнорируйте его — ничего не произойдёт."
+      },
+      "th": {
+        "subject": "คุณได้รับเชิญให้เป็นโค้ชที่ {schoolName}",
+        "body": "<h1>ยินดีต้อนรับ {firstName}</h1><p>{senderName} ได้เชิญคุณให้เข้าร่วม <strong>{schoolName}</strong> ในฐานะโค้ช</p><p>โค้ชมีหน้าที่ตรวจสอบแผนการสอนของหน่วยเรียน กำหนดตารางการเยี่ยมชม และให้ข้อเสนอแนะแก่ครู ยอมรับคำเชิญด้านล่างเพื่อตั้งรหัสผ่านและดูวิทยาเขตของคุณ</p><p>รหัสคำเชิญของคุณคือ <strong>{code}</strong> รหัสจะหมดอายุใน {days} วัน</p>",
+        "cta": "ยอมรับคำเชิญ",
+        "footer": "คุณได้รับอีเมลนี้เนื่องจาก {senderName} ได้เพิ่ม {email} เข้าสู่ {schoolName} หากอีเมลนี้ไม่ได้มีไว้สำหรับคุณ กรุณาเพิกเฉยต่ออีเมลนี้ และจะไม่มีสิ่งใดเกิดขึ้น"
+      },
+      "zh-Hans": {
+        "subject": "您被邀请到 {schoolName} 担任教练",
+        "body": "<h1>欢迎,{firstName}</h1><p>{senderName} 邀请您加入 <strong>{schoolName}</strong> 担任教练。</p><p>教练负责审阅单元计划、安排访校并为教师提供反馈。请在下方接受邀请以设置密码并查看您的校区。</p><p>您的邀请码是 <strong>{code}</strong>,将在 {days} 天后过期。</p>",
+        "cta": "接受邀请",
+        "footer": "您收到此邮件是因为 {senderName} 将 {email} 添加到了 {schoolName}。如果此邮件并非发送给您,请忽略,不会产生任何影响。"
+      }
+    }
+  },
+  {
+    "id": "invite_teacher",
+    "name": "Teacher invitation",
+    "channel": "email",
+    "category": "teacher",
+    "target": "messages/email",
+    "owner": {
+      "kind": "web",
+      "app": "school"
+    },
+    "createdBy": "Anna bel",
+    "createdAt": "2026-02-11T03:26:00.000Z",
+    "source": {
+      "subject": "Join {className} on {appName}",
+      "body": "<h1>Hello {firstName}</h1><p>{coachName} has invited you to teach <strong>{className}</strong> at {campusName}.</p><p>Once you accept, you can open your unit plans, upload lesson evidence and message your coach. Your invitation code is <strong>{code}</strong>.</p>",
+      "cta": "Set up my account",
+      "footer": "This invitation was sent to {email} and expires in {days} days."
+    },
+    "translations": {
+      "vi": {
+        "subject": "Tham gia {className} trên {appName}",
+        "body": "<h1>Xin chào {firstName}</h1><p>{coachName} đã mời bạn dạy <strong>{className}</strong> tại {campusName}.</p><p>Sau khi nhận lời mời, bạn có thể mở kế hoạch bài học, tải lên minh chứng tiết dạy và nhắn tin cho coach. Mã lời mời của bạn là <strong>{code}</strong>.</p>",
+        "cta": "Thiết lập tài khoản",
+        "footer": "Lời mời này được gửi tới {email} và hết hạn sau {days} ngày."
+      },
+      "ar-SA": {
+        "subject": "انضم إلى {className} على {appName}",
+        "body": "<h1>مرحبًا {firstName}</h1><p>دعاك {coachName} لتدريس <strong>{className}</strong> في {campusName}.</p><p>بمجرد قبولك، يمكنك فتح خطط الوحدات، ورفع أدلة الدروس، ومراسلة مدربك. رمز دعوتك هو <strong>{code}</strong>.</p>",
+        "cta": "إعداد حسابي",
+        "footer": "تم إرسال هذه الدعوة إلى {email} وتنتهي صلاحيتها خلال {days} يومًا."
+      },
+      "es": {
+        "subject": "Únase a {className} en {appName}",
+        "body": "<h1>Hola, {firstName}</h1><p>{coachName} le ha invitado a enseñar en <strong>{className}</strong> en {campusName}.</p><p>Una vez que acepte, podrá abrir sus planes de unidad, subir evidencia de las lecciones y enviar mensajes a su coach. Su código de invitación es <strong>{code}</strong>.</p>",
+        "cta": "Configurar mi cuenta",
+        "footer": "Esta invitación se envió a {email} y vence en {days} días."
+      },
+      "ja": {
+        "subject": "{appName}で{className}に参加",
+        "body": "<h1>こんにちは、{firstName}さん</h1><p>{coachName}が{campusName}で<strong>{className}</strong>を教えるようにあなたを招待しました。</p><p>承諾すると、ユニットプランを開いたり、授業の証拠をアップロードしたり、コーチにメッセージを送ったりできます。招待コードは<strong>{code}</strong>です。</p>",
+        "cta": "アカウントを設定する",
+        "footer": "この招待は{email}宛に送信され、{days}日後に期限切れとなります。"
+      },
+      "km": {
+        "subject": "ចូលរួម {className} នៅលើ {appName}",
+        "body": "<h1>សួស្តី {firstName}</h1><p>{coachName} បានអញ្ជើញអ្នកឱ្យបង្រៀន <strong>{className}</strong> នៅ {campusName}។</p><p>នៅពេលអ្នកទទួលយក អ្នកអាចបើកផែនការមេរៀន បញ្ចូលភស្តុតាងមេរៀន និងផ្ញើសារទៅគ្រូបង្វឹករបស់អ្នក។ លេខកូដអញ្ជើញរបស់អ្នកគឺ <strong>{code}</strong>។</p>",
+        "cta": "រៀបចំគណនីរបស់ខ្ញុំ",
+        "footer": "ការអញ្ជើញនេះត្រូវបានផ្ញើទៅ {email} ហើយនឹងផុតកំណត់ក្នុងរយៈពេល {days} ថ្ងៃ។"
+      },
+      "ko": {
+        "subject": "{appName}에서 {className}에 참여하세요",
+        "body": "<h1>안녕하세요, {firstName}님</h1><p>{coachName}님이 {campusName}에서 <strong>{className}</strong> 수업을 맡도록 회원님을 초대했습니다.</p><p>초대를 수락하면 유닛 계획을 열람하고, 수업 증빙 자료를 업로드하고, 코치에게 메시지를 보낼 수 있습니다. 초대 코드는 <strong>{code}</strong>입니다.</p>",
+        "cta": "계정 설정하기",
+        "footer": "이 초대는 {email}로 발송되었으며 {days}일 후 만료됩니다."
+      },
+      "mn": {
+        "subject": "{appName} дээр {className}-д нэгдэх",
+        "body": "<h1>Сайн байна уу, {firstName}</h1><p>{coachName} таныг {campusName}-д <strong>{className}</strong>-г заахаар урьж байна.</p><p>Урилгыг хүлээн авмагц та хичээлийн төлөвлөгөөгөө нээж, хичээлийн нотолгоо байршуулж, дасгалжуулагчдаа мессеж бичих боломжтой. Таны урилгын код бол <strong>{code}</strong>.</p>",
+        "cta": "Бүртгэлээ тохируулах",
+        "footer": "Энэ урилгыг {email} хаяг руу илгээсэн бөгөөд {days} хоногийн дараа хүчингүй болно."
+      },
+      "ms": {
+        "subject": "Sertai {className} di {appName}",
+        "body": "<h1>Helo {firstName}</h1><p>{coachName} telah menjemput anda untuk mengajar <strong>{className}</strong> di {campusName}.</p><p>Setelah anda menerima, anda boleh membuka rancangan unit anda, memuat naik bukti pelajaran dan menghantar mesej kepada jurulatih anda. Kod jemputan anda ialah <strong>{code}</strong>.</p>",
+        "cta": "Sediakan akaun saya",
+        "footer": "Jemputan ini telah dihantar kepada {email} dan luput dalam {days} hari."
+      },
+      "my": {
+        "subject": "{appName} တွင် {className} သို့ ပါဝင်ပါ",
+        "body": "<h1>မင်္ဂလာပါ {firstName}</h1><p>{coachName} က သင့်အား {campusName} ရှိ <strong>{className}</strong> ကို သင်ကြားပေးရန် ဖိတ်ခေါ်ထားပါသည်။</p><p>လက်ခံပြီးပါက သင့်ယူနစ်စီမံချက်များကို ဖွင့်နိုင်၊ သင်ခန်းစာအထောက်အထားများ အပ်လုဒ်တင်နိုင်ပြီး သင့်နည်းပြထံ စာပို့နိုင်ပါသည်။ သင့်ဖိတ်ခေါ်မှုကုဒ်မှာ <strong>{code}</strong> ဖြစ်ပါသည်။</p>",
+        "cta": "ကျွန်ုပ်၏အကောင့် သတ်မှတ်ရန်",
+        "footer": "ဤဖိတ်ခေါ်မှုကို {email} သို့ ပို့ထားပြီး {days} ရက်အတွင်း သက်တမ်းကုန်ဆုံးပါမည်။"
+      },
+      "ru": {
+        "subject": "Присоединяйтесь к {className} в {appName}",
+        "body": "<h1>Здравствуйте, {firstName}</h1><p>{coachName} пригласил(а) вас преподавать <strong>{className}</strong> в {campusName}.</p><p>После принятия приглашения вы сможете открывать планы занятий, загружать материалы по урокам и переписываться с тренером. Ваш код приглашения: <strong>{code}</strong>.</p>",
+        "cta": "Настроить аккаунт",
+        "footer": "Это приглашение отправлено на {email} и действительно ещё {days} дней."
+      },
+      "th": {
+        "subject": "เข้าร่วม {className} บน {appName}",
+        "body": "<h1>สวัสดี {firstName}</h1><p>{coachName} ได้เชิญคุณให้สอน <strong>{className}</strong> ที่ {campusName}</p><p>เมื่อคุณยอมรับแล้ว คุณจะสามารถเปิดแผนการสอนของหน่วยเรียน อัปโหลดหลักฐานการสอน และส่งข้อความถึงโค้ชของคุณได้ รหัสคำเชิญของคุณคือ <strong>{code}</strong></p>",
+        "cta": "ตั้งค่าบัญชีของฉัน",
+        "footer": "คำเชิญนี้ถูกส่งไปยัง {email} และจะหมดอายุใน {days} วัน"
+      },
+      "zh-Hans": {
+        "subject": "加入 {appName} 上的 {className}",
+        "body": "<h1>您好,{firstName}</h1><p>{coachName} 邀请您在 {campusName} 教授 <strong>{className}</strong>。</p><p>接受邀请后,您就可以打开单元计划、上传课堂证据并与教练发消息。您的邀请码是 <strong>{code}</strong>。</p>",
+        "cta": "设置我的账户",
+        "footer": "此邀请已发送至 {email},将在 {days} 天后过期。"
+      }
+    }
+  },
+  {
+    "id": "invite_parent",
+    "name": "Parent invitation",
+    "channel": "email",
+    "category": "parent",
+    "target": "messages/email",
+    "owner": {
+      "kind": "app",
+      "app": "parent"
+    },
+    "createdBy": "Irene Do",
+    "createdAt": "2026-03-02T07:05:00.000Z",
+    "source": {
+      "subject": "Follow {studentName}'s progress on {appName}",
+      "body": "<h1>Hello {parentName}</h1><p>{teacherName} has invited you to follow <strong>{studentName}</strong> in {className}.</p><p>In the app you can see the unit your child is on, listen to the songs and stories from class, and read the notes their teacher leaves after each lesson.</p><p>Enter the code <strong>{code}</strong> when the app asks for it.</p>",
+      "cta": "Open the app",
+      "footer": "Sent to {email} by {schoolName}. You can turn these mails off in the app under Settings."
+    },
+    "translations": {
+      "vi": {
+        "subject": "Theo dõi tiến độ của {studentName} trên {appName}",
+        "body": "<h1>Xin chào {parentName}</h1><p>{teacherName} đã mời bạn theo dõi <strong>{studentName}</strong> trong lớp {className}.</p><p>Trong ứng dụng, bạn có thể xem con đang học bài nào, nghe lại các bài hát và câu chuyện trên lớp, và đọc nhận xét của giáo viên sau mỗi tiết học.</p><p>Hãy nhập mã <strong>{code}</strong> khi ứng dụng yêu cầu.</p>",
+        "cta": "Mở ứng dụng",
+        "footer": "Đã gửi đến {email} bởi {schoolName}. Bạn có thể tắt các email này trong ứng dụng tại mục Cài đặt."
+      },
+      "ar-SA": {
+        "subject": "تابع تقدم {studentName} على {appName}",
+        "body": "<h1>مرحبًا {parentName}</h1><p>دعاك {teacherName} لمتابعة <strong>{studentName}</strong> في {className}.</p><p>في التطبيق يمكنك رؤية الوحدة التي يدرسها طفلك، والاستماع إلى الأغاني والقصص من الفصل، وقراءة الملاحظات التي يتركها معلمه بعد كل درس.</p><p>أدخل الرمز <strong>{code}</strong> عندما يطلبه التطبيق.</p>",
+        "cta": "فتح التطبيق",
+        "footer": "أُرسلت إلى {email} بواسطة {schoolName}. يمكنك إيقاف هذه الرسائل من التطبيق ضمن الإعدادات."
+      },
+      "es": {
+        "subject": "Siga el progreso de {studentName} en {appName}",
+        "body": "<h1>Hola, {parentName}</h1><p>{teacherName} le ha invitado a seguir a <strong>{studentName}</strong> en {className}.</p><p>En la aplicación puede ver la unidad en la que va su hijo, escuchar las canciones e historias de la clase, y leer las notas que su docente deja después de cada lección.</p><p>Ingrese el código <strong>{code}</strong> cuando la aplicación lo solicite.</p>",
+        "cta": "Abrir la aplicación",
+        "footer": "Enviado a {email} por {schoolName}. Puede desactivar estos correos en la aplicación, en Configuración."
+      },
+      "ja": {
+        "subject": "{appName}で{studentName}さんの進捗をフォロー",
+        "body": "<h1>こんにちは、{parentName}さん</h1><p>{teacherName}が、{className}の<strong>{studentName}</strong>さんをフォローするようにあなたを招待しました。</p><p>アプリでは、お子様が学習しているユニットを確認したり、授業で使われる歌や物語を聞いたり、各レッスン後に教師が残すノートを読んだりできます。</p><p>アプリでコードの入力を求められたら、<strong>{code}</strong>を入力してください。</p>",
+        "cta": "アプリを開く",
+        "footer": "{schoolName}より{email}宛に送信されました。これらのメールはアプリの設定でオフにできます。"
+      },
+      "km": {
+        "subject": "តាមដានវឌ្ឍនភាពរបស់ {studentName} នៅលើ {appName}",
+        "body": "<h1>សួស្តី {parentName}</h1><p>{teacherName} បានអញ្ជើញអ្នកឱ្យតាមដាន <strong>{studentName}</strong> នៅក្នុង {className}។</p><p>នៅក្នុងកម្មវិធីនេះ អ្នកអាចមើលឯកតាមេរៀនដែលកូនរបស់អ្នកកំពុងសិក្សា ស្តាប់បទចម្រៀង និងរឿងនិទានពីថ្នាក់រៀន និងអានចំណាំដែលគ្រូបង្រៀនរបស់ពួកគេទុកនៅចុងបញ្ចប់នៃមេរៀននីមួយៗ។</p><p>សូមបញ្ចូលលេខកូដ <strong>{code}</strong> នៅពេលកម្មវិធីស្នើសុំ។</p>",
+        "cta": "បើកកម្មវិធី",
+        "footer": "ផ្ញើទៅ {email} ដោយ {schoolName}។ អ្នកអាចបិទអ៊ីមែលទាំងនេះនៅក្នុងកម្មវិធី ក្រោមផ្នែកការកំណត់។"
+      },
+      "ko": {
+        "subject": "{appName}에서 {studentName}님의 학습 진행 상황을 확인하세요",
+        "body": "<h1>안녕하세요, {parentName}님</h1><p>{teacherName}님이 {className}에서 <strong>{studentName}</strong>님의 학습을 지켜볼 수 있도록 회원님을 초대했습니다.</p><p>앱에서 자녀가 진행 중인 유닛을 확인하고, 수업에서 나온 노래와 이야기를 듣고, 매 수업 후 교사가 남기는 노트를 읽을 수 있습니다.</p><p>앱에서 요청할 때 코드 <strong>{code}</strong>를 입력하세요.</p>",
+        "cta": "앱 열기",
+        "footer": "{schoolName}에서 {email}로 발송했습니다. 앱의 설정에서 이 메일을 끌 수 있습니다."
+      },
+      "mn": {
+        "subject": "{appName} дээр {studentName}-ийн ахицыг хянах",
+        "body": "<h1>Сайн байна уу, {parentName}</h1><p>{teacherName} таныг {className}-д байгаа <strong>{studentName}</strong>-ийг дагахаар урьж байна.</p><p>Аппликейшнд та хүүхдийнхээ сурч буй нэгжийг харах, хичээлийн дуу, түүхийг сонсох, багшийн хичээл бүрийн дараа үлдээсэн тэмдэглэлийг унших боломжтой.</p><p>Аппликейшн асуухад <strong>{code}</strong> кодыг оруулна уу.</p>",
+        "cta": "Аппликейшныг нээх",
+        "footer": "{schoolName}-с {email} хаяг руу илгээсэн. Та эдгээр мэйлийг аппликейшны Тохиргоо хэсгээс унтраах боломжтой."
+      },
+      "ms": {
+        "subject": "Ikuti kemajuan {studentName} di {appName}",
+        "body": "<h1>Helo {parentName}</h1><p>{teacherName} telah menjemput anda untuk mengikuti <strong>{studentName}</strong> dalam {className}.</p><p>Dalam aplikasi ini, anda boleh melihat unit yang sedang dipelajari oleh anak anda, mendengar lagu dan cerita dari kelas, serta membaca nota yang ditinggalkan oleh guru selepas setiap pelajaran.</p><p>Masukkan kod <strong>{code}</strong> apabila aplikasi memintanya.</p>",
+        "cta": "Buka aplikasi",
+        "footer": "Dihantar kepada {email} oleh {schoolName}. Anda boleh mematikan e-mel ini dalam aplikasi di bawah Tetapan."
+      },
+      "my": {
+        "subject": "{appName} တွင် {studentName} ၏ တိုးတက်မှုကို ကြည့်ရှုပါ",
+        "body": "<h1>မင်္ဂလာပါ {parentName}</h1><p>{teacherName} က {className} ရှိ <strong>{studentName}</strong> ၏ တိုးတက်မှုကို ကြည့်ရှုရန် သင့်အား ဖိတ်ခေါ်ထားပါသည်။</p><p>အက်ပ်တွင် သင့်ကလေး ရောက်ရှိနေသော ယူနစ်ကို ကြည့်ရှုနိုင်၊ အတန်းမှ သီချင်းများနှင့် ပုံပြင်များကို နားထောင်နိုင်ပြီး ဆရာ/ဆရာမက သင်ခန်းစာတိုင်းအပြီးတွင် ချန်ထားခဲ့သော မှတ်စုများကို ဖတ်ရှုနိုင်ပါသည်။</p><p>အက်ပ်က တောင်းဆိုသောအခါ ကုဒ် <strong>{code}</strong> ကို ထည့်သွင်းပါ။</p>",
+        "cta": "အက်ပ် ဖွင့်ရန်",
+        "footer": "{schoolName} မှ {email} သို့ ပို့ထားပါသည်။ ဤစာများကို အက်ပ်ရှိ ဆက်တင်များတွင် ပိတ်နိုင်ပါသည်။"
+      },
+      "ru": {
+        "subject": "Следите за успехами {studentName} в {appName}",
+        "body": "<h1>Здравствуйте, {parentName}</h1><p>{teacherName} пригласил(а) вас следить за успехами <strong>{studentName}</strong> в {className}.</p><p>В приложении вы можете увидеть, на каком юните находится ваш ребёнок, послушать песни и истории с занятий, а также прочитать заметки, которые учитель оставляет после каждого урока.</p><p>Введите код <strong>{code}</strong>, когда приложение его запросит.</p>",
+        "cta": "Открыть приложение",
+        "footer": "Отправлено на {email} от {schoolName}. Вы можете отключить эти письма в приложении в разделе «Настройки»."
+      },
+      "th": {
+        "subject": "ติดตามความคืบหน้าของ {studentName} บน {appName}",
+        "body": "<h1>สวัสดี {parentName}</h1><p>{teacherName} ได้เชิญคุณให้ติดตาม <strong>{studentName}</strong> ใน {className}</p><p>ในแอปคุณสามารถดูหน่วยเรียนที่บุตรหลานของคุณกำลังเรียนอยู่ ฟังเพลงและนิทานจากชั้นเรียน และอ่านบันทึกที่ครูเขียนไว้หลังจากแต่ละบทเรียน</p><p>กรอกรหัส <strong>{code}</strong> เมื่อแอปถามหา</p>",
+        "cta": "เปิดแอป",
+        "footer": "ส่งถึง {email} โดย {schoolName} คุณสามารถปิดอีเมลเหล่านี้ได้ในแอปที่เมนูการตั้งค่า"
+      },
+      "zh-Hans": {
+        "subject": "在 {appName} 上关注 {studentName} 的学习进度",
+        "body": "<h1>您好,{parentName}</h1><p>{teacherName} 邀请您关注 {className} 中的 <strong>{studentName}</strong>。</p><p>在应用中,您可以查看孩子正在学习的单元、收听课堂中的歌曲和故事,并阅读教师每节课后留下的笔记。</p><p>当应用要求时,请输入代码 <strong>{code}</strong>。</p>",
+        "cta": "打开应用",
+        "footer": "由 {schoolName} 发送至 {email}。您可以在应用的“设置”中关闭此类邮件。"
+      }
+    }
+  },
+  {
+    "id": "invite_student",
+    "name": "Student invitation",
+    "channel": "email",
+    "category": "student",
+    "target": "messages/email",
+    "owner": {
+      "kind": "app",
+      "app": "student"
+    },
+    "createdBy": "Irene Do",
+    "createdAt": "2026-03-02T07:11:00.000Z",
+    "source": {
+      "subject": "Your {appName} account is ready",
+      "body": "<h1>Hi {firstName}</h1><p>Your class {className} is waiting for you. Sign in with the code <strong>{code}</strong> to start {unitName}.</p>",
+      "cta": "Start learning",
+      "footer": "If you need help, ask your teacher {teacherName}."
+    },
+    "translations": {
+      "ar-SA": {
+        "subject": "حسابك في {appName} جاهز",
+        "body": "<h1>مرحبًا {firstName}</h1><p>فصلك {className} في انتظارك. سجّل الدخول باستخدام الرمز <strong>{code}</strong> لبدء {unitName}.</p>",
+        "cta": "ابدأ التعلم",
+        "footer": "إذا احتجت إلى مساعدة، اسأل معلمك {teacherName}."
+      },
+      "es": {
+        "subject": "Su cuenta de {appName} ya está lista",
+        "body": "<h1>Hola, {firstName}</h1><p>Su clase {className} lo está esperando. Inicie sesión con el código <strong>{code}</strong> para comenzar {unitName}.</p>",
+        "cta": "Comenzar a aprender",
+        "footer": "Si necesita ayuda, consulte a su docente {teacherName}."
+      },
+      "ja": {
+        "subject": "{appName}のアカウントの準備ができました",
+        "body": "<h1>こんにちは、{firstName}さん</h1><p>あなたのクラス{className}が待っています。コード<strong>{code}</strong>でサインインして、{unitName}を始めましょう。</p>",
+        "cta": "学習を始める",
+        "footer": "助けが必要な場合は、教師の{teacherName}に相談してください。"
+      },
+      "km": {
+        "subject": "គណនី {appName} របស់អ្នករួចរាល់ហើយ",
+        "body": "<h1>សួស្តី {firstName}</h1><p>ថ្នាក់រៀន {className} របស់អ្នកកំពុងរង់ចាំអ្នក។ សូមចូលប្រើដោយប្រើលេខកូដ <strong>{code}</strong> ដើម្បីចាប់ផ្តើម {unitName}។</p>",
+        "cta": "ចាប់ផ្តើមរៀន",
+        "footer": "ប្រសិនបើអ្នកត្រូវការជំនួយ សូមសួរគ្រូបង្រៀនរបស់អ្នក {teacherName}។"
+      },
+      "ko": {
+        "subject": "{appName} 계정이 준비되었습니다",
+        "body": "<h1>안녕하세요, {firstName}님</h1><p>{className} 수업이 회원님을 기다리고 있습니다. 코드 <strong>{code}</strong>로 로그인하여 {unitName}을(를) 시작하세요.</p>",
+        "cta": "학습 시작하기",
+        "footer": "도움이 필요하면 교사 {teacherName}님에게 문의하세요."
+      },
+      "mn": {
+        "subject": "Таны {appName} бүртгэл бэлэн боллоо",
+        "body": "<h1>Сайн уу, {firstName}</h1><p>Таны {className} анги чамайг хүлээж байна. {unitName}-г эхлүүлэхийн тулд <strong>{code}</strong> кодоор нэвтэрнэ үү.</p>",
+        "cta": "Сурч эхлэх",
+        "footer": "Тусламж хэрэгтэй бол багш {teacherName}-аас асуугаарай."
+      },
+      "ms": {
+        "subject": "Akaun {appName} anda sudah sedia",
+        "body": "<h1>Hai {firstName}</h1><p>Kelas {className} anda sedang menunggu anda. Log masuk dengan kod <strong>{code}</strong> untuk memulakan {unitName}.</p>",
+        "cta": "Mula belajar",
+        "footer": "Jika anda memerlukan bantuan, tanya guru anda {teacherName}."
+      },
+      "my": {
+        "subject": "သင့် {appName} အကောင့် အသင့်ဖြစ်နေပါပြီ",
+        "body": "<h1>မင်္ဂလာပါ {firstName}</h1><p>သင့်အတန်း {className} က သင့်ကို စောင့်ဆိုင်းနေပါသည်။ {unitName} ကို စတင်ရန် ကုဒ် <strong>{code}</strong> ဖြင့် လက်မှတ်ထိုးဝင်ပါ။</p>",
+        "cta": "သင်ယူမှု စတင်ရန်",
+        "footer": "အကူအညီ လိုအပ်ပါက သင့်ဆရာ/ဆရာမ {teacherName} ကို မေးမြန်းပါ။"
+      },
+      "ru": {
+        "subject": "Ваш аккаунт в {appName} готов",
+        "body": "<h1>Привет, {firstName}</h1><p>Ваш класс {className} ждёт вас. Войдите с помощью кода <strong>{code}</strong>, чтобы начать {unitName}.</p>",
+        "cta": "Начать обучение",
+        "footer": "Если вам нужна помощь, обратитесь к своему учителю {teacherName}."
+      },
+      "th": {
+        "subject": "บัญชี {appName} ของคุณพร้อมใช้งานแล้ว",
+        "body": "<h1>สวัสดี {firstName}</h1><p>ชั้นเรียน {className} ของคุณกำลังรอคุณอยู่ เข้าสู่ระบบด้วยรหัส <strong>{code}</strong> เพื่อเริ่ม {unitName}</p>",
+        "cta": "เริ่มเรียนรู้",
+        "footer": "หากคุณต้องการความช่วยเหลือ ให้ถามครู {teacherName} ของคุณ"
+      },
+      "vi": {
+        "subject": "Tài khoản {appName} của bạn đã sẵn sàng",
+        "body": "<h1>Chào {firstName}</h1><p>Lớp {className} của bạn đang chờ bạn. Đăng nhập bằng mã <strong>{code}</strong> để bắt đầu {unitName}.</p>",
+        "cta": "Bắt đầu học",
+        "footer": "Nếu bạn cần trợ giúp, hãy hỏi giáo viên {teacherName} của bạn."
+      },
+      "zh-Hans": {
+        "subject": "您的 {appName} 账户已就绪",
+        "body": "<h1>你好,{firstName}</h1><p>你的班级 {className} 正在等你。请使用代码 <strong>{code}</strong> 登录,开始学习 {unitName}。</p>",
+        "cta": "开始学习",
+        "footer": "如需帮助,请咨询你的教师 {teacherName}。"
+      }
+    }
+  },
+  {
+    "id": "reset_password",
+    "name": "Password reset",
+    "channel": "email",
+    "category": "admin",
+    "target": "messages/email",
+    "owner": {
+      "kind": "web",
+      "app": "school"
+    },
+    "createdBy": "Sarah Klein",
+    "createdAt": "2026-01-19T10:42:00.000Z",
+    "source": {
+      "subject": "Reset your {appName} password",
+      "body": "<h1>Password reset requested</h1><p>Somebody asked to reset the password for <strong>{email}</strong>. If it was you, use the button below.</p><p>The link works once and expires in {days} hours. If it was not you, no action is needed — the password has not changed.</p>",
+      "cta": "Choose a new password",
+      "footer": "For help, reply to this mail or contact {senderName}."
+    },
+    "translations": {
+      "vi": {
+        "subject": "Đặt lại mật khẩu {appName} của bạn",
+        "body": "<h1>Yêu cầu đặt lại mật khẩu</h1><p>Có người yêu cầu đặt lại mật khẩu cho <strong>{email}</strong>. Nếu đó là bạn, hãy dùng nút bên dưới.</p><p>Liên kết chỉ dùng được một lần và hết hạn sau {days} giờ. Nếu không phải bạn, bạn không cần làm gì — mật khẩu vẫn chưa thay đổi.</p>",
+        "cta": "Chọn mật khẩu mới",
+        "footer": "Cần hỗ trợ, hãy trả lời thư này hoặc liên hệ {senderName}."
+      },
+      "ko": {
+        "subject": "{appName} 비밀번호 재설정",
+        "cta": "새 비밀번호 설정",
+        "body": "<h1>비밀번호 재설정 요청</h1>",
+        "footer": "도움이 필요하면 이 메일에 답장하거나 {senderName}에게 문의하세요."
+      },
+      "ar-SA": {
+        "subject": "إعادة تعيين كلمة مرور {appName} الخاصة بك",
+        "body": "<h1>تم طلب إعادة تعيين كلمة المرور</h1><p>طلب شخص ما إعادة تعيين كلمة المرور لـ <strong>{email}</strong>. إذا كنت أنت من طلب ذلك، فاستخدم الزر أدناه.</p><p>يعمل الرابط مرة واحدة وتنتهي صلاحيته خلال {days} ساعة. إذا لم تكن أنت، فلا حاجة لاتخاذ أي إجراء، لم تتغير كلمة المرور.</p>",
+        "cta": "اختر كلمة مرور جديدة",
+        "footer": "للمساعدة، رد على هذا البريد أو تواصل مع {senderName}."
+      },
+      "es": {
+        "subject": "Restablezca su contraseña de {appName}",
+        "body": "<h1>Se solicitó restablecer la contraseña</h1><p>Alguien solicitó restablecer la contraseña de <strong>{email}</strong>. Si fue usted, use el botón a continuación.</p><p>El enlace funciona una sola vez y vence en {days} horas. Si no fue usted, no se requiere ninguna acción: la contraseña no ha cambiado.</p>",
+        "cta": "Elegir una nueva contraseña",
+        "footer": "Para obtener ayuda, responda a este correo o comuníquese con {senderName}."
+      },
+      "ja": {
+        "subject": "{appName}のパスワードをリセット",
+        "body": "<h1>パスワードのリセットが要求されました</h1><p><strong>{email}</strong>のパスワードのリセットが要求されました。心当たりがある場合は、以下のボタンをご利用ください。</p><p>このリンクは一度だけ有効で、{days}時間で期限切れになります。心当たりがない場合、対応は不要です。パスワードは変更されていません。</p>",
+        "cta": "新しいパスワードを選択する",
+        "footer": "サポートが必要な場合は、このメールに返信するか、{senderName}に連絡してください。"
+      },
+      "km": {
+        "subject": "កំណត់ពាក្យសម្ងាត់ {appName} របស់អ្នកឡើងវិញ",
+        "body": "<h1>បានស្នើសុំកំណត់ពាក្យសម្ងាត់ឡើងវិញ</h1><p>មានអ្នកណាម្នាក់បានស្នើសុំកំណត់ពាក្យសម្ងាត់ឡើងវិញសម្រាប់ <strong>{email}</strong>។ ប្រសិនបើវាជាអ្នក សូមប្រើប៊ូតុងខាងក្រោម។</p><p>តំណនេះប្រើបានតែម្តងគត់ ហើយនឹងផុតកំណត់ក្នុងរយៈពេល {days} ម៉ោង។ ប្រសិនបើវាមិនមែនជាអ្នកទេ មិនចាំបាច់ធ្វើសកម្មភាពអ្វីឡើយ ព្រោះពាក្យសម្ងាត់មិនត្រូវបានផ្លាស់ប្តូរទេ។</p>",
+        "cta": "ជ្រើសរើសពាក្យសម្ងាត់ថ្មី",
+        "footer": "ដើម្បីទទួលជំនួយ សូមឆ្លើយតបអ៊ីមែលនេះ ឬទាក់ទង {senderName}។"
+      },
+      "mn": {
+        "subject": "{appName} нууц үгээ шинэчлэх",
+        "body": "<h1>Нууц үг шинэчлэх хүсэлт ирлээ</h1><p>Хэн нэгэн <strong>{email}</strong>-ийн нууц үгийг шинэчлэхийг хүслээ. Хэрэв энэ нь та байсан бол доорх товчийг ашиглана уу.</p><p>Энэ холбоос нэг удаа ажиллах бөгөөд {days} цагийн дараа хүчингүй болно. Хэрэв энэ нь та биш байсан бол ямар нэгэн үйлдэл хийх шаардлагагүй — нууц үг өөрчлөгдөөгүй болно.</p>",
+        "cta": "Шинэ нууц үг сонгох",
+        "footer": "Тусламж хэрэгтэй бол энэ мэйлд хариулах эсвэл {senderName}-тай холбогдоно уу."
+      },
+      "ms": {
+        "subject": "Tetapkan semula kata laluan {appName} anda",
+        "body": "<h1>Permintaan tetapan semula kata laluan</h1><p>Seseorang telah memohon untuk menetapkan semula kata laluan bagi <strong>{email}</strong>. Jika itu adalah anda, gunakan butang di bawah.</p><p>Pautan ini hanya berfungsi sekali dan luput dalam {days} jam. Jika itu bukan anda, tiada tindakan diperlukan — kata laluan tidak berubah.</p>",
+        "cta": "Pilih kata laluan baharu",
+        "footer": "Untuk bantuan, balas e-mel ini atau hubungi {senderName}."
+      },
+      "my": {
+        "subject": "သင့် {appName} စကားဝှက်ကို ပြန်လည်သတ်မှတ်ရန်",
+        "body": "<h1>စကားဝှက် ပြန်လည်သတ်မှတ်ရန် တောင်းဆိုထားသည်</h1><p>တစ်စုံတစ်ဦးက <strong>{email}</strong> အတွက် စကားဝှက်ကို ပြန်လည်သတ်မှတ်ရန် တောင်းဆိုထားပါသည်။ သင်ကိုယ်တိုင် တောင်းဆိုခဲ့ပါက အောက်ပါခလုတ်ကို အသုံးပြုပါ။</p><p>ဤလင့်ခ်ကို တစ်ကြိမ်သာ အသုံးပြု၍ရပြီး {days} နာရီအတွင်း သက်တမ်းကုန်ဆုံးပါမည်။ သင်ကိုယ်တိုင် တောင်းဆိုခဲ့ခြင်း မဟုတ်ပါက မည်သည့်လုပ်ဆောင်ချက်မျှ မလိုအပ်ပါ။ စကားဝှက်ကို ပြောင်းလဲမထားပါ။</p>",
+        "cta": "စကားဝှက်အသစ် ရွေးချယ်ရန်",
+        "footer": "အကူအညီအတွက် ဤအီးမေးလ်ကို ပြန်စာပို့ပါ သို့မဟုတ် {senderName} ကို ဆက်သွယ်ပါ။"
+      },
+      "ru": {
+        "subject": "Сброс пароля в {appName}",
+        "body": "<h1>Запрошен сброс пароля</h1><p>Кто-то запросил сброс пароля для <strong>{email}</strong>. Если это были вы, воспользуйтесь кнопкой ниже.</p><p>Ссылка действует один раз и становится недействительной через {days} ч. Если это были не вы, никаких действий не требуется — пароль не изменился.</p>",
+        "cta": "Задать новый пароль",
+        "footer": "Если нужна помощь, ответьте на это письмо или свяжитесь с {senderName}."
+      },
+      "th": {
+        "subject": "รีเซ็ตรหัสผ่าน {appName} ของคุณ",
+        "body": "<h1>ขอรีเซ็ตรหัสผ่าน</h1><p>มีคนขอรีเซ็ตรหัสผ่านสำหรับ <strong>{email}</strong> หากเป็นคุณ กรุณาใช้ปุ่มด้านล่าง</p><p>ลิงก์นี้ใช้ได้เพียงครั้งเดียวและจะหมดอายุใน {days} ชั่วโมง หากไม่ใช่คุณ ไม่ต้องดำเนินการใดๆ รหัสผ่านของคุณยังไม่มีการเปลี่ยนแปลง</p>",
+        "cta": "ตั้งรหัสผ่านใหม่",
+        "footer": "หากต้องการความช่วยเหลือ กรุณาตอบกลับอีเมลนี้หรือติดต่อ {senderName}"
+      },
+      "zh-Hans": {
+        "subject": "重置您的 {appName} 密码",
+        "body": "<h1>密码重置请求</h1><p>有人请求重置 <strong>{email}</strong> 的密码。如果是您本人操作,请使用下方的按钮。</p><p>该链接仅可使用一次,将在 {days} 小时后过期。如果不是您本人操作,则无需采取任何操作,密码不会被更改。</p>",
+        "cta": "选择新密码",
+        "footer": "如需帮助,请回复此邮件或联系 {senderName}。"
+      }
+    }
+  },
+  {
+    "id": "unit_plan_due",
+    "name": "Unit plan reminder",
+    "channel": "email",
+    "category": "teacher",
+    "target": "messages/email",
+    "owner": {
+      "kind": "web",
+      "app": "curriculum"
+    },
+    "createdBy": "kim jennie",
+    "createdAt": "2026-04-07T02:15:00.000Z",
+    "source": {
+      "subject": "{unitName} plan is due {dueDate}",
+      "body": "<h1>{count} lessons need a plan</h1><p>Your plan for <strong>{unitName}</strong> in {className} is due on {dueDate}.</p><p>{count} lessons have nothing attached yet. {coachName} reviews the plan after you submit it.</p>",
+      "cta": "Open the unit plan",
+      "footer": "You get this reminder {days} days before a plan is due. Change that under Settings."
+    },
+    "translations": {
+      "vi": {
+        "subject": "Kế hoạch {unitName} đến hạn ngày {dueDate}",
+        "body": "<h1>{count} tiết học cần kế hoạch</h1><p>Kế hoạch cho <strong>{unitName}</strong> ở lớp {className} đến hạn vào ngày {dueDate}.</p><p>Vẫn còn {count} tiết chưa có tài liệu nào. {coachName} sẽ xem xét kế hoạch sau khi bạn gửi.</p>",
+        "cta": "Mở kế hoạch bài học",
+        "footer": "Bạn nhận được lời nhắc này {days} ngày trước khi kế hoạch đến hạn. Thay đổi điều này tại mục Cài đặt."
+      },
+      "ar-SA": {
+        "subject": "خطة {unitName} مستحقة في {dueDate}",
+        "body": "<h1>{count} دروس بحاجة إلى خطة</h1><p>خطتك لـ <strong>{unitName}</strong> في {className} مستحقة بتاريخ {dueDate}.</p><p>{count} دروس ليس بها أي مرفقات بعد. يراجع {coachName} الخطة بعد إرسالها.</p>",
+        "cta": "فتح خطة الوحدة",
+        "footer": "تصلك هذه الرسالة التذكيرية قبل {days} أيام من استحقاق الخطة. يمكنك تغيير ذلك من الإعدادات."
+      },
+      "es": {
+        "subject": "El plan de {unitName} vence el {dueDate}",
+        "body": "<h1>{count} lecciones necesitan un plan</h1><p>Su plan de <strong>{unitName}</strong> en {className} vence el {dueDate}.</p><p>{count} lecciones aún no tienen nada adjunto. {coachName} revisa el plan después de que lo envíe.</p>",
+        "cta": "Abrir el plan de unidad",
+        "footer": "Recibe este recordatorio {days} días antes de que venza un plan. Cambie esto en Configuración."
+      },
+      "ja": {
+        "subject": "{unitName}のプランの期限は{dueDate}です",
+        "body": "<h1>{count}件のレッスンにプランが必要です</h1><p>{className}の<strong>{unitName}</strong>のプランの期限は{dueDate}です。</p><p>{count}件のレッスンにまだ何も添付されていません。提出後、{coachName}がプランを確認します。</p>",
+        "cta": "ユニットプランを開く",
+        "footer": "このリマインダーはプランの期限の{days}日前に届きます。設定で変更できます。"
+      },
+      "km": {
+        "subject": "ផែនការ {unitName} ត្រូវដល់កំណត់ថ្ងៃទី {dueDate}",
+        "body": "<h1>មេរៀនចំនួន {count} ត្រូវការផែនការ</h1><p>ផែនការសម្រាប់ <strong>{unitName}</strong> នៅក្នុង {className} ត្រូវដល់កំណត់នៅថ្ងៃទី {dueDate}។</p><p>មេរៀនចំនួន {count} មិនទាន់មានឯកសារភ្ជាប់ណាមួយនៅឡើយទេ។ {coachName} នឹងត្រួតពិនិត្យផែនការនេះបន្ទាប់ពីអ្នកដាក់ស្នើ។</p>",
+        "cta": "បើកផែនការមេរៀន",
+        "footer": "អ្នកទទួលបានការរំលឹកនេះ {days} ថ្ងៃមុននឹងផែនការដល់កំណត់។ អ្នកអាចផ្លាស់ប្តូរវាបាននៅក្រោមផ្នែកការកំណត់។"
+      },
+      "ko": {
+        "subject": "{unitName} 계획 제출 기한: {dueDate}",
+        "body": "<h1>{count}개 수업에 계획이 필요합니다</h1><p>{className}의 <strong>{unitName}</strong> 계획 제출 기한은 {dueDate}입니다.</p><p>아직 {count}개 수업에 첨부된 자료가 없습니다. 제출하시면 {coachName}님이 계획을 검토합니다.</p>",
+        "cta": "유닛 계획 열기",
+        "footer": "이 알림은 계획 제출 기한 {days}일 전에 발송됩니다. 설정에서 변경할 수 있습니다."
+      },
+      "mn": {
+        "subject": "{unitName}-ийн төлөвлөгөө {dueDate}-нд дуусах хугацаатай",
+        "body": "<h1>{count} хичээлд төлөвлөгөө хэрэгтэй байна</h1><p>{className}-д зориулсан <strong>{unitName}</strong>-ийн төлөвлөгөө {dueDate}-нд дуусах хугацаатай.</p><p>{count} хичээлд одоогоор юу ч хавсаргаагүй байна. Та илгээсний дараа {coachName} төлөвлөгөөг хянана.</p>",
+        "cta": "Хичээлийн төлөвлөгөөг нээх",
+        "footer": "Та энэ сануулгыг төлөвлөгөө дуусахаас {days} хоногийн өмнө хүлээн авна. Үүнийг Тохиргоо хэсгээс өөрчилж болно."
+      },
+      "ms": {
+        "subject": "Rancangan {unitName} perlu diserahkan pada {dueDate}",
+        "body": "<h1>{count} pelajaran memerlukan rancangan</h1><p>Rancangan anda untuk <strong>{unitName}</strong> dalam {className} perlu diserahkan pada {dueDate}.</p><p>{count} pelajaran masih belum mempunyai apa-apa dilampirkan. {coachName} akan menyemak rancangan ini selepas anda menghantarnya.</p>",
+        "cta": "Buka rancangan unit",
+        "footer": "Anda menerima peringatan ini {days} hari sebelum rancangan perlu diserahkan. Ubah tetapan ini di bawah Tetapan."
+      },
+      "my": {
+        "subject": "{unitName} စီမံချက် {dueDate} တွင် သတ်မှတ်ရက်ရောက်ပါသည်",
+        "body": "<h1>သင်ခန်းစာ {count} ခုအတွက် စီမံချက် လိုအပ်ပါသည်</h1><p>{className} ရှိ <strong>{unitName}</strong> အတွက် သင့်စီမံချက်သည် {dueDate} တွင် သတ်မှတ်ရက်ရောက်ပါသည်။</p><p>သင်ခန်းစာ {count} ခုတွင် မည်သည့်အရာမျှ ပူးတွဲမထားသေးပါ။ {coachName} က သင်တင်သွင်းပြီးနောက် စီမံချက်ကို စစ်ဆေးပါမည်။</p>",
+        "cta": "ယူနစ်စီမံချက် ဖွင့်ရန်",
+        "footer": "စီမံချက် သတ်မှတ်ရက်မတိုင်မီ {days} ရက်အလို၌ ဤသတိပေးချက်ကို ရရှိပါသည်။ ဆက်တင်များတွင် ပြောင်းလဲနိုင်ပါသည်။"
+      },
+      "ru": {
+        "subject": "План по {unitName} должен быть сдан {dueDate}",
+        "body": "<h1>{count} уроков нуждаются в плане</h1><p>Ваш план по <strong>{unitName}</strong> для {className} должен быть сдан {dueDate}.</p><p>К {count} урокам пока ничего не прикреплено. {coachName} проверит план после того, как вы его отправите.</p>",
+        "cta": "Открыть план юнита",
+        "footer": "Это напоминание приходит за {days} дней до срока сдачи плана. Изменить это можно в разделе «Настройки»."
+      },
+      "th": {
+        "subject": "แผนการสอน {unitName} ครบกำหนดวันที่ {dueDate}",
+        "body": "<h1>บทเรียน {count} บทยังต้องการแผนการสอน</h1><p>แผนการสอนของคุณสำหรับ <strong>{unitName}</strong> ใน {className} ครบกำหนดวันที่ {dueDate}</p><p>บทเรียน {count} บทยังไม่มีเอกสารแนบ {coachName} จะตรวจสอบแผนการสอนหลังจากที่คุณส่งแล้ว</p>",
+        "cta": "เปิดแผนการสอนของหน่วยเรียน",
+        "footer": "คุณจะได้รับการแจ้งเตือนนี้ล่วงหน้า {days} วันก่อนแผนการสอนครบกำหนด สามารถเปลี่ยนแปลงได้ที่เมนูการตั้งค่า"
+      },
+      "zh-Hans": {
+        "subject": "{unitName} 计划将于 {dueDate} 到期",
+        "body": "<h1>{count} 节课需要制定计划</h1><p>您在 {className} 中 <strong>{unitName}</strong> 的计划将于 {dueDate} 到期。</p><p>{count} 节课目前还没有附加任何内容。提交后,{coachName} 将审阅该计划。</p>",
+        "cta": "打开单元计划",
+        "footer": "系统会在计划到期前 {days} 天发送此提醒。您可以在“设置”中更改此设置。"
+      }
+    }
+  },
+  {
+    "id": "visitation_scheduled",
+    "name": "Visitation scheduled",
+    "channel": "email",
+    "category": "coach",
+    "target": "messages/email",
+    "owner": {
+      "kind": "web",
+      "app": "school"
+    },
+    "createdBy": "hurry kang",
+    "createdAt": "2026-04-22T06:48:00.000Z",
+    "source": {
+      "subject": "Visitation at {campusName} on {date}",
+      "body": "<h1>Visitation confirmed</h1><p>Your visitation of <strong>{className}</strong> is confirmed for {date} at {time}, at {campusName}.</p><p>{teacherName} has been notified. The unit plan and the last two feedback notes are attached to the visit in the app.</p>",
+      "cta": "See the visit",
+      "footer": "To move or cancel this visit, open it in {appName}."
+    },
+    "translations": {
+      "vi": {
+        "subject": "Dự giờ tại {campusName} ngày {date}",
+        "body": "<h1>Đã xác nhận lịch dự giờ</h1><p>Buổi dự giờ lớp <strong>{className}</strong> đã được xác nhận vào {date} lúc {time}, tại {campusName}.</p><p>{teacherName} đã được thông báo. Kế hoạch bài học và hai nhận xét gần nhất được đính kèm trong ứng dụng.",
+        "cta": "Xem buổi dự giờ",
+        "footer": "Để đổi hoặc hủy buổi dự giờ, hãy mở buổi đó trong {appName}."
+      },
+      "ar-SA": {
+        "subject": "زيارة في {campusName} بتاريخ {date}",
+        "body": "<h1>تم تأكيد الزيارة</h1><p>تم تأكيد زيارتك لـ <strong>{className}</strong> بتاريخ {date} الساعة {time}، في {campusName}.</p><p>تم إشعار {teacherName}. خطة الوحدة وآخر ملاحظتَي تقييم مرفقتان بالزيارة في التطبيق.</p>",
+        "cta": "عرض الزيارة",
+        "footer": "لتأجيل هذه الزيارة أو إلغائها، افتحها في {appName}."
+      },
+      "es": {
+        "subject": "Visita en {campusName} el {date}",
+        "body": "<h1>Visita confirmada</h1><p>Su visita a <strong>{className}</strong> está confirmada para el {date} a las {time}, en {campusName}.</p><p>Se ha notificado a {teacherName}. El plan de unidad y las últimas dos notas de retroalimentación están adjuntas a la visita en la aplicación.</p>",
+        "cta": "Ver la visita",
+        "footer": "Para reprogramar o cancelar esta visita, ábrala en {appName}."
+      },
+      "ja": {
+        "subject": "{date}に{campusName}で視察",
+        "body": "<h1>視察が確定しました</h1><p><strong>{className}</strong>の視察は、{campusName}にて{date}の{time}で確定しました。</p><p>{teacherName}には通知済みです。ユニットプランと直近2件のフィードバックノートが、アプリ内の視察に添付されています。</p>",
+        "cta": "視察を確認する",
+        "footer": "この視察を変更またはキャンセルするには、{appName}で開いてください。"
+      },
+      "km": {
+        "subject": "ទស្សនកិច្ចនៅ {campusName} នាថ្ងៃទី {date}",
+        "body": "<h1>ទស្សនកិច្ចត្រូវបានបញ្ជាក់</h1><p>ទស្សនកិច្ចរបស់អ្នកសម្រាប់ <strong>{className}</strong> ត្រូវបានបញ្ជាក់សម្រាប់ថ្ងៃទី {date} ម៉ោង {time} នៅ {campusName}។</p><p>{teacherName} ត្រូវបានជូនដំណឹងរួចហើយ។ ផែនការមេរៀន និងកំណត់ចំណាំមតិកែលម្អចុងក្រោយពីរ ត្រូវបានភ្ជាប់ជាមួយទស្សនកិច្ចនេះនៅក្នុងកម្មវិធី។</p>",
+        "cta": "មើលទស្សនកិច្ច",
+        "footer": "ដើម្បីផ្លាស់ប្តូរម៉ោង ឬលុបចោលទស្សនកិច្ចនេះ សូមបើកវានៅក្នុង {appName}។"
+      },
+      "ko": {
+        "subject": "{date} {campusName} 방문 일정",
+        "body": "<h1>방문이 확정되었습니다</h1><p><strong>{className}</strong> 방문이 {campusName}에서 {date} {time}으로 확정되었습니다.</p><p>{teacherName}님에게 알림이 전송되었습니다. 유닛 계획과 최근 피드백 노트 2건이 앱의 방문 항목에 첨부되어 있습니다.</p>",
+        "cta": "방문 보기",
+        "footer": "이 방문 일정을 변경하거나 취소하려면 {appName}에서 여세요."
+      },
+      "mn": {
+        "subject": "{date}-нд {campusName}-д айлчлал",
+        "body": "<h1>Айлчлал баталгаажлаа</h1><p><strong>{className}</strong>-д хийх айлчлал {campusName}-д {date} өдрийн {time} цагт болохоор баталгаажлаа.</p><p>{teacherName}-д мэдэгдсэн байна. Хичээлийн төлөвлөгөө болон сүүлийн хоёр санал хүсэлтийн тэмдэглэл аппликейшн доторх айлчлалд хавсаргагдсан байна.</p>",
+        "cta": "Айлчлалыг харах",
+        "footer": "Энэ айлчлалыг шилжүүлэх эсвэл цуцлахын тулд {appName} дээр нээнэ үү."
+      },
+      "ms": {
+        "subject": "Lawatan di {campusName} pada {date}",
+        "body": "<h1>Lawatan disahkan</h1><p>Lawatan anda ke <strong>{className}</strong> telah disahkan pada {date} jam {time}, di {campusName}.</p><p>{teacherName} telah dimaklumkan. Rancangan unit dan dua nota maklum balas terkini dilampirkan pada lawatan ini dalam aplikasi.</p>",
+        "cta": "Lihat lawatan",
+        "footer": "Untuk menukar tarikh atau membatalkan lawatan ini, buka dalam {appName}."
+      },
+      "my": {
+        "subject": "{date} တွင် {campusName} ၌ ကြည့်ရှုစစ်ဆေးမှု",
+        "body": "<h1>ကြည့်ရှုစစ်ဆေးမှု အတည်ပြုပြီး</h1><p><strong>{className}</strong> အတွက် သင့်ကြည့်ရှုစစ်ဆေးမှုကို {campusName} ၌ {date} ရက်၊ {time} အချိန်တွင် အတည်ပြုထားပါသည်။</p><p>{teacherName} အား အကြောင်းကြားထားပါပြီ။ ယူနစ်စီမံချက်နှင့် နောက်ဆုံးအကြံပြုချက် မှတ်စုနှစ်ခုကို အက်ပ်ရှိ ဤကြည့်ရှုစစ်ဆေးမှုတွင် ပူးတွဲထားပါသည်။</p>",
+        "cta": "ကြည့်ရှုစစ်ဆေးမှု ကြည့်ရန်",
+        "footer": "ဤကြည့်ရှုစစ်ဆေးမှုကို ရွှေ့ရန် သို့မဟုတ် ပယ်ဖျက်ရန် {appName} တွင် ဖွင့်ပါ။"
+      },
+      "ru": {
+        "subject": "Визит в {campusName} {date}",
+        "body": "<h1>Визит подтверждён</h1><p>Ваш визит в класс <strong>{className}</strong> подтверждён на {date} в {time}, в {campusName}.</p><p>{teacherName} уже уведомлён(а). План юнита и последние два отзыва прикреплены к визиту в приложении.</p>",
+        "cta": "Посмотреть визит",
+        "footer": "Чтобы перенести или отменить этот визит, откройте его в {appName}."
+      },
+      "th": {
+        "subject": "การเยี่ยมชมที่ {campusName} วันที่ {date}",
+        "body": "<h1>ยืนยันการเยี่ยมชมแล้ว</h1><p>การเยี่ยมชม <strong>{className}</strong> ของคุณได้รับการยืนยันสำหรับวันที่ {date} เวลา {time} ที่ {campusName}</p><p>{teacherName} ได้รับแจ้งแล้ว แผนการสอนและบันทึกข้อเสนอแนะสองรายการล่าสุดถูกแนบไว้กับการเยี่ยมชมในแอป</p>",
+        "cta": "ดูการเยี่ยมชม",
+        "footer": "หากต้องการเลื่อนหรือยกเลิกการเยี่ยมชมนี้ ให้เปิดดูใน {appName}"
+      },
+      "zh-Hans": {
+        "subject": "{date} 在 {campusName} 的访校安排",
+        "body": "<h1>访校已确认</h1><p>您对 <strong>{className}</strong> 的访校已确认,时间为 {date} {time},地点为 {campusName}。</p><p>已通知 {teacherName}。单元计划和最近两次的反馈记录已附加在应用中的此次访校信息中。</p>",
+        "cta": "查看访校详情",
+        "footer": "如需更改或取消此次访校,请在 {appName} 中打开。"
+      }
+    }
+  },
+  {
+    "id": "training_enrolled",
+    "name": "Training enrolment confirmed",
+    "channel": "email",
+    "category": "teacher",
+    "target": "messages/email",
+    "owner": {
+      "kind": "web",
+      "app": "training"
+    },
+    "createdBy": "Sarah Klein",
+    "createdAt": "2026-05-04T09:30:00.000Z",
+    "source": {
+      "subject": "You are enrolled: {unitName} training",
+      "body": "<h1>See you on {date}</h1><p>You are enrolled in <strong>{unitName}</strong> training, starting {date} at {time}.</p><p>The pre-work takes about 40 minutes and has to be finished before the first session. Everything you need is in the course page.</p>",
+      "cta": "Open the course",
+      "footer": "Cannot make it? Withdraw from the course page at least {days} days before it starts."
+    },
+    "translations": {
+      "ar-SA": {
+        "subject": "تم تسجيلك: تدريب {unitName}",
+        "body": "<h1>نراك بتاريخ {date}</h1><p>تم تسجيلك في تدريب <strong>{unitName}</strong>، ويبدأ بتاريخ {date} الساعة {time}.</p><p>يستغرق العمل التحضيري نحو 40 دقيقة ويجب إنهاؤه قبل الجلسة الأولى. كل ما تحتاجه موجود في صفحة الدورة.</p>",
+        "cta": "فتح الدورة",
+        "footer": "لا يمكنك الحضور؟ انسحب من صفحة الدورة قبل بدئها بـ {days} أيام على الأقل."
+      },
+      "es": {
+        "subject": "Está inscrito en la capacitación de {unitName}",
+        "body": "<h1>Nos vemos el {date}</h1><p>Está inscrito en la capacitación de <strong>{unitName}</strong>, que comienza el {date} a las {time}.</p><p>El trabajo previo toma unos 40 minutos y debe completarse antes de la primera sesión. Todo lo que necesita está en la página del curso.</p>",
+        "cta": "Abrir el curso",
+        "footer": "¿No puede asistir? Retírese desde la página del curso al menos {days} días antes de que comience."
+      },
+      "ja": {
+        "subject": "登録完了: {unitName}トレーニング",
+        "body": "<h1>{date}にお会いしましょう</h1><p><strong>{unitName}</strong>トレーニングに登録されました。{date}の{time}に開始します。</p><p>事前学習には約40分かかり、初回セッションの前に完了する必要があります。必要なものはすべてコースページにあります。</p>",
+        "cta": "コースを開く",
+        "footer": "参加できませんか?開始の少なくとも{days}日前までに、コースページから取り消してください。"
+      },
+      "km": {
+        "subject": "អ្នកបានចុះឈ្មោះចូលរួម៖ វគ្គបណ្តុះបណ្តាល {unitName}",
+        "body": "<h1>ជួបគ្នានៅថ្ងៃទី {date}</h1><p>អ្នកបានចុះឈ្មោះចូលរួមវគ្គបណ្តុះបណ្តាល <strong>{unitName}</strong> ដែលចាប់ផ្តើមថ្ងៃទី {date} ម៉ោង {time}។</p><p>កិច្ចការត្រៀមមុនចំណាយពេលប្រហែល 40 នាទី ហើយត្រូវតែបញ្ចប់មុនវគ្គដំបូង។ អ្វីៗគ្រប់យ៉ាងដែលអ្នកត្រូវការមាននៅលើទំព័រវគ្គសិក្សា។</p>",
+        "cta": "បើកវគ្គសិក្សា",
+        "footer": "មិនអាចចូលរួមបានទេឬ? សូមដកខ្លួនចេញពីទំព័រវគ្គសិក្សា យ៉ាងតិច {days} ថ្ងៃមុនពេលវាចាប់ផ្តើម។"
+      },
+      "ko": {
+        "subject": "등록 완료: {unitName} 교육",
+        "body": "<h1>{date}에 뵙겠습니다</h1><p><strong>{unitName}</strong> 교육에 등록되었으며, {date} {time}에 시작합니다.</p><p>사전 과제는 약 40분이 소요되며 첫 세션 전에 완료해야 합니다. 필요한 모든 자료는 코스 페이지에 있습니다.</p>",
+        "cta": "코스 열기",
+        "footer": "참석이 어려우신가요? 시작 최소 {days}일 전에 코스 페이지에서 취소해 주세요."
+      },
+      "mn": {
+        "subject": "Та бүртгүүлсэн: {unitName} сургалт",
+        "body": "<h1>{date}-нд уулзацгаая</h1><p>Та <strong>{unitName}</strong> сургалтад бүртгүүлсэн бөгөөд энэ нь {date} өдрийн {time} цагт эхэлнэ.</p><p>Урьдчилсан даалгавар нь ойролцоогоор 40 минут үргэлжлэх бөгөөд эхний хичээлээс өмнө дуусгасан байх ёстой. Танд хэрэгтэй бүх зүйл сургалтын хуудсанд байгаа.</p>",
+        "cta": "Сургалтыг нээх",
+        "footer": "Ирж чадахгүй байна уу? Сургалт эхлэхээс дор хаяж {days} хоногийн өмнө сургалтын хуудаснаас гарна уу."
+      },
+      "ms": {
+        "subject": "Anda telah didaftarkan: latihan {unitName}",
+        "body": "<h1>Jumpa anda pada {date}</h1><p>Anda telah didaftarkan dalam latihan <strong>{unitName}</strong>, bermula {date} jam {time}.</p><p>Kerja persediaan mengambil masa kira-kira 40 minit dan mesti diselesaikan sebelum sesi pertama. Semua yang anda perlukan ada di halaman kursus.</p>",
+        "cta": "Buka kursus",
+        "footer": "Tidak dapat hadir? Tarik diri melalui halaman kursus sekurang-kurangnya {days} hari sebelum ia bermula."
+      },
+      "my": {
+        "subject": "သင် စာရင်းသွင်းပြီးပါပြီ - {unitName} သင်တန်း",
+        "body": "<h1>{date} တွင် တွေ့ဆုံပါမည်</h1><p>သင်သည် <strong>{unitName}</strong> သင်တန်းတွင် စာရင်းသွင်းထားပြီး {date} ရက်၊ {time} အချိန်တွင် စတင်ပါမည်။</p><p>ကြိုတင်လုပ်ငန်းသည် ခန့်မှန်းခြေ ၄၀ မိနစ် ကြာမြင့်ပြီး ပထမအကြိမ် သင်တန်းမတိုင်မီ ပြီးမြောက်အောင် လုပ်ဆောင်ရပါမည်။ သင်လိုအပ်သမျှအားလုံးကို သင်တန်းစာမျက်နှာတွင် တွေ့ရှိနိုင်ပါသည်။</p>",
+        "cta": "သင်တန်း ဖွင့်ရန်",
+        "footer": "မတက်ရောက်နိုင်ဘူးလား။ သင်တန်းစတင်ရက်မတိုင်မီ အနည်းဆုံး {days} ရက်အလိုတွင် သင်တန်းစာမျက်နှာမှ နုတ်ထွက်ပါ။"
+      },
+      "ru": {
+        "subject": "Вы записаны на обучение: {unitName}",
+        "body": "<h1>Увидимся {date}</h1><p>Вы записаны на обучение <strong>{unitName}</strong>, которое начинается {date} в {time}.</p><p>Подготовительное задание занимает около 40 минут, и его нужно выполнить до первой сессии. Всё необходимое есть на странице курса.</p>",
+        "cta": "Открыть курс",
+        "footer": "Не можете прийти? Отмените запись на странице курса не позднее чем за {days} дней до начала."
+      },
+      "th": {
+        "subject": "คุณได้ลงทะเบียนแล้ว: การอบรม {unitName}",
+        "body": "<h1>พบกันวันที่ {date}</h1><p>คุณได้ลงทะเบียนอบรม <strong>{unitName}</strong> ซึ่งจะเริ่มวันที่ {date} เวลา {time}</p><p>งานเตรียมความพร้อมใช้เวลาประมาณ 40 นาที และต้องทำให้เสร็จก่อนเซสชันแรก ทุกสิ่งที่คุณต้องการอยู่ในหน้าหลักสูตร</p>",
+        "cta": "เปิดหลักสูตร",
+        "footer": "มาไม่ได้ใช่ไหม? ถอนตัวได้จากหน้าหลักสูตรอย่างน้อย {days} วันก่อนเริ่มการอบรม"
+      },
+      "vi": {
+        "subject": "Bạn đã đăng ký: khóa đào tạo {unitName}",
+        "body": "<h1>Hẹn gặp bạn vào {date}</h1><p>Bạn đã đăng ký khóa đào tạo <strong>{unitName}</strong>, bắt đầu vào {date} lúc {time}.</p><p>Phần bài tập chuẩn bị mất khoảng 40 phút và phải hoàn thành trước buổi học đầu tiên. Mọi thứ bạn cần đều có trên trang khóa học.</p>",
+        "cta": "Mở khóa học",
+        "footer": "Không thể tham gia? Hãy rút khỏi khóa học trên trang khóa học ít nhất {days} ngày trước khi khóa học bắt đầu."
+      },
+      "zh-Hans": {
+        "subject": "您已报名:{unitName} 培训",
+        "body": "<h1>{date} 见</h1><p>您已报名参加 <strong>{unitName}</strong> 培训,将于 {date} {time} 开始。</p><p>课前准备大约需要 40 分钟,须在第一节课前完成。您需要的所有内容都在课程页面中。</p>",
+        "cta": "打开课程",
+        "footer": "无法参加?请在开课前至少 {days} 天在课程页面中退出。"
+      }
+    }
+  },
+  {
+    "id": "progress_report",
+    "name": "Monthly progress report",
+    "channel": "email",
+    "category": "parent",
+    "target": "messages/email",
+    "owner": {
+      "kind": "app",
+      "app": "parent"
+    },
+    "createdBy": "Irene Do",
+    "createdAt": "2026-05-18T04:02:00.000Z",
+    "source": {
+      "subject": "{studentName}'s month in {className}",
+      "body": "<h1>A good month, {parentName}</h1><p>{studentName} attended {count} lessons this month and finished <strong>{unitName}</strong>.</p><p>{teacherName} wrote: the new vocabulary is coming through in conversation, and reading aloud is getting steadier week by week.</p><p>The full report, with the songs and stories from this unit, is in the app.</p>",
+      "cta": "Read the report",
+      "footer": "Sent monthly by {schoolName}. Turn it off in the app under Settings."
+    },
+    "translations": {
+      "vi": {
+        "subject": "Một tháng của {studentName} ở lớp {className}",
+        "body": "<h1>Một tháng tốt, {parentName}</h1><p>{studentName} đã tham gia {count} tiết học trong tháng này và hoàn thành <strong>{unitName}</strong>.</p><p>{teacherName} nhận xét: từ vựng mới đã xuất hiện trong giao tiếp, và việc đọc to ngày càng vững hơn từng tuần.</p><p>Báo cáo đầy đủ, kèm các bài hát và câu chuyện của bài học này, có trong ứng dụng.</p>",
+        "cta": "Đọc báo cáo",
+        "footer": "Được gửi hằng tháng bởi {schoolName}. Bạn có thể tắt trong phần Cài đặt của ứng dụng."
+      },
+      "th": {
+        "subject": "หนึ่งเดือนของ {studentName} ในชั้น {className}",
+        "cta": "อ่านรายงาน",
+        "body": "<h1>เป็นเดือนที่ดี {parentName}</h1>",
+        "footer": "ส่งเป็นรายเดือนโดย {schoolName} ปิดได้ในแอปที่เมนูการตั้งค่า"
+      },
+      "ar-SA": {
+        "subject": "شهر {studentName} في {className}",
+        "body": "<h1>شهر جيد، {parentName}</h1><p>حضر {studentName} {count} دروس هذا الشهر وأنهى <strong>{unitName}</strong>.</p><p>كتب {teacherName}: بدأت المفردات الجديدة تظهر في المحادثة، وأصبحت القراءة الجهرية أكثر ثباتًا أسبوعًا بعد أسبوع.</p><p>التقرير الكامل، مع الأغاني والقصص من هذه الوحدة، موجود في التطبيق.</p>",
+        "cta": "قراءة التقرير",
+        "footer": "تُرسل شهريًا بواسطة {schoolName}. أوقفها من التطبيق ضمن الإعدادات."
+      },
+      "es": {
+        "subject": "El mes de {studentName} en {className}",
+        "body": "<h1>Un buen mes, {parentName}</h1><p>{studentName} asistió a {count} lecciones este mes y terminó <strong>{unitName}</strong>.</p><p>{teacherName} escribió: el nuevo vocabulario se nota en la conversación, y la lectura en voz alta mejora cada semana.</p><p>El informe completo, con las canciones e historias de esta unidad, está en la aplicación.</p>",
+        "cta": "Leer el informe",
+        "footer": "Enviado mensualmente por {schoolName}. Desactívelo en la aplicación, en Configuración."
+      },
+      "ja": {
+        "subject": "{className}での{studentName}さんの1か月",
+        "body": "<h1>{parentName}さん、良い1か月でした</h1><p>{studentName}さんは今月{count}回のレッスンに出席し、<strong>{unitName}</strong>を修了しました。</p><p>{teacherName}より: 新しい語彙が会話に表れるようになり、音読も週を追うごとに安定してきています。</p><p>このユニットの歌や物語を含む全レポートは、アプリでご覧いただけます。</p>",
+        "cta": "レポートを読む",
+        "footer": "{schoolName}より毎月送信されます。アプリの設定でオフにできます。"
+      },
+      "km": {
+        "subject": "ខែរបស់ {studentName} នៅក្នុង {className}",
+        "body": "<h1>ខែដ៏ល្អមួយ {parentName}</h1><p>{studentName} បានចូលរួមមេរៀនចំនួន {count} ក្នុងខែនេះ ហើយបានបញ្ចប់ <strong>{unitName}</strong>។</p><p>{teacherName} បានសរសេរថា៖ វាក្យសព្ទថ្មីៗកំពុងលេចធ្លោនៅក្នុងការសន្ទនា ហើយការអានឮៗកំពុងមានស្ថេរភាពជាងមុនរាល់សប្តាហ៍។</p><p>របាយការណ៍ពេញលេញ ជាមួយបទចម្រៀង និងរឿងនិទានពីឯកតានេះ មាននៅក្នុងកម្មវិធី។</p>",
+        "cta": "អានរបាយការណ៍",
+        "footer": "ផ្ញើជារៀងរាល់ខែដោយ {schoolName}។ អ្នកអាចបិទវានៅក្នុងកម្មវិធី ក្រោមផ្នែកការកំណត់។"
+      },
+      "ko": {
+        "subject": "{className}에서의 {studentName}님의 한 달",
+        "body": "<h1>좋은 한 달이었습니다, {parentName}님</h1><p>{studentName}님은 이번 달 {count}회 수업에 참석했고 <strong>{unitName}</strong>을(를) 마쳤습니다.</p><p>{teacherName}님의 메모: 새로 배운 단어가 대화에서 자연스럽게 나오고 있고, 소리 내어 읽기도 주마다 점점 안정되고 있습니다.</p><p>이 유닛의 노래와 이야기가 담긴 전체 리포트는 앱에서 확인할 수 있습니다.</p>",
+        "cta": "리포트 보기",
+        "footer": "{schoolName}에서 매달 발송합니다. 앱의 설정에서 끌 수 있습니다."
+      },
+      "mn": {
+        "subject": "{studentName}-ийн {className}-д өнгөрүүлсэн сар",
+        "body": "<h1>Сайхан сар өнгөрлөө, {parentName}</h1><p>{studentName} энэ сард {count} хичээлд оролцож, <strong>{unitName}</strong>-г дуусгалаа.</p><p>{teacherName} бичсэн нь: шинэ үг хэллэг ярианд илэрч эхэлж байна, чангаар унших нь долоо хоног бүр илүү тогтвортой болж байна.</p><p>Энэ нэгжийн дуу, түүхийг багтаасан бүрэн тайланг аппликейшнээс харна уу.</p>",
+        "cta": "Тайланг унших",
+        "footer": "{schoolName}-с сар бүр илгээнэ. Аппликейшны Тохиргоо хэсгээс унтраах боломжтой."
+      },
+      "ms": {
+        "subject": "Bulan {studentName} dalam {className}",
+        "body": "<h1>Bulan yang baik, {parentName}</h1><p>{studentName} menghadiri {count} pelajaran bulan ini dan telah menamatkan <strong>{unitName}</strong>.</p><p>{teacherName} menulis: kosa kata baharu semakin kelihatan dalam perbualan, dan bacaan kuat semakin stabil dari minggu ke minggu.</p><p>Laporan penuh, berserta lagu dan cerita daripada unit ini, terdapat dalam aplikasi.</p>",
+        "cta": "Baca laporan",
+        "footer": "Dihantar setiap bulan oleh {schoolName}. Matikan ciri ini dalam aplikasi di bawah Tetapan."
+      },
+      "my": {
+        "subject": "{className} ရှိ {studentName} ၏ လအတွင်း တိုးတက်မှု",
+        "body": "<h1>ကောင်းမွန်သော လတစ်လ၊ {parentName}</h1><p>{studentName} သည် ဤလအတွင်း သင်ခန်းစာ {count} ခုသို့ တက်ရောက်ပြီး <strong>{unitName}</strong> ကို ပြီးမြောက်အောင် လုပ်ဆောင်ပါသည်။</p><p>{teacherName} က ရေးသားထားသည်မှာ - စကားဝေါဟာရသစ်များကို စကားပြောဆိုမှုတွင် အသုံးပြုလာနိုင်ပြီး အသံထွက်ဖတ်ရွတ်မှုသည် အပတ်စဉ် ပိုမိုတည်ငြိမ်လာသည်။</p><p>ဤယူနစ်မှ သီချင်းများနှင့် ပုံပြင်များပါဝင်သော အစီရင်ခံစာအပြည့်အစုံကို အက်ပ်တွင် ကြည့်ရှုနိုင်ပါသည်။</p>",
+        "cta": "အစီရင်ခံစာ ဖတ်ရန်",
+        "footer": "{schoolName} မှ လစဉ် ပို့ပါသည်။ အက်ပ်ရှိ ဆက်တင်များတွင် ပိတ်နိုင်ပါသည်။"
+      },
+      "ru": {
+        "subject": "Месяц {studentName} в {className}",
+        "body": "<h1>Хороший месяц, {parentName}</h1><p>{studentName} посетил(а) {count} уроков в этом месяце и завершил(а) <strong>{unitName}</strong>.</p><p>{teacherName} написал(а): новая лексика уже проявляется в речи, а чтение вслух с каждой неделей становится увереннее.</p><p>Полный отчёт с песнями и историями из этого юнита доступен в приложении.</p>",
+        "cta": "Читать отчёт",
+        "footer": "Отправляется ежемесячно от {schoolName}. Отключить можно в приложении в разделе «Настройки»."
+      },
+      "zh-Hans": {
+        "subject": "{studentName} 在 {className} 的本月学习情况",
+        "body": "<h1>充实的一个月,{parentName}</h1><p>{studentName} 本月上了 {count} 节课,并完成了 <strong>{unitName}</strong>。</p><p>{teacherName} 写道:新学的词汇已经开始出现在日常对话中,朗读也一周比一周稳定。</p><p>完整报告以及本单元的歌曲和故事都在应用中。</p>",
+        "cta": "查看报告",
+        "footer": "由 {schoolName} 每月发送。您可以在应用的“设置”中关闭。"
+      }
+    }
+  },
+  {
+    "id": "license_expiring",
+    "name": "License expiring",
+    "channel": "email",
+    "category": "admin",
+    "target": "messages/email",
+    "owner": {
+      "kind": "web",
+      "app": "school"
+    },
+    "createdBy": "hurry kang",
+    "createdAt": "2026-06-09T08:14:00.000Z",
+    "source": {
+      "subject": "{schoolName} licenses expire in {days} days",
+      "body": "<h1>Renew before {dueDate}</h1><p>{count} of the licenses at <strong>{schoolName}</strong> expire on {dueDate}.</p><p>After that date those teachers keep their accounts but cannot open unit plans or lesson media. Renewing takes a minute and nothing is lost in between.</p>",
+      "cta": "Review licenses",
+      "footer": "This notice goes to every administrator at {schoolName}."
+    },
+    "translations": {
+      "ar-SA": {
+        "subject": "تراخيص {schoolName} تنتهي خلال {days} أيام",
+        "body": "<h1>جدد قبل {dueDate}</h1><p>{count} من التراخيص في <strong>{schoolName}</strong> تنتهي بتاريخ {dueDate}.</p><p>بعد هذا التاريخ، يحتفظ هؤلاء المعلمون بحساباتهم لكن لا يمكنهم فتح خطط الوحدات أو وسائط الدروس. يستغرق التجديد دقيقة واحدة ولا يُفقد شيء في الأثناء.</p>",
+        "cta": "مراجعة التراخيص",
+        "footer": "يُرسل هذا الإشعار إلى كل مسؤول في {schoolName}."
+      },
+      "es": {
+        "subject": "Las licencias de {schoolName} vencen en {days} días",
+        "body": "<h1>Renueve antes del {dueDate}</h1><p>{count} de las licencias en <strong>{schoolName}</strong> vencen el {dueDate}.</p><p>Después de esa fecha, esos docentes conservarán sus cuentas, pero no podrán abrir planes de unidad ni contenido multimedia de las lecciones. Renovar toma un minuto y no se pierde nada en el proceso.</p>",
+        "cta": "Revisar licencias",
+        "footer": "Este aviso se envía a todos los administradores de {schoolName}."
+      },
+      "ja": {
+        "subject": "{schoolName}のライセンスは{days}日後に期限切れになります",
+        "body": "<h1>{dueDate}までに更新してください</h1><p><strong>{schoolName}</strong>の{count}件のライセンスが{dueDate}に期限切れになります。</p><p>この日以降、対象の教師はアカウントを維持できますが、ユニットプランやレッスン素材を開くことはできません。更新は1分ほどで完了し、その間にデータが失われることはありません。</p>",
+        "cta": "ライセンスを確認する",
+        "footer": "この通知は{schoolName}のすべての管理者に送信されます。"
+      },
+      "km": {
+        "subject": "អាជ្ញាប័ណ្ណរបស់ {schoolName} នឹងផុតកំណត់ក្នុងរយៈពេល {days} ថ្ងៃ",
+        "body": "<h1>សូមបន្តអាជ្ញាប័ណ្ណមុនថ្ងៃទី {dueDate}</h1><p>អាជ្ញាប័ណ្ណចំនួន {count} នៅ <strong>{schoolName}</strong> នឹងផុតកំណត់នៅថ្ងៃទី {dueDate}។</p><p>បន្ទាប់ពីថ្ងៃនោះ គ្រូបង្រៀនទាំងនោះនៅតែរក្សាគណនីរបស់ពួកគេ ប៉ុន្តែមិនអាចបើកផែនការមេរៀន ឬមេឌៀមេរៀនបានទេ។ ការបន្តអាជ្ញាប័ណ្ណប្រើពេលត្រឹមតែមួយនាទី ហើយគ្មានអ្វីបាត់បង់ក្នុងអំឡុងពេលនោះឡើយ។</p>",
+        "cta": "ពិនិត្យអាជ្ញាប័ណ្ណ",
+        "footer": "សេចក្តីជូនដំណឹងនេះផ្ញើទៅកាន់អ្នកគ្រប់គ្រងគ្រប់រូបនៅ {schoolName}។"
+      },
+      "ko": {
+        "subject": "{schoolName} 라이선스가 {days}일 후 만료됩니다",
+        "body": "<h1>{dueDate} 이전에 갱신하세요</h1><p><strong>{schoolName}</strong>의 라이선스 {count}건이 {dueDate}에 만료됩니다.</p><p>해당 날짜 이후에도 교사 계정은 유지되지만 유닛 계획이나 수업 자료는 열 수 없습니다. 갱신은 1분이면 끝나며 그 사이에 아무것도 손실되지 않습니다.</p>",
+        "cta": "라이선스 확인",
+        "footer": "이 안내는 {schoolName}의 모든 관리자에게 발송됩니다."
+      },
+      "mn": {
+        "subject": "{schoolName}-ийн лиценз {days} хоногийн дараа дуусна",
+        "body": "<h1>{dueDate}-ээс өмнө сэргээнэ үү</h1><p><strong>{schoolName}</strong>-ийн {count} лиценз {dueDate}-нд дуусна.</p><p>Энэ огнооноос хойш тухайн багш нар бүртгэлээ хадгалах боловч хичээлийн төлөвлөгөө, хичээлийн медиаг нээх боломжгүй болно. Сэргээхэд ердөө нэг минут зарцуулагдах бөгөөд энэ хугацаанд юу ч алдагдахгүй.</p>",
+        "cta": "Лицензүүдийг харах",
+        "footer": "Энэ мэдэгдэл {schoolName}-ийн бүх админд илгээгдэнэ."
+      },
+      "ms": {
+        "subject": "Lesen {schoolName} akan luput dalam {days} hari",
+        "body": "<h1>Perbaharui sebelum {dueDate}</h1><p>{count} daripada lesen di <strong>{schoolName}</strong> akan luput pada {dueDate}.</p><p>Selepas tarikh tersebut, guru-guru berkenaan kekal mempunyai akaun mereka tetapi tidak dapat membuka rancangan unit atau media pelajaran. Pembaharuan hanya mengambil masa seminit dan tiada apa-apa yang hilang dalam tempoh itu.</p>",
+        "cta": "Semak lesen",
+        "footer": "Notis ini dihantar kepada setiap pentadbir di {schoolName}."
+      },
+      "my": {
+        "subject": "{schoolName} ၏ လိုင်စင်များသည် {days} ရက်အတွင်း သက်တမ်းကုန်ဆုံးပါမည်",
+        "body": "<h1>{dueDate} မတိုင်မီ သက်တမ်းတိုးပါ</h1><p><strong>{schoolName}</strong> ရှိ လိုင်စင် {count} ခုသည် {dueDate} တွင် သက်တမ်းကုန်ဆုံးပါမည်။</p><p>ထိုရက်ကျော်လွန်ပါက ထိုဆရာ/ဆရာမများသည် အကောင့်များကို ဆက်လက်ထားရှိနိုင်သော်လည်း ယူနစ်စီမံချက်များ သို့မဟုတ် သင်ခန်းစာမီဒီယာများကို ဖွင့်၍မရတော့ပါ။ သက်တမ်းတိုးခြင်းသည် တစ်မိနစ်သာ ကြာပြီး ကြားကာလတွင် မည်သည့်အရာမျှ ပျောက်ဆုံးမည် မဟုတ်ပါ။</p>",
+        "cta": "လိုင်စင်များ စစ်ဆေးရန်",
+        "footer": "ဤအကြောင်းကြားချက်ကို {schoolName} ရှိ အုပ်ချုပ်ရေးမှူး အားလုံးထံ ပို့ပါသည်။"
+      },
+      "ru": {
+        "subject": "Лицензии {schoolName} истекают через {days} дней",
+        "body": "<h1>Продлите до {dueDate}</h1><p>{count} лицензий в <strong>{schoolName}</strong> истекают {dueDate}.</p><p>После этой даты у соответствующих учителей аккаунты сохранятся, но они не смогут открывать планы юнитов или материалы уроков. Продление занимает одну минуту, и ничего не будет потеряно.</p>",
+        "cta": "Просмотреть лицензии",
+        "footer": "Это уведомление отправляется всем администраторам {schoolName}."
+      },
+      "th": {
+        "subject": "ใบอนุญาตของ {schoolName} จะหมดอายุใน {days} วัน",
+        "body": "<h1>ต่ออายุก่อนวันที่ {dueDate}</h1><p>ใบอนุญาต {count} รายการที่ <strong>{schoolName}</strong> จะหมดอายุในวันที่ {dueDate}</p><p>หลังจากวันดังกล่าว ครูเหล่านั้นจะยังคงมีบัญชีอยู่ แต่จะไม่สามารถเปิดแผนการสอนหรือสื่อการสอนได้ การต่ออายุใช้เวลาเพียงไม่กี่นาทีและจะไม่มีข้อมูลใดสูญหายระหว่างนั้น</p>",
+        "cta": "ตรวจสอบใบอนุญาต",
+        "footer": "การแจ้งเตือนนี้ส่งถึงผู้ดูแลระบบทุกคนที่ {schoolName}"
+      },
+      "vi": {
+        "subject": "Giấy phép của {schoolName} sẽ hết hạn sau {days} ngày",
+        "body": "<h1>Gia hạn trước {dueDate}</h1><p>{count} giấy phép tại <strong>{schoolName}</strong> sẽ hết hạn vào {dueDate}.</p><p>Sau ngày đó, các giáo viên vẫn giữ được tài khoản nhưng không thể mở kế hoạch bài học hoặc tài liệu bài giảng. Việc gia hạn chỉ mất một phút và không có gì bị mất trong thời gian đó.</p>",
+        "cta": "Xem lại giấy phép",
+        "footer": "Thông báo này được gửi đến tất cả quản trị viên tại {schoolName}."
+      },
+      "zh-Hans": {
+        "subject": "{schoolName} 的许可证将在 {days} 天后过期",
+        "body": "<h1>请在 {dueDate} 前续订</h1><p><strong>{schoolName}</strong> 有 {count} 个许可证将于 {dueDate} 过期。</p><p>过期后,相关教师仍保留账户,但无法打开单元计划或课堂媒体资料。续订只需一分钟,期间不会丢失任何数据。</p>",
+        "cta": "查看许可证",
+        "footer": "此通知将发送给 {schoolName} 的所有管理员。"
+      }
+    }
+  },
+  {
+    "id": "sms_invite_parent",
+    "name": "Parent invite code",
+    "channel": "sms",
+    "category": "parent",
+    "target": "messages/sms",
+    "owner": {
+      "kind": "app",
+      "app": "parent"
+    },
+    "createdBy": "Irene Do",
+    "createdAt": "2026-03-02T07:20:00.000Z",
+    "source": {
+      "message": "{schoolName}: use code {code} in the {appName} app to follow {studentName}. {link}"
+    },
+    "translations": {
+      "vi": {
+        "message": "{schoolName}: dùng mã {code} trong ứng dụng {appName} để theo dõi {studentName}. {link}"
+      },
+      "ja": {
+        "message": "{schoolName}：{appName} アプリでコード {code} を入力して {studentName} を確認してください。{link}"
+      },
+      "ar-SA": {
+        "message": "{schoolName}: استخدم الرمز {code} في تطبيق {appName} لمتابعة {studentName}. {link}"
+      },
+      "es": {
+        "message": "{schoolName}: use el código {code} en la aplicación {appName} para seguir a {studentName}. {link}"
+      },
+      "km": {
+        "message": "{schoolName}៖ ប្រើលេខកូដ {code} នៅក្នុងកម្មវិធី {appName} ដើម្បីតាមដាន {studentName}។ {link}"
+      },
+      "ko": {
+        "message": "{schoolName}: {appName} 앱에서 코드 {code}를 입력하여 {studentName}님을 확인하세요. {link}"
+      },
+      "mn": {
+        "message": "{schoolName}: {studentName}-ийг дагахын тулд {appName} аппликейшнд {code} кодыг ашиглана уу. {link}"
+      },
+      "ms": {
+        "message": "{schoolName}: gunakan kod {code} dalam aplikasi {appName} untuk mengikuti {studentName}. {link}"
+      },
+      "my": {
+        "message": "{schoolName}: {studentName} ကို ကြည့်ရှုရန် {appName} အက်ပ်တွင် ကုဒ် {code} ကို အသုံးပြုပါ။ {link}"
+      },
+      "ru": {
+        "message": "{schoolName}: используйте код {code} в приложении {appName}, чтобы следить за {studentName}. {link}"
+      },
+      "th": {
+        "message": "{schoolName}: ใช้รหัส {code} ในแอป {appName} เพื่อติดตาม {studentName} {link}"
+      },
+      "zh-Hans": {
+        "message": "{schoolName}:在 {appName} 应用中使用代码 {code} 关注 {studentName}。{link}"
+      }
+    }
+  },
+  {
+    "id": "sms_invite_teacher",
+    "name": "Teacher invite code",
+    "channel": "sms",
+    "category": "teacher",
+    "target": "messages/sms",
+    "owner": {
+      "kind": "web",
+      "app": "school"
+    },
+    "createdBy": "Anna bel",
+    "createdAt": "2026-02-11T03:31:00.000Z",
+    "source": {
+      "message": "{coachName} invited you to teach {className}. Set up your account: {link} Code: {code}"
+    },
+    "translations": {
+      "vi": {
+        "message": "{coachName} đã mời bạn dạy lớp {className}. Thiết lập tài khoản: {link} Mã: {code}"
+      },
+      "ar-SA": {
+        "message": "دعاك {coachName} لتدريس {className}. أعدّ حسابك: {link} الرمز: {code}"
+      },
+      "es": {
+        "message": "{coachName} le invitó a enseñar {className}. Configure su cuenta: {link} Código: {code}"
+      },
+      "ja": {
+        "message": "{coachName}があなたを{className}の教師として招待しました。アカウント設定: {link} コード: {code}"
+      },
+      "km": {
+        "message": "{coachName} បានអញ្ជើញអ្នកឱ្យបង្រៀន {className}។ រៀបចំគណនីរបស់អ្នក៖ {link} លេខកូដ៖ {code}"
+      },
+      "ko": {
+        "message": "{coachName}님이 {className} 수업을 맡도록 초대했습니다. 계정 설정: {link} 코드: {code}"
+      },
+      "mn": {
+        "message": "{coachName} таныг {className}-г заахаар урьлаа. Бүртгэлээ тохируулах: {link} Код: {code}"
+      },
+      "ms": {
+        "message": "{coachName} menjemput anda untuk mengajar {className}. Sediakan akaun anda: {link} Kod: {code}"
+      },
+      "my": {
+        "message": "{coachName} က {className} ကို သင်ကြားရန် သင့်အား ဖိတ်ခေါ်ထားပါသည်။ အကောင့်သတ်မှတ်ရန်: {link} ကုဒ်: {code}"
+      },
+      "ru": {
+        "message": "{coachName} пригласил(а) вас преподавать {className}. Настройте аккаунт: {link} Код: {code}"
+      },
+      "th": {
+        "message": "{coachName} เชิญคุณให้สอน {className} ตั้งค่าบัญชีของคุณ: {link} รหัส: {code}"
+      },
+      "zh-Hans": {
+        "message": "{coachName} 邀请您教授 {className}。设置您的账户:{link} 代码:{code}"
+      }
+    }
+  },
+  {
+    "id": "sms_class_reminder",
+    "name": "Class reminder",
+    "channel": "sms",
+    "category": "parent",
+    "target": "messages/sms",
+    "owner": {
+      "kind": "app",
+      "app": "parent"
+    },
+    "createdBy": "kim jennie",
+    "createdAt": "2026-04-15T01:55:00.000Z",
+    "source": {
+      "message": "Reminder: {className} starts {time} tomorrow at {campusName}."
+    },
+    "translations": {
+      "vi": {
+        "message": "Nhắc bạn: lớp {className} bắt đầu lúc {time} ngày mai tại {campusName}."
+      },
+      "zh-Hans": {
+        "message": "提醒：{className} 明天 {time} 在 {campusName} 开始。"
+      },
+      "ar-SA": {
+        "message": "تذكير: يبدأ {className} الساعة {time} غدًا في {campusName}."
+      },
+      "es": {
+        "message": "Recordatorio: {className} comienza mañana a las {time} en {campusName}."
+      },
+      "ja": {
+        "message": "リマインダー: {className}は明日{time}に{campusName}で始まります。"
+      },
+      "km": {
+        "message": "ការរំលឹក៖ {className} ចាប់ផ្តើមម៉ោង {time} ថ្ងៃស្អែកនៅ {campusName}។"
+      },
+      "ko": {
+        "message": "알림: {className} 수업이 내일 {campusName}에서 {time}에 시작합니다."
+      },
+      "mn": {
+        "message": "Сануулга: {className} маргааш {campusName}-д {time} цагт эхэлнэ."
+      },
+      "ms": {
+        "message": "Peringatan: {className} bermula jam {time} esok di {campusName}."
+      },
+      "my": {
+        "message": "သတိပေးချက်: {className} သည် မနက်ဖြန် {time} တွင် {campusName} ၌ စတင်ပါမည်။"
+      },
+      "ru": {
+        "message": "Напоминание: {className} начинается завтра в {time} в {campusName}."
+      },
+      "th": {
+        "message": "แจ้งเตือน: {className} เริ่มเวลา {time} พรุ่งนี้ที่ {campusName}"
+      }
+    }
+  },
+  {
+    "id": "sms_absence_alert",
+    "name": "Absence alert",
+    "channel": "sms",
+    "category": "parent",
+    "target": "messages/sms",
+    "owner": {
+      "kind": "app",
+      "app": "parent"
+    },
+    "createdBy": "kim jennie",
+    "createdAt": "2026-04-15T02:03:00.000Z",
+    "source": {
+      "message": "{studentName} was marked absent from {className} today. Reply or open {appName} to tell {teacherName} why."
+    },
+    "translations": {
+      "ar-SA": {
+        "message": "تم تسجيل غياب {studentName} عن {className} اليوم. رد أو افتح {appName} لإخبار {teacherName} بالسبب."
+      },
+      "es": {
+        "message": "{studentName} fue marcado ausente en {className} hoy. Responda o abra {appName} para explicarle el motivo a {teacherName}."
+      },
+      "ja": {
+        "message": "{studentName}さんは本日{className}を欠席と記録されました。返信するか{appName}を開いて、理由を{teacherName}にお伝えください。"
+      },
+      "km": {
+        "message": "{studentName} ត្រូវបានកត់ត្រាថាអវត្តមានពី {className} ថ្ងៃនេះ។ សូមឆ្លើយតប ឬបើក {appName} ដើម្បីប្រាប់ {teacherName} ពីមូលហេតុ។"
+      },
+      "ko": {
+        "message": "{studentName}님이 오늘 {className} 수업에 결석 처리되었습니다. {teacherName}님에게 사유를 알리려면 답장하거나 {appName}을(를) 여세요."
+      },
+      "mn": {
+        "message": "{studentName} өнөөдөр {className}-с тасалсан гэж тэмдэглэгдлээ. Шалтгааныг {teacherName}-д хэлэхийн тулд хариулах эсвэл {appName}-г нээнэ үү."
+      },
+      "ms": {
+        "message": "{studentName} ditandakan tidak hadir dari {className} hari ini. Balas atau buka {appName} untuk memberitahu {teacherName} sebabnya."
+      },
+      "my": {
+        "message": "{studentName} ကို ယနေ့ {className} မှ ပျက်ကွက်သည်ဟု မှတ်သားထားပါသည်။ အကြောင်းရင်းကို {teacherName} အား ပြောပြရန် ပြန်စာပို့ပါ သို့မဟုတ် {appName} ကို ဖွင့်ပါ။"
+      },
+      "ru": {
+        "message": "{studentName} отсутствовал(а) на {className} сегодня. Ответьте на это сообщение или откройте {appName}, чтобы сообщить {teacherName} причину."
+      },
+      "th": {
+        "message": "{studentName} ถูกบันทึกว่าขาดเรียน {className} วันนี้ กรุณาตอบกลับหรือเปิด {appName} เพื่อแจ้ง {teacherName} ถึงสาเหตุ"
+      },
+      "vi": {
+        "message": "{studentName} đã được đánh dấu vắng mặt tại {className} hôm nay. Trả lời hoặc mở {appName} để cho {teacherName} biết lý do."
+      },
+      "zh-Hans": {
+        "message": "{studentName} 今天在 {className} 被标记为缺席。请回复或打开 {appName} 告知 {teacherName} 原因。"
+      }
+    }
+  },
+  {
+    "id": "sms_otp",
+    "name": "Login verification code",
+    "channel": "sms",
+    "category": "staff",
+    "target": "messages/sms",
+    "owner": {
+      "kind": "web",
+      "app": "school"
+    },
+    "createdBy": "Sarah Klein",
+    "createdAt": "2026-01-19T10:50:00.000Z",
+    "source": {
+      "message": "{code} is your {appName} verification code. It expires in 10 minutes. Do not share it."
+    },
+    "translations": {
+      "vi": {
+        "message": "{code} là mã xác minh {appName} của bạn. Mã hết hạn sau 10 phút. Không chia sẻ mã này với bất kỳ ai, kể cả nhân viên hỗ trợ."
+      },
+      "ar-SA": {
+        "message": "{code} هو رمز التحقق الخاص بك في {appName}. تنتهي صلاحيته خلال 10 دقائق. لا تشاركه مع أحد."
+      },
+      "es": {
+        "message": "{code} es su código de verificación de {appName}. Vence en 10 minutos. No lo comparta."
+      },
+      "ja": {
+        "message": "{code}はあなたの{appName}確認コードです。10分後に期限切れになります。他人と共有しないでください。"
+      },
+      "km": {
+        "message": "{code} គឺជាលេខកូដផ្ទៀងផ្ទាត់ {appName} របស់អ្នក។ វានឹងផុតកំណត់ក្នុងរយៈពេល 10 នាទី។ សូមកុំចែករំលែកវា។"
+      },
+      "ko": {
+        "message": "{code}는 {appName} 인증 코드입니다. 10분 후 만료됩니다. 타인과 공유하지 마세요."
+      },
+      "mn": {
+        "message": "{code} нь таны {appName} баталгаажуулах код юм. Энэ нь 10 минутын дараа хүчингүй болно. Хэн нэгэнд бүү мэдэгдээрэй."
+      },
+      "ms": {
+        "message": "{code} ialah kod pengesahan {appName} anda. Ia luput dalam 10 minit. Jangan kongsikannya."
+      },
+      "my": {
+        "message": "{code} သည် သင့် {appName} အတည်ပြုကုဒ် ဖြစ်ပါသည်။ ၁၀ မိနစ်အတွင်း သက်တမ်းကုန်ဆုံးပါမည်။ မျှဝေခြင်း မပြုပါနှင့်။"
+      },
+      "ru": {
+        "message": "{code} — ваш код подтверждения {appName}. Он действителен 10 минут. Никому его не сообщайте."
+      },
+      "th": {
+        "message": "{code} คือรหัสยืนยันตัวตน {appName} ของคุณ จะหมดอายุใน 10 นาที กรุณาอย่าเปิดเผยรหัสนี้"
+      },
+      "zh-Hans": {
+        "message": "{code} 是您的 {appName} 验证码,10 分钟后失效,请勿泄露给他人。"
+      }
+    }
+  },
+  {
+    "id": "push_new_unit",
+    "name": "New unit available",
+    "channel": "notification",
+    "category": "student",
+    "target": "messages/notification",
+    "owner": {
+      "kind": "app",
+      "app": "student"
+    },
+    "createdBy": "Irene Do",
+    "createdAt": "2026-03-11T05:40:00.000Z",
+    "source": {
+      "title": "{unitName} is open",
+      "body": "Your class has moved on. Tap to see the new songs and stories."
+    },
+    "translations": {
+      "vi": {
+        "title": "{unitName} đã mở",
+        "body": "Lớp của bạn đã sang bài mới. Nhấn để xem các bài hát và câu chuyện mới."
+      },
+      "ar-SA": {
+        "title": "{unitName} متاحة الآن",
+        "body": "انتقل فصلك إلى وحدة جديدة. اضغط لمشاهدة الأغاني والقصص الجديدة."
+      },
+      "es": {
+        "title": "{unitName} ya está disponible",
+        "body": "Su clase ha avanzado. Toque para ver las nuevas canciones e historias."
+      },
+      "ja": {
+        "title": "{unitName}が開講しました",
+        "body": "クラスが次に進みました。タップして新しい歌や物語をご覧ください。"
+      },
+      "km": {
+        "title": "{unitName} បានបើក",
+        "body": "ថ្នាក់រៀនរបស់អ្នកបានបន្តទៅមុខ។ សូមចុចដើម្បីមើលបទចម្រៀង និងរឿងនិទានថ្មី។"
+      },
+      "ko": {
+        "title": "{unitName} 오픈",
+        "body": "수업이 다음 단계로 넘어갔습니다. 새로운 노래와 이야기를 보려면 탭하세요."
+      },
+      "mn": {
+        "title": "{unitName} нээгдлээ",
+        "body": "Таны анги дараагийн шатанд шилжлээ. Шинэ дуу, түүхийг харахын тулд дарна уу."
+      },
+      "ms": {
+        "title": "{unitName} kini dibuka",
+        "body": "Kelas anda telah beralih ke unit seterusnya. Ketik untuk melihat lagu dan cerita baharu."
+      },
+      "my": {
+        "title": "{unitName} ဖွင့်ပြီးပါပြီ",
+        "body": "သင့်အတန်း ရှေ့ဆက်သွားပါပြီ။ သီချင်းနှင့် ပုံပြင်အသစ်များကို ကြည့်ရှုရန် တို့ပါ။"
+      },
+      "ru": {
+        "title": "{unitName} открыт",
+        "body": "Ваш класс перешёл дальше. Нажмите, чтобы увидеть новые песни и истории."
+      },
+      "th": {
+        "title": "{unitName} เปิดให้เรียนแล้ว",
+        "body": "ชั้นเรียนของคุณดำเนินต่อไปแล้ว แตะเพื่อดูเพลงและนิทานใหม่"
+      },
+      "zh-Hans": {
+        "title": "{unitName} 已开放",
+        "body": "您的班级已进入新单元,点击查看新的歌曲和故事。"
+      }
+    }
+  },
+  {
+    "id": "push_homework_due",
+    "name": "Homework due today",
+    "channel": "notification",
+    "category": "student",
+    "target": "messages/notification",
+    "owner": {
+      "kind": "app",
+      "app": "student"
+    },
+    "createdBy": "Irene Do",
+    "createdAt": "2026-03-11T05:44:00.000Z",
+    "source": {
+      "title": "Homework due today",
+      "body": "{count} activities from {unitName} are still waiting. It takes about ten minutes."
+    },
+    "translations": {
+      "vi": {
+        "title": "Bài tập đến hạn hôm nay",
+        "body": "Còn {count} hoạt động của {unitName} chưa làm. Chỉ mất khoảng mười phút."
+      },
+      "ko": {
+        "title": "오늘 마감인 과제",
+        "body": "{unitName}의 활동 {count}개가 남아 있습니다. 10분 정도 걸립니다."
+      },
+      "ar-SA": {
+        "title": "الواجب مستحق اليوم",
+        "body": "لا تزال {count} أنشطة من {unitName} بانتظارك. تستغرق نحو عشر دقائق."
+      },
+      "es": {
+        "title": "Tarea vence hoy",
+        "body": "{count} actividades de {unitName} siguen pendientes. Toma unos diez minutos."
+      },
+      "ja": {
+        "title": "宿題の期限は本日です",
+        "body": "{unitName}の{count}件のアクティビティがまだ残っています。所要時間は約10分です。"
+      },
+      "km": {
+        "title": "កិច្ចការផ្ទះត្រូវដល់កំណត់ថ្ងៃនេះ",
+        "body": "សកម្មភាពចំនួន {count} ពី {unitName} កំពុងរង់ចាំនៅឡើយ។ វាចំណាយពេលប្រហែលដប់នាទី។"
+      },
+      "mn": {
+        "title": "Гэрийн даалгавар өнөөдөр дуусах хугацаатай",
+        "body": "{unitName}-ийн {count} даалгавар хараахан хийгдээгүй байна. Ойролцоогоор арван минут шаардана."
+      },
+      "ms": {
+        "title": "Kerja rumah perlu diserahkan hari ini",
+        "body": "{count} aktiviti daripada {unitName} masih belum diselesaikan. Ia mengambil masa kira-kira sepuluh minit."
+      },
+      "my": {
+        "title": "ယနေ့ အိမ်စာ သတ်မှတ်ရက်ရောက်ပါသည်",
+        "body": "{unitName} မှ လုပ်ဆောင်ချက် {count} ခု ကျန်ရှိနေဆဲ ဖြစ်ပါသည်။ ခန့်မှန်းခြေ ဆယ်မိနစ် ကြာပါမည်။"
+      },
+      "ru": {
+        "title": "Домашнее задание сегодня",
+        "body": "{count} заданий из {unitName} всё ещё ждут выполнения. Это займёт около десяти минут."
+      },
+      "th": {
+        "title": "การบ้านครบกำหนดวันนี้",
+        "body": "กิจกรรม {count} รายการจาก {unitName} ยังรอคุณอยู่ ใช้เวลาประมาณสิบนาที"
+      },
+      "zh-Hans": {
+        "title": "今天有作业到期",
+        "body": "{unitName} 中还有 {count} 项活动待完成,大约需要十分钟。"
+      }
+    }
+  },
+  {
+    "id": "push_child_progress",
+    "name": "Child progress updated",
+    "channel": "notification",
+    "category": "parent",
+    "target": "messages/notification",
+    "owner": {
+      "kind": "app",
+      "app": "parent"
+    },
+    "createdBy": "kim jennie",
+    "createdAt": "2026-05-18T04:10:00.000Z",
+    "source": {
+      "title": "{teacherName} left a note",
+      "body": "{studentName} finished {unitName}. Tap to read what the teacher wrote."
+    },
+    "translations": {
+      "vi": {
+        "title": "{teacherName} đã gửi nhận xét",
+        "body": "{studentName} đã hoàn thành {unitName}. Nhấn để đọc nhận xét của giáo viên."
+      },
+      "ar-SA": {
+        "title": "ترك {teacherName} ملاحظة",
+        "body": "أنهى {studentName} {unitName}. اضغط لقراءة ما كتبه المعلم."
+      },
+      "es": {
+        "title": "{teacherName} dejó una nota",
+        "body": "{studentName} terminó {unitName}. Toque para leer lo que escribió el docente."
+      },
+      "ja": {
+        "title": "{teacherName}からノートが届きました",
+        "body": "{studentName}さんが{unitName}を修了しました。タップして教師が書いた内容をご覧ください。"
+      },
+      "km": {
+        "title": "{teacherName} បានទុកចំណាំមួយ",
+        "body": "{studentName} បានបញ្ចប់ {unitName}។ សូមចុចដើម្បីអានអ្វីដែលគ្រូបង្រៀនបានសរសេរ។"
+      },
+      "ko": {
+        "title": "{teacherName}님이 노트를 남겼습니다",
+        "body": "{studentName}님이 {unitName}을(를) 완료했습니다. 교사가 남긴 글을 보려면 탭하세요."
+      },
+      "mn": {
+        "title": "{teacherName} тэмдэглэл үлдээлээ",
+        "body": "{studentName} {unitName}-г дуусгалаа. Багшийн бичсэнийг уншихын тулд дарна уу."
+      },
+      "ms": {
+        "title": "{teacherName} meninggalkan nota",
+        "body": "{studentName} telah menamatkan {unitName}. Ketik untuk membaca apa yang ditulis oleh guru."
+      },
+      "my": {
+        "title": "{teacherName} မှတ်စု ချန်ထားခဲ့ပါသည်",
+        "body": "{studentName} သည် {unitName} ကို ပြီးမြောက်အောင် လုပ်ဆောင်ပါပြီ။ ဆရာ/ဆရာမ ရေးသားခဲ့သည်ကို ဖတ်ရန် တို့ပါ။"
+      },
+      "ru": {
+        "title": "{teacherName} оставил(а) заметку",
+        "body": "{studentName} завершил(а) {unitName}. Нажмите, чтобы прочитать, что написал учитель."
+      },
+      "th": {
+        "title": "{teacherName} ได้ฝากบันทึกไว้",
+        "body": "{studentName} เรียนจบ {unitName} แล้ว แตะเพื่ออ่านสิ่งที่ครูเขียนไว้"
+      },
+      "zh-Hans": {
+        "title": "{teacherName} 留下了一条笔记",
+        "body": "{studentName} 完成了 {unitName},点击查看教师写的内容。"
+      }
+    }
+  },
+  {
+    "id": "push_visit_reminder",
+    "name": "Visitation tomorrow",
+    "channel": "notification",
+    "category": "coach",
+    "target": "messages/notification",
+    "owner": {
+      "kind": "web",
+      "app": "school"
+    },
+    "createdBy": "hurry kang",
+    "createdAt": "2026-04-22T06:55:00.000Z",
+    "source": {
+      "title": "Visitation tomorrow at {time}",
+      "body": "{className} at {campusName}, with {teacherName}."
+    },
+    "translations": {
+      "vi": {
+        "title": "Dự giờ vào {time} ngày mai",
+        "body": "Lớp {className} tại {campusName}, cùng {teacherName}."
+      },
+      "ar-SA": {
+        "title": "زيارة غدًا الساعة {time}",
+        "body": "{className} في {campusName}، مع {teacherName}."
+      },
+      "es": {
+        "title": "Visita mañana a las {time}",
+        "body": "{className} en {campusName}, con {teacherName}."
+      },
+      "ja": {
+        "title": "明日{time}に視察があります",
+        "body": "{campusName}にて{className}、{teacherName}と。"
+      },
+      "km": {
+        "title": "ទស្សនកិច្ចថ្ងៃស្អែក ម៉ោង {time}",
+        "body": "{className} នៅ {campusName} ជាមួយ {teacherName}។"
+      },
+      "ko": {
+        "title": "내일 {time} 방문",
+        "body": "{campusName}에서 {teacherName}님과 {className}."
+      },
+      "mn": {
+        "title": "Маргааш {time} цагт айлчлал",
+        "body": "{campusName}-д, {teacherName}-тай хамт {className}."
+      },
+      "ms": {
+        "title": "Lawatan esok pada jam {time}",
+        "body": "{className} di {campusName}, bersama {teacherName}."
+      },
+      "my": {
+        "title": "မနက်ဖြန် {time} တွင် ကြည့်ရှုစစ်ဆေးမှု",
+        "body": "{campusName} ၌ {className}၊ {teacherName} နှင့်အတူ။"
+      },
+      "ru": {
+        "title": "Визит завтра в {time}",
+        "body": "{className} в {campusName}, с {teacherName}."
+      },
+      "th": {
+        "title": "การเยี่ยมชมพรุ่งนี้เวลา {time}",
+        "body": "{className} ที่ {campusName} กับ {teacherName}"
+      },
+      "zh-Hans": {
+        "title": "明天 {time} 有访校安排",
+        "body": "{className},地点 {campusName},访校人 {teacherName}。"
+      }
+    }
+  },
+  {
+    "id": "push_story_ready",
+    "name": "New story ready",
+    "channel": "notification",
+    "category": "parent",
+    "target": "messages/notification",
+    "owner": {
+      "kind": "app",
+      "app": "baby"
+    },
+    "createdBy": "Anna bel",
+    "createdAt": "2026-06-01T03:25:00.000Z",
+    "source": {
+      "title": "A new story for {firstName}",
+      "body": "{unitName} is ready to read together. Five minutes before bed is plenty."
+    },
+    "translations": {
+      "vi": {
+        "title": "Có truyện mới cho {studentName}",
+        "body": "{unitName} đã sẵn sàng để đọc cùng nhau. Năm phút trước khi đi ngủ là đủ."
+      },
+      "ar-SA": {
+        "title": "قصة جديدة لـ {firstName}",
+        "body": "{unitName} جاهزة للقراءة معًا. خمس دقائق قبل النوم كافية."
+      },
+      "es": {
+        "title": "Una nueva historia para {firstName}",
+        "body": "{unitName} está lista para leer juntos. Cinco minutos antes de dormir son suficientes."
+      },
+      "ja": {
+        "title": "{firstName}さんへ新しい物語",
+        "body": "{unitName}を一緒に読む準備ができました。寝る前の5分で十分です。"
+      },
+      "km": {
+        "title": "រឿងនិទានថ្មីសម្រាប់ {firstName}",
+        "body": "{unitName} ត្រៀមរួចរាល់សម្រាប់អានជាមួយគ្នា។ ប្រាំនាទីមុនចូលគេងគឺគ្រប់គ្រាន់ហើយ។"
+      },
+      "ko": {
+        "title": "{firstName}님을 위한 새 이야기",
+        "body": "{unitName}을(를) 함께 읽을 준비가 되었습니다. 자기 전 5분이면 충분합니다."
+      },
+      "mn": {
+        "title": "{firstName}-д зориулсан шинэ түүх",
+        "body": "{unitName} хамтдаа унших бэлэн боллоо. Унтахаас өмнө таван минут хангалттай."
+      },
+      "ms": {
+        "title": "Cerita baharu untuk {firstName}",
+        "body": "{unitName} sudah sedia untuk dibaca bersama. Lima minit sebelum tidur sudah memadai."
+      },
+      "my": {
+        "title": "{firstName} အတွက် ပုံပြင်အသစ်",
+        "body": "{unitName} ကို အတူတကွ ဖတ်ရှုရန် အသင့်ဖြစ်နေပါပြီ။ အိပ်ရာမဝင်မီ ငါးမိနစ်ခန့်ဖြင့် လုံလောက်ပါသည်။"
+      },
+      "ru": {
+        "title": "Новая история для {firstName}",
+        "body": "{unitName} готов(а) для совместного чтения. Пяти минут перед сном будет достаточно."
+      },
+      "th": {
+        "title": "นิทานเรื่องใหม่สำหรับ {firstName}",
+        "body": "{unitName} พร้อมให้อ่านด้วยกันแล้ว ใช้เวลาห้านาทีก่อนนอนก็เพียงพอ"
+      },
+      "zh-Hans": {
+        "title": "为 {firstName} 准备的新故事",
+        "body": "{unitName} 已可以一起阅读。睡前五分钟就足够了。"
+      }
+    }
+  },
+  {
+    "id": "push_survey",
+    "name": "Survey request",
+    "channel": "notification",
+    "category": "teacher",
+    "target": "messages/notification",
+    "owner": {
+      "kind": "web",
+      "app": "training"
+    },
+    "createdBy": "Sarah Klein",
+    "createdAt": "2026-05-04T09:38:00.000Z",
+    "source": {
+      "title": "How was {unitName} training?",
+      "body": "Six questions, about two minutes. Your answers go to the trainer, not your school."
+    },
+    "translations": {
+      "ar-SA": {
+        "title": "كيف كان تدريب {unitName}؟",
+        "body": "ست أسئلة، حوالي دقيقتين. تذهب إجاباتك إلى المدرب، وليس إلى مدرستك."
+      },
+      "es": {
+        "title": "¿Qué le pareció la capacitación de {unitName}?",
+        "body": "Seis preguntas, unos dos minutos. Sus respuestas van al capacitador, no a su escuela."
+      },
+      "ja": {
+        "title": "{unitName}トレーニングはいかがでしたか?",
+        "body": "6つの質問、所要時間は約2分です。回答は学校ではなくトレーナーに送られます。"
+      },
+      "km": {
+        "title": "តើវគ្គបណ្តុះបណ្តាល {unitName} យ៉ាងដូចម្តេចដែរ?",
+        "body": "សំណួរប្រាំមួយ ចំណាយពេលប្រហែលពីរនាទី។ ចម្លើយរបស់អ្នកនឹងផ្ញើទៅកាន់គ្រូបណ្តុះបណ្តាល មិនមែនទៅសាលារបស់អ្នកទេ។"
+      },
+      "ko": {
+        "title": "{unitName} 교육은 어떠셨나요?",
+        "body": "6개 질문, 약 2분 소요됩니다. 답변은 학교가 아닌 트레이너에게 전달됩니다."
+      },
+      "mn": {
+        "title": "{unitName} сургалт ямар байсан бэ?",
+        "body": "Зургаан асуулт, ойролцоогоор хоёр минут. Таны хариулт сургууль руу биш, дасгалжуулагч руу очно."
+      },
+      "ms": {
+        "title": "Bagaimana latihan {unitName}?",
+        "body": "Enam soalan, kira-kira dua minit. Jawapan anda akan dihantar kepada jurulatih, bukan sekolah anda."
+      },
+      "my": {
+        "title": "{unitName} သင်တန်း ဘယ်လိုရှိခဲ့လဲ။",
+        "body": "မေးခွန်း ခြောက်ခု၊ ခန့်မှန်းခြေ နှစ်မိနစ်။ သင့်အဖြေများကို နည်းပြထံ ပို့ပါမည်၊ သင့်ကျောင်းထံ မဟုတ်ပါ။"
+      },
+      "ru": {
+        "title": "Как прошло обучение {unitName}?",
+        "body": "Шесть вопросов, около двух минут. Ваши ответы получит тренер, а не школа."
+      },
+      "th": {
+        "title": "การอบรม {unitName} เป็นอย่างไรบ้าง?",
+        "body": "หกคำถาม ใช้เวลาประมาณสองนาที คำตอบของคุณจะถูกส่งถึงผู้ฝึกอบรมเท่านั้น ไม่ใช่โรงเรียนของคุณ"
+      },
+      "vi": {
+        "title": "Khóa đào tạo {unitName} thế nào rồi?",
+        "body": "Sáu câu hỏi, khoảng hai phút. Câu trả lời của bạn sẽ được gửi đến giảng viên, không phải trường của bạn."
+      },
+      "zh-Hans": {
+        "title": "{unitName} 培训感觉如何?",
+        "body": "六个问题,大约两分钟。您的回答将发送给培训师,而非您的学校。"
+      }
+    }
+  }
+]
