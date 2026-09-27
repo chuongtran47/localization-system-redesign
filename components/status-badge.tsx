@@ -1,28 +1,28 @@
-import { CheckCircle2, Clock, CircleDashed } from "lucide-react"
-import { cn } from "@/lib/utils"
-import type { TranslationStatus } from "@/lib/data"
+import { AlertTriangle, CheckCircle2, CircleDashed, History } from "lucide-react"
 
-const config: Record<
-  TranslationStatus,
-  { label: string; icon: typeof CheckCircle2; className: string; dot: string }
-> = {
+import { statusLabel, type TranslationStatus } from "@/lib/locale-data"
+import { cn } from "@/lib/utils"
+
+const config: Record<TranslationStatus, { icon: typeof CheckCircle2; className: string; dot: string }> = {
   translated: {
-    label: "Translated",
     icon: CheckCircle2,
     className: "bg-success/12 text-success border-success/20",
     dot: "bg-success",
   },
-  pending: {
-    label: "Pending",
-    icon: Clock,
-    className: "bg-warning/15 text-warning-foreground border-warning/30",
-    dot: "bg-warning",
-  },
   missing: {
-    label: "Missing",
     icon: CircleDashed,
     className: "bg-destructive/10 text-destructive border-destructive/20",
     dot: "bg-destructive",
+  },
+  outdated: {
+    icon: History,
+    className: "bg-info/12 text-info border-info/25",
+    dot: "bg-info",
+  },
+  needs_fix: {
+    icon: AlertTriangle,
+    className: "bg-warning/15 text-warning-foreground border-warning/30",
+    dot: "bg-warning",
   },
 }
 
@@ -37,7 +37,7 @@ export function StatusBadge({ status }: { status: TranslationStatus }) {
       )}
     >
       <Icon className="size-3" aria-hidden="true" />
-      {c.label}
+      {statusLabel[status]}
     </span>
   )
 }
