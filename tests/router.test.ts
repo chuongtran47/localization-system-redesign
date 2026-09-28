@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs"
 import { beforeEach, describe, expect, it } from "vitest"
 
 import type {
@@ -6,7 +7,9 @@ import type {
   CreateKeyResponse,
   DeleteKeysResponse,
   EntriesResponse,
+  ImportResponse,
 } from "@/lib/api-types"
+import { parseBundleFile } from "@/lib/bundle-diff"
 import type { TranslationRow } from "@/lib/locale-data"
 import type { Store } from "@/mock/store"
 import { call, callJson, createTestStore } from "./helpers/backend"
@@ -207,5 +210,50 @@ describe("coverage and reset", () => {
     await call(store, "POST", "/keys", { key: "home.greeting.title", source: "Hello", target: SCHOOL })
     expect((await call(store, "POST", "/reset")).status).toBe(204)
     expect(await entries(SCHOOL, "en")).toHaveLength(500)
+  })
+})
+
+describe("import", () => {
+  const fixture = parseBundleFile(readFileSync(new URL("./fixtures/import.vi.json", import.meta.url), "utf8"))
+
+  it("merges a file, registers a new key and skips an invalid name", async () => {
+    const { status, body } = await callJson<ImportResponse>(store, "PUT", `/import/vi?target=${SCHOOL}`, {
+      values: fixture,
+      mode: "merge",
+      by: "T",
+    })
+    expect(status).toBe(200)
+    expect(body).toMatchObject({ created: 1, added: 0, changed: 1, removed: 0, unchanged: 499, invalid: ["bad key.x"] })
+    expect((await rowOf(SCHOOL, "vi", "home.brand.fresh"))?.target).toBe("Mới")
+    expect((await rowOf(SCHOOL, "en", "home.brand.fresh"))?.status).toBe("missing")
+  })
+
+  it("replace clears every key the file leaves out", async () => {
+    const { body } = await callJson<ImportResponse>(store, "PUT", `/import/vi?target=${SCHOOL}`, {
+      values: { [CANCEL]: "Hủy bỏ" },
+      mode: "replace",
+    })
+    expect(body).toMatchObject({ created: 0, changed: 1, removed: 499, unchanged: 0 })
+  })
+
+  it("fills a project that had no keys", async () => {
+    const { status, body } = await callJson<ImportResponse>(store, "PUT", "/import/vi?target=mobile/student-app", {
+      values: fixture,
+      mode: "merge",
+    })
+    expect(status).toBe(200)
+    expect(body).toMatchObject({ created: 2, invalid: ["bad key.x"] })
+    expect((await entries("mobile/student-app", "vi")).map((r) => r.key).sort()).toEqual([
+      "home.brand.fresh",
+      "user.form.actions.cancel",
+    ])
+  })
+
+  it("answers 404 when neither the project nor the file has a usable key", async () => {
+    const response = await call(store, "PUT", "/import/vi?target=mobile/student-app", {
+      values: { "bad key.x": "x" },
+      mode: "merge",
+    })
+    expect(response.status).toBe(404)
   })
 })
