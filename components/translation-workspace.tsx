@@ -15,6 +15,7 @@ import {
 } from "lucide-react"
 import { toast } from "sonner"
 
+import { destructiveButton, outlineButton, primaryButton } from "@/components/button-styles"
 import { useDrafts } from "@/components/draft-provider"
 import { PopoverMenu, PopoverMenuItem } from "@/components/popover-menu"
 import { TranslationList } from "@/components/translation-list"
@@ -49,12 +50,6 @@ import { ALL_VERSIONS, versions } from "@/lib/release"
 import { cn } from "@/lib/utils"
 import { ALL_GROUPS, resolveGroup, statusFilters, viewOf } from "@/lib/workspace-view"
 
-const outlineButton =
-  "flex h-9 items-center gap-1.5 rounded-lg border border-input bg-card px-3 text-sm font-medium transition-colors hover:bg-accent/40 disabled:pointer-events-none disabled:opacity-50"
-const primaryButton =
-  "flex h-9 items-center gap-1.5 rounded-lg bg-primary px-3.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:pointer-events-none disabled:opacity-50"
-const destructiveButton =
-  "flex h-9 items-center gap-1.5 rounded-lg bg-destructive/10 px-3 text-sm font-medium text-destructive transition-colors hover:bg-destructive/20"
 
 export function TranslationWorkspace({ project }: { project: Project }) {
   const target = targetOf(project)

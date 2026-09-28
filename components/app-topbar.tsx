@@ -13,24 +13,9 @@ import { useWorkspaceParams } from "@/hooks/use-workspace-params"
 import { messageOf, resetData } from "@/lib/api"
 import { targetLanguageCoverage } from "@/lib/coverage"
 import { emptyDrafts } from "@/lib/drafts"
+import { languageFlags } from "@/lib/language-flags"
 import { languages, type LanguageCode } from "@/lib/locale-data"
 import { findProjectByPath, targetOf } from "@/lib/projects"
-
-const flags: Record<LanguageCode, string> = {
-  en: "🇺🇸",
-  "zh-Hans": "🇨🇳",
-  ms: "🇲🇾",
-  ja: "🇯🇵",
-  ko: "🇰🇷",
-  ru: "🇷🇺",
-  vi: "🇻🇳",
-  mn: "🇲🇳",
-  es: "🇪🇸",
-  "ar-SA": "🇸🇦",
-  th: "🇹🇭",
-  my: "🇲🇲",
-  km: "🇰🇭",
-}
 
 export function AppTopbar() {
   const { filters, setParam } = useWorkspaceParams()
@@ -108,7 +93,7 @@ export function AppTopbar() {
               onClick={toggle}
               className="flex items-center gap-2 rounded-lg border border-input bg-background px-3 py-2 text-sm font-medium outline-none transition-colors hover:bg-accent/40 focus-visible:ring-2 focus-visible:ring-ring/30"
             >
-              <span className="text-base leading-none">{flags[current.code]}</span>
+              <span className="text-base leading-none">{languageFlags[current.code]}</span>
               <span>{current.name}</span>
               <span className="rounded-full bg-muted px-1.5 py-0.5 text-[11px] font-semibold tabular-nums text-muted-foreground">
                 {currentCounts ? `${currentCounts.translated}/${currentCounts.total}` : "—"}
@@ -135,7 +120,7 @@ export function AppTopbar() {
                     }}
                     className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-sm transition-colors hover:bg-accent/50"
                   >
-                    <span className="text-base leading-none">{flags[lang.code]}</span>
+                    <span className="text-base leading-none">{languageFlags[lang.code]}</span>
                     <span className="flex-1">{lang.name}</span>
                     <span className="text-xs tabular-nums text-muted-foreground">{pct === null ? "—" : `${pct}%`}</span>
                     {lang.code === current.code && <Check className="size-4 text-primary" />}
