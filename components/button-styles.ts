@@ -6,3 +6,9 @@ export const primaryButton =
 
 export const destructiveButton =
   "flex h-9 items-center gap-1.5 rounded-lg bg-destructive/10 px-3 text-sm font-medium text-destructive transition-colors hover:bg-destructive/20"
+
+export const iconButton =
+  "flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+
+export const textButton =
+  "rounded-md px-2 py-0.5 text-xs font-medium text-primary transition-colors hover:bg-accent/50"

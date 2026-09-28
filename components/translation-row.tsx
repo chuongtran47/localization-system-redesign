@@ -3,6 +3,7 @@
 import { AlertTriangle, ClipboardPaste, Copy, History, Info, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 
+import { iconButton, textButton } from "@/components/button-styles"
 import { StatusBadge } from "@/components/status-badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
@@ -21,12 +22,6 @@ const SHORT_SOURCE = 60
 /** Shared by the list header and every row so the columns line up. */
 export const ROW_GRID =
   "grid grid-cols-[2.5rem_minmax(0,1fr)_minmax(0,1.4fr)_8.5rem_7.5rem] gap-4"
-
-const iconButton =
-  "flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-
-const textButton =
-  "rounded-md px-2 py-0.5 text-xs font-medium text-primary transition-colors hover:bg-accent/50"
 
 export type TranslationRowProps = {
   row: Row

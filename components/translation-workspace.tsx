@@ -1,24 +1,13 @@
 "use client"
 
 import { useMemo, useState, type ReactNode } from "react"
-import Link from "next/link"
-import {
-  ChevronDown,
-  Download,
-  FileUp,
-  FlaskConical,
-  Lock,
-  Plus,
-  Rocket,
-  RotateCw,
-  Trash2,
-  Upload,
-} from "lucide-react"
+import { Plus, RotateCw, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 
 import { destructiveButton, outlineButton, primaryButton } from "@/components/button-styles"
 import { useDrafts } from "@/components/draft-provider"
-import { PopoverMenu, PopoverMenuItem } from "@/components/popover-menu"
+import { SkeletonRows } from "@/components/skeleton-rows"
+import { StatCard } from "@/components/stat-card"
 import { TranslationList } from "@/components/translation-list"
 import { TranslationRow } from "@/components/translation-row"
 import { AddKeyDialog } from "@/components/translations/add-key-dialog"
@@ -26,6 +15,8 @@ import { DeleteKeysDialog } from "@/components/translations/delete-keys-dialog"
 import { ExportDialog } from "@/components/translations/export-dialog"
 import { GroupFilter } from "@/components/translations/group-filter"
 import { ProjectProfileCard } from "@/components/translations/project-profile-card"
+import { UnderlineTabs } from "@/components/underline-tabs"
+import { WorkspaceHeader } from "@/components/workspace-header"
 import { useCoverage } from "@/hooks/use-coverage"
 import { useTranslationRows } from "@/hooks/use-translation-rows"
 import { useWorkspaceParams } from "@/hooks/use-workspace-params"
@@ -45,20 +36,34 @@ import {
   slotOf,
 } from "@/lib/drafts"
 import { displayedValueOf, languages } from "@/lib/locale-data"
-import { groupLabel, kindLabel, targetOf, type Project } from "@/lib/projects"
+import { targetOf, type Project } from "@/lib/projects"
 import { ALL_VERSIONS, versions } from "@/lib/release"
 import { cn } from "@/lib/utils"
-import { ALL_GROUPS, resolveGroup, statusFilters, viewOf } from "@/lib/workspace-view"
+import { ALL_GROUPS, resolveGroup, statusFilters, viewOf, type StatusFilter } from "@/lib/workspace-view"
 
-
+/** Loose UI strings and message templates are different screens over the same route. */
 export function TranslationWorkspace({ project }: { project: Project }) {
+  if (project.profile.kind !== "ui") {
+    return (
+      <div className="mx-auto max-w-[1400px] px-6 py-6">
+        <ProjectProfileCard
+          project={project}
+          title={`${project.name} templates`}
+          message="The template editor for this channel is coming soon."
+        />
+      </div>
+    )
+  }
+  return <UiWorkspace project={project} />
+}
+
+function UiWorkspace({ project }: { project: Project }) {
   const target = targetOf(project)
-  const isTemplateChannel = project.profile.kind !== "ui"
 
   const { filters, setParam, setParams } = useWorkspaceParams()
   const { language } = filters
   const { revision, refresh } = useCoverage()
-  const { rows, isLoading, error } = useTranslationRows(isTemplateChannel ? null : target, language, revision)
+  const { rows, isLoading, error } = useTranslationRows(target, language, revision)
 
   const group = resolveGroup(filters.group, rows, isLoading)
   const view = useMemo(
@@ -139,65 +144,32 @@ export function TranslationWorkspace({ project }: { project: Project }) {
     setParams({ q: key, status: null, group: null, version: null })
   }
 
+  const statusTabs = statusFilters
+    .filter((item) => item.id !== "new" || view.hasManual || filters.status === "new")
+    .map((item) => ({ id: item.id, label: item.label, count: statusCounts[item.id] }))
+
   return (
     <div className="mx-auto max-w-[1400px] px-6 py-6">
-      {/* Page header */}
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <span>{groupLabel[project.group]}</span>
-            <span>/</span>
-            <span className="text-foreground">Translations</span>
-          </div>
-          <div className="mt-1 flex flex-wrap items-center gap-2">
-            <h1 className="text-2xl font-semibold tracking-tight text-balance">{project.name}</h1>
-            <span className="rounded-full border border-border bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
-              {kindLabel[project.profile.kind]}
-            </span>
-            {!project.profile.measured && (
-              <span
-                className="rounded-full border border-dashed border-border px-2 py-0.5 text-[11px] font-medium text-muted-foreground"
-                title="Profile inferred, not measured"
-              >
-                Inferred
-              </span>
-            )}
-          </div>
-          <p className="mt-1 text-sm text-muted-foreground">
+      <WorkspaceHeader
+        project={project}
+        section="Translations"
+        subtitle={
+          <>
             Managing <span className="font-medium text-foreground">{languageInfo.name}</span> translations ·{" "}
             {rows.length.toLocaleString()} keys
-          </p>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          {hasKeys && (
-            <button type="button" onClick={() => setExportOpen(true)} className={outlineButton}>
-              <Download className="size-4" />
-              Export
-            </button>
-          )}
-          {hasKeys && (
-            <Link href={`/import?target=${target}`} className={outlineButton}>
-              <FileUp className="size-4" />
-              Import
-            </Link>
-          )}
-          <button type="button" className={outlineButton}>
-            <Lock className="size-4" />
-            Lock
-          </button>
-          <PublishMenu />
-          {!isTemplateChannel && (
-            <button type="button" onClick={() => setAddOpen(true)} className={primaryButton}>
-              <Plus className="size-4" />
-              Add key
-            </button>
-          )}
-        </div>
-      </div>
+          </>
+        }
+        canExport={hasKeys}
+        onExport={() => setExportOpen(true)}
+      >
+        <button type="button" onClick={() => setAddOpen(true)} className={primaryButton}>
+          <Plus className="size-4" />
+          Add key
+        </button>
+      </WorkspaceHeader>
 
       {/* Stat cards */}
-      {!isTemplateChannel && (isLoading || hasKeys) && (
+      {(isLoading || hasKeys) && (
         <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
           <StatCard
             label="Translation progress"
@@ -235,7 +207,7 @@ export function TranslationWorkspace({ project }: { project: Project }) {
         </div>
       )}
 
-      {!isTemplateChannel && hasKeys && (
+      {hasKeys && (
         <>
           {/* Version pills */}
           <div className="mt-6 flex flex-wrap items-center gap-1.5">
@@ -259,35 +231,11 @@ export function TranslationWorkspace({ project }: { project: Project }) {
 
           {/* Status tabs, group and count */}
           <div className="mt-5 flex flex-wrap items-end justify-between gap-3 border-b border-border">
-            <div className="flex flex-wrap items-center gap-1">
-              {statusFilters
-                .filter((item) => item.id !== "new" || view.hasManual || filters.status === "new")
-                .map((item) => {
-                  const active = filters.status === item.id
-                  return (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => setParam("status", item.id === "all" ? null : item.id)}
-                      className={cn(
-                        "relative flex items-center gap-1.5 px-3 py-2.5 text-sm font-medium transition-colors",
-                        active ? "text-foreground" : "text-muted-foreground hover:text-foreground"
-                      )}
-                    >
-                      {item.label}
-                      <span
-                        className={cn(
-                          "rounded-full px-1.5 text-[10px] font-semibold tabular-nums",
-                          active ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
-                        )}
-                      >
-                        {statusCounts[item.id].toLocaleString()}
-                      </span>
-                      {active && <span className="absolute inset-x-0 -bottom-px h-0.5 rounded-full bg-primary" />}
-                    </button>
-                  )
-                })}
-            </div>
+            <UnderlineTabs<StatusFilter>
+              items={statusTabs}
+              value={filters.status}
+              onChange={(id) => setParam("status", id === "all" ? null : id)}
+            />
             <div className="flex items-center gap-2 pb-2">
               <GroupFilter
                 value={group}
@@ -305,13 +253,7 @@ export function TranslationWorkspace({ project }: { project: Project }) {
 
       {/* Body */}
       <div className="mt-4 pb-10">
-        {isTemplateChannel ? (
-          <ProjectProfileCard
-            project={project}
-            title={`${project.name} templates`}
-            message="The template editor for this channel is coming soon. Its texts already count toward the numbers in the sidebar."
-          />
-        ) : error ? (
+        {error ? (
           <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">
             <span>
               Could not load {project.name}: {error}
@@ -428,90 +370,10 @@ export function TranslationWorkspace({ project }: { project: Project }) {
   )
 }
 
-function StatCard({
-  label,
-  value,
-  accent,
-  detail,
-  active,
-  onClick,
-  children,
-}: {
-  label: string
-  value: string
-  accent: "primary" | "success" | "warning" | "destructive"
-  detail?: string
-  active: boolean
-  onClick: () => void
-  children?: ReactNode
-}) {
-  const dot = {
-    primary: "bg-primary",
-    success: "bg-success",
-    warning: "bg-warning",
-    destructive: "bg-destructive",
-  }[accent]
-  return (
-    <button
-      type="button"
-      aria-pressed={active}
-      onClick={onClick}
-      className={cn(
-        "rounded-xl border border-border bg-card p-4 text-left transition-colors hover:bg-accent/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30",
-        active && "border-primary/60 bg-accent/30"
-      )}
-    >
-      <div className="flex items-center gap-1.5">
-        <span className={cn("size-2 rounded-full", dot)} />
-        <p className="text-xs font-medium text-muted-foreground">{label}</p>
-      </div>
-      <p className="mt-1.5 text-2xl font-semibold tabular-nums tracking-tight">{value}</p>
-      {detail && <p className="mt-0.5 text-xs text-muted-foreground">{detail}</p>}
-      {children}
-    </button>
-  )
-}
-
-function PublishMenu() {
-  return (
-    <PopoverMenu
-      label="publish menu"
-      trigger={(toggle) => (
-        <button type="button" onClick={toggle} className={outlineButton}>
-          <Upload className="size-4" />
-          Publish
-          <ChevronDown className="size-3.5 text-muted-foreground" />
-        </button>
-      )}
-    >
-      {() => (
-        <>
-          <PopoverMenuItem icon={FlaskConical} label="Publish to Test" hint="Staging environment" />
-          <PopoverMenuItem icon={Rocket} label="Publish to Live" hint="Production" />
-        </>
-      )}
-    </PopoverMenu>
-  )
-}
-
 function Tray({ children }: { children: ReactNode }) {
   return (
     <div className="flex items-center gap-3 rounded-xl border border-border bg-card/95 px-4 py-3 shadow-lg shadow-black/5 backdrop-blur animate-in fade-in slide-in-from-bottom-2">
       {children}
-    </div>
-  )
-}
-
-function SkeletonRows() {
-  return (
-    <div className="overflow-hidden rounded-xl border border-border bg-card">
-      {Array.from({ length: 6 }, (_, index) => (
-        <div key={index} className="flex items-center gap-4 border-b border-border px-4 py-3 last:border-b-0">
-          <div className="size-4 animate-pulse rounded bg-muted" />
-          <div className="h-4 w-1/4 animate-pulse rounded bg-muted" />
-          <div className="h-8 flex-1 animate-pulse rounded-md bg-muted" />
-        </div>
-      ))}
     </div>
   )
 }
