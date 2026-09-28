@@ -37,8 +37,10 @@ TemplateTable ── bấm dòng ──→ ?template=<id>
 TemplateDialog (key = `${id}:${language}`)
       ├─ TemplateFieldEditor × N
       ├─ TemplatePreview
-      └─ Save → saveTranslations(target, language, { "<id>.<field>": value }, keep["<id>.<field>"]) → refresh()
+      └─ Save → saveTranslations(target, language, values, keepKeys) → refresh()
 ```
+
+**Hợp đồng Save** (khớp `saveTranslations(target, lang, values: Record<string, string>, keep: string[])` trong `lib/api.ts`): dialog gom mọi field đã sửa thành `values`, khóa là `templateKeyOf(templateId, fieldId)` (`"<templateId>.<fieldId>"`, vd. `"invite_coach.subject"`), giá trị là text đang gõ; các field bấm Keep English thành mảng `keepKeys: string[]` cùng dạng khóa. Một field không bao giờ nằm ở cả hai (router trả 400 nếu có).
 
 Không có route API mới; `lib/api.ts` vẫn là module duy nhất chạm backend. `lib/template-data.ts`, `lib/template-preview.ts` (whitelist HTML: `safeHtml`, `previewHtml`, `previewText`, `cleanHtml`, `sampleValues`, `placeholderList`) và route `/templates` đã có từ #1–2.
 
@@ -122,7 +124,7 @@ Khung như workspace (`mx-auto max-w-[1400px] px-6 py-6`).
   - **Phải** (`bg-muted/20 overflow-auto`): thanh dính trên cùng `Preview` + pill toggle `[<Language> | English]` (ẩn nút English khi đang ở English); rồi `TemplatePreview` (§4.4).
 - **Footer** (`border-t bg-muted/40 px-5 py-3`): trái — `N unsaved fields` khi có sửa, ngược lại `translated/total fields translated` (ẩn khi English); phải — nút outline Discard (khi có sửa) hoặc Close, nút primary Save (disabled khi không có sửa hoặc đang lưu; ẩn khi English).
 - **Đóng** (Close, Esc, click nền, nút X): còn sửa → `window.confirm("Discard N unsaved fields?")`; từ chối thì giữ dialog mở.
-- **Save**: gửi field đã sửa và field Keep English (khóa `<id>.<field>`), thành công → xóa edit cục bộ, `refresh()` (bảng, stat cards, sidebar), toast "Saved N fields of <template>" (mô tả: file đã ghi). Lỗi → toast lỗi, giữ edit.
+- **Save**: `saveTranslations(target, language, values, keepKeys)` theo hợp đồng ở §3.1 (field đã sửa → `values`, field Keep English → `keepKeys`); thành công → xóa edit cục bộ, `refresh()` (bảng, stat cards, sidebar), toast "Saved N fields of <template>" (mô tả: file đã ghi). Lỗi → toast lỗi, giữ edit.
 
 ### 4.3 Field editor
 
