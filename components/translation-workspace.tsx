@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo, useState, type ReactNode } from "react"
+import Link from "next/link"
 import {
   ChevronDown,
   Download,
@@ -25,7 +26,6 @@ import { DeleteKeysDialog } from "@/components/translations/delete-keys-dialog"
 import { ExportDialog } from "@/components/translations/export-dialog"
 import { GroupFilter } from "@/components/translations/group-filter"
 import { ProjectProfileCard } from "@/components/translations/project-profile-card"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { useCoverage } from "@/hooks/use-coverage"
 import { useTranslationRows } from "@/hooks/use-translation-rows"
 import { useWorkspaceParams } from "@/hooks/use-workspace-params"
@@ -176,15 +176,12 @@ export function TranslationWorkspace({ project }: { project: Project }) {
               Export
             </button>
           )}
-          <Tooltip>
-            <TooltipTrigger render={<span tabIndex={0} className="rounded-lg" />}>
-              <button type="button" disabled className={outlineButton}>
-                <FileUp className="size-4" />
-                Import
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>Coming soon</TooltipContent>
-          </Tooltip>
+          {hasKeys && (
+            <Link href={`/import?target=${target}`} className={outlineButton}>
+              <FileUp className="size-4" />
+              Import
+            </Link>
+          )}
           <button type="button" className={outlineButton}>
             <Lock className="size-4" />
             Lock

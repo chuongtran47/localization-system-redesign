@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { usePathname, useSearchParams } from "next/navigation"
-import { ChevronsUpDown, Languages, Plus, Search } from "lucide-react"
+import { ChevronsUpDown, FileUp, Languages, Plus, Search } from "lucide-react"
 
 import { useCoverage } from "@/hooks/use-coverage"
 import { useWorkspaceParams } from "@/hooks/use-workspace-params"
@@ -13,7 +13,8 @@ import { cn } from "@/lib/utils"
 
 export function AppSidebar() {
   const [query, setQuery] = useState("")
-  const active = findProjectByPath(usePathname())
+  const pathname = usePathname()
+  const active = findProjectByPath(pathname)
   const lang = useSearchParams().get("lang")
   const { filters } = useWorkspaceParams()
   const { coverage } = useCoverage()
@@ -92,7 +93,19 @@ export function AppSidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="border-t border-sidebar-border p-3">
+      <div className="space-y-2 border-t border-sidebar-border p-3">
+        <Link
+          href={lang ? `/import?lang=${encodeURIComponent(lang)}` : "/import"}
+          className={cn(
+            "flex w-full items-center justify-center gap-1.5 rounded-lg border px-2.5 py-2 text-xs font-medium transition-colors",
+            pathname === "/import"
+              ? "border-transparent bg-sidebar-accent text-sidebar-accent-foreground"
+              : "border-sidebar-border text-muted-foreground hover:bg-accent/40 hover:text-foreground"
+          )}
+        >
+          <FileUp className="size-3.5" />
+          Import files
+        </Link>
         <button className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-sidebar-border px-2.5 py-2 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground">
           <Plus className="size-3.5" />
           New application
