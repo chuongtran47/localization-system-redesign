@@ -57,9 +57,26 @@ describe("flattenGroups and pinnedHeader", () => {
 
   it("pins the header of the group under the top edge, only once it has scrolled away", () => {
     const rows = flattenGroups(groups, new Set())
-    expect(pinnedHeader(rows, [{ index: 0, start: 0 }], 0)).toBeNull()
-    expect(pinnedHeader(rows, [{ index: 1, start: 41 }], 50)?.name).toBe("nav")
-    expect(pinnedHeader(rows, [{ index: 3, start: 300 }], 300)).toBeNull()
-    expect(pinnedHeader(rows, [{ index: 4, start: 341 }], 350)?.name).toBe("user")
+    expect(pinnedHeader(rows, [{ index: 0, start: 0, end: 41 }], 0)).toBeNull()
+    expect(pinnedHeader(rows, [{ index: 1, start: 41, end: 145 }], 50)?.name).toBe("nav")
+    expect(pinnedHeader(rows, [{ index: 3, start: 300, end: 341 }], 300)).toBeNull()
+    expect(pinnedHeader(rows, [{ index: 4, start: 341, end: 445 }], 350)?.name).toBe("user")
+  })
+
+  it("reads the group at the top edge, not the first overscan row above it", () => {
+    const rows = flattenGroups(groups, new Set())
+    // Every row rendered, the way the virtualizer's overscan hands them over:
+    // headers 41px, hunks 104px.
+    const items = [
+      { index: 0, start: 0, end: 41 },
+      { index: 1, start: 41, end: 145 },
+      { index: 2, start: 145, end: 249 },
+      { index: 3, start: 249, end: 290 },
+      { index: 4, start: 290, end: 394 },
+      { index: 5, start: 394, end: 498 },
+    ]
+    expect(pinnedHeader(rows, items, 300)?.name).toBe("user")
+    expect(pinnedHeader(rows, items, 260)?.name).toBe("user")
+    expect(pinnedHeader(rows, items, 150)?.name).toBe("nav")
   })
 })

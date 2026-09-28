@@ -98,15 +98,16 @@ export function flattenGroups(groups: GroupDiff[], collapsed: ReadonlySet<string
 
 /**
  * The nearest header at or above the top edge, once it has scrolled under it.
- * Walks back from the first rendered row, because a group taller than the pane
- * has its header far outside the rendered window.
+ * Starts from the first row still showing below the top edge - the rendered
+ * items begin with overscan rows above it - and walks back, because a group
+ * taller than the pane has its header far outside the rendered window.
  */
 export function pinnedHeader(
   rows: DiffRow[],
-  items: { index: number; start: number }[],
+  items: { index: number; start: number; end: number }[],
   offset: number
 ): GroupDiff | null {
-  const first = items[0]
+  const first = items.find((item) => item.end > offset)
   if (!first || offset <= 0) {
     return null
   }
