@@ -1599,7 +1599,7 @@ function Line({
       <span aria-hidden className="w-4 shrink-0 select-none py-1 pl-2 font-mono">
         {sign.trim()}
       </span>
-      <span dir={isRtl ? "rtl" : undefined} className="min-w-0 flex-1 whitespace-pre-wrap break-words py-1 pr-3">
+      <span dir={isRtl ? "rtl" : undefined} className="min-w-0 flex-1 whitespace-pre-wrap wrap-break-word py-1 pr-3">
         {text}
       </span>
     </div>
