@@ -63,8 +63,18 @@ export function TemplateTable({
                       : needsWork && "shadow-[inset_2px_0_0_var(--color-warning)]"
                   )}
                 >
-                  <div className="font-medium">{template.name}</div>
-                  <div className="font-mono text-xs text-muted-foreground">{template.id}</div>
+                  {/* The row opens on click; this is the same action for the keyboard. */}
+                  <button
+                    type="button"
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      onOpen(template.id)
+                    }}
+                    className="grid gap-0.5 rounded-sm text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
+                  >
+                    <span className="font-medium">{template.name}</span>
+                    <span className="font-mono text-xs text-muted-foreground">{template.id}</span>
+                  </button>
                 </td>
                 <td className={cell}>
                   <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">

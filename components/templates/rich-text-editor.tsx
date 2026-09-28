@@ -4,7 +4,7 @@ import { useEffect, useRef, type ReactNode } from "react"
 import { Bold, Heading, Italic, Link2, Link2Off, List, ListOrdered, Underline } from "lucide-react"
 
 import { iconButton } from "@/components/button-styles"
-import { cleanHtml } from "@/lib/template-preview"
+import { cleanHtml, safeHtml } from "@/lib/template-preview"
 import { cn } from "@/lib/utils"
 
 /**
@@ -28,14 +28,21 @@ export function RichTextEditor({
   // value changed elsewhere (a paste of the English, another template), or the
   // caret would jump to the start on every keystroke.
   const emitted = useRef<string | null>(null)
+  // The DOM as last written or emitted, normalised. A blur or a command that
+  // changed nothing must not emit: that would undo a pending Keep English, or
+  // mark a field dirty because the browser closed a tag the value left open.
+  const shown = useRef<string | null>(null)
 
   useEffect(() => {
     const element = ref.current
     if (!element || value === emitted.current) {
       return
     }
-    element.innerHTML = value
+    // A stored value is a bundle string, so it goes through the whitelist
+    // like every other one - a raw `innerHTML = value` runs its `onerror`.
+    element.innerHTML = safeHtml(value)
     emitted.current = value
+    shown.current = cleanHtml(element.innerHTML)
   }, [value])
 
   useEffect(() => {
@@ -48,6 +55,10 @@ export function RichTextEditor({
       return
     }
     const next = cleanHtml(element.innerHTML)
+    if (next === shown.current) {
+      return
+    }
+    shown.current = next
     emitted.current = next
     onChange(next)
   }
