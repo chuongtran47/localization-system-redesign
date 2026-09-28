@@ -118,3 +118,20 @@ export function pruneDeleted(
   }
   return next
 }
+
+/** Unsaved edits and keeps across every language of one project. */
+export function pendingInTarget(state: DraftState, target: string): number {
+  const prefix = `${target}:`
+  return Object.keys(state.slots)
+    .filter((slotKey) => slotKey.startsWith(prefix))
+    .reduce((sum, slotKey) => sum + pendingCount(slotOf(state, slotKey)), 0)
+}
+
+/** Drops every draft and the selection of one project - after an import rewrote it. */
+export function clearTarget(state: DraftState, target: string): DraftState {
+  const prefix = `${target}:`
+  const slots = Object.fromEntries(Object.entries(state.slots).filter(([slotKey]) => !slotKey.startsWith(prefix)))
+  const selected = { ...state.selected }
+  delete selected[target]
+  return { slots, selected }
+}

@@ -1,10 +1,12 @@
 import { describe, expect, it } from "vitest"
 
 import {
+  clearTarget,
   commitSlot,
   discardSlot,
   emptyDrafts,
   pendingCount,
+  pendingInTarget,
   pruneDeleted,
   selectedOf,
   setEdit,
@@ -101,5 +103,28 @@ describe("pruneDeleted", () => {
     const state = pruneDeleted(seeded(), SCHOOL, ["a.one"], "language", "vi")
     expect(slotOf(state, schoolVi).edits).toEqual({})
     expect(slotOf(state, schoolJa).edits).toEqual({ "a.one": "ja" })
+  })
+})
+
+describe("clearTarget and pendingInTarget", () => {
+  const seeded = () => {
+    let state = setEdit(emptyDrafts, schoolVi, "a.one", "vi", "")
+    state = setKeep(state, schoolJa, "a.kept")
+    state = setEdit(state, studentVi, "a.one", "student", "")
+    state = setSelected(state, SCHOOL, ["a.one"], true)
+    return setSelected(state, STUDENT, ["a.one"], true)
+  }
+
+  it("counts every unsaved edit and keep in a project", () => {
+    expect(pendingInTarget(seeded(), SCHOOL)).toBe(2)
+    expect(pendingInTarget(seeded(), STUDENT)).toBe(1)
+  })
+
+  it("clears one project's slots and selection and leaves the others", () => {
+    const state = clearTarget(seeded(), SCHOOL)
+    expect(pendingInTarget(state, SCHOOL)).toBe(0)
+    expect(selectedOf(state, SCHOOL).size).toBe(0)
+    expect(slotOf(state, studentVi).edits).toEqual({ "a.one": "student" })
+    expect([...selectedOf(state, STUDENT)]).toEqual(["a.one"])
   })
 })

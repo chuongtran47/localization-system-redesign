@@ -179,4 +179,10 @@ export function findProjectByPath(pathname: string): Project | null {
   return group && id ? findProject(group, id) : null
 }
 
+/** `web/school-portal` → School Portal. */
+export function findProjectByTarget(target: string): Project | null {
+  const [group, id] = target.split("/")
+  return group && id ? findProject(group, id) : null
+}
+
 export const DEFAULT_PROJECT_PATH = "/web/school-portal"
