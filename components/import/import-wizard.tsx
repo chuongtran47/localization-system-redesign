@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useRef, useState, type DragEvent, type ReactNode } from "react"
+import { useEffect, useMemo, useRef, useState, type DragEvent, type ReactNode } from "react"
 import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { AlertTriangle, ArrowLeft, FileUp, RotateCw, Upload } from "lucide-react"
@@ -52,9 +52,27 @@ export function ImportWizard() {
   const [isImporting, setIsImporting] = useState(false)
   const [outcome, setOutcome] = useState<ImportOutcome | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
+  // Ids only need to be unique on this page; `crypto.randomUUID` is missing outside a secure context.
+  const fileSeq = useRef(0)
 
   const { revision, refresh } = useCoverage()
   const { drafts, update } = useDrafts()
+
+  // A file dropped anywhere but the zone would make the browser open it and
+  // leave the page, taking the staged batch with it.
+  useEffect(() => {
+    const guard = (event: globalThis.DragEvent) => {
+      if (event.dataTransfer?.types.includes("Files")) {
+        event.preventDefault()
+      }
+    }
+    window.addEventListener("dragover", guard)
+    window.addEventListener("drop", guard)
+    return () => {
+      window.removeEventListener("dragover", guard)
+      window.removeEventListener("drop", guard)
+    }
+  }, [])
 
   const codes = useMemo(
     () => [...new Set(files.map((file) => file.language).filter((code): code is LanguageCode => code !== null))],
@@ -122,7 +140,7 @@ export function ImportWizard() {
     for (const file of Array.from(list)) {
       try {
         added.push({
-          id: crypto.randomUUID(),
+          id: `file-${(fileSeq.current += 1)}`,
           name: file.name,
           values: parseBundleFile(await file.text()),
           language: languageFromName(file.name),
