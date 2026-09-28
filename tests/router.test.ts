@@ -8,6 +8,7 @@ import type {
   DeleteKeysResponse,
   EntriesResponse,
   ImportResponse,
+  TemplatesResponse,
 } from "@/lib/api-types"
 import { parseBundleFile } from "@/lib/bundle-diff"
 import type { TranslationRow } from "@/lib/locale-data"
@@ -255,5 +256,49 @@ describe("import", () => {
       mode: "merge",
     })
     expect(response.status).toBe(404)
+  })
+})
+
+describe("templates", () => {
+  async function templates(target: string, lang: string) {
+    const { body } = await callJson<TemplatesResponse>(store, "GET", `/templates?target=${target}&lang=${lang}`)
+    return body.templates
+  }
+
+  const sums = (list: TemplatesResponse["templates"]) =>
+    list.reduce(
+      (sum, t) => ({
+        templates: sum.templates + 1,
+        fields: sum.fields + t.total,
+        translated: sum.translated + t.translated,
+        needsFix: sum.needsFix + t.needsFix,
+      }),
+      { templates: 0, fields: 0, translated: 0, needsFix: 0 }
+    )
+
+  it("serves every channel of the seed", async () => {
+    expect(sums(await templates("messages/email", "vi"))).toEqual({ templates: 10, fields: 40, translated: 39, needsFix: 1 })
+    expect(sums(await templates("messages/sms", "vi"))).toEqual({ templates: 5, fields: 5, translated: 5, needsFix: 0 })
+    expect(sums(await templates("messages/notification", "vi"))).toEqual({
+      templates: 6,
+      fields: 12,
+      translated: 12,
+      needsFix: 0,
+    })
+    expect(sums(await templates("messages/email", "en"))).toMatchObject({ fields: 40, translated: 40 })
+  })
+
+  it("clears a template's needs_fix once its body is repaired", async () => {
+    const broken = (await templates("messages/email", "vi")).find((t) => t.template.id === "visitation_scheduled")
+    expect(broken?.needsFix).toBe(1)
+    const body = broken?.fields.find((field) => field.field === "body")?.target ?? ""
+
+    await call(store, "PUT", "/translations/vi?target=messages/email", {
+      values: { "visitation_scheduled.body": `${body}</p>` },
+      by: "T",
+    })
+
+    const fixed = (await templates("messages/email", "vi")).find((t) => t.template.id === "visitation_scheduled")
+    expect(fixed?.needsFix).toBe(0)
   })
 })
