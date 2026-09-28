@@ -192,7 +192,7 @@ export function ImportWizard() {
       refresh()
     }
 
-    setOutcome({ files: done, retired: retiredCount, retireError })
+    setOutcome({ project, files: done, retired: retiredCount, retireError })
     setIsImporting(false)
 
     if (failed > 0) {
@@ -233,11 +233,11 @@ export function ImportWizard() {
       </div>
 
       <div className="mt-6 flex max-w-4xl flex-col gap-4 pb-10">
-        <Step index={1} title="Which project">
+        <Step index={1} title="Which project" disabled={isImporting}>
           <ProjectPicker value={project} onChange={setTarget} />
         </Step>
 
-        <Step index={2} title="The files" disabled={!project}>
+        <Step index={2} title="The files" disabled={!project || isImporting}>
           <input
             ref={fileRef}
             type="file"
@@ -299,7 +299,7 @@ export function ImportWizard() {
           )}
         </Step>
 
-        <Step index={3} title="What it would change" disabled={files.length === 0}>
+        <Step index={3} title="What it would change" disabled={files.length === 0 || isImporting}>
           {bundles.error ? (
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">
               <span>
@@ -346,8 +346,8 @@ export function ImportWizard() {
         </Step>
 
         <Step index={4} title="Confirm" disabled={files.length === 0}>
-          {outcome && project ? (
-            <ImportResults outcome={outcome} project={project} />
+          {outcome ? (
+            <ImportResults outcome={outcome} />
           ) : (
             <div className="flex flex-col gap-3">
               {draftCount > 0 && project && (
@@ -395,6 +395,7 @@ function Step({
   return (
     <section
       aria-disabled={disabled}
+      inert={disabled}
       className={cn(
         "rounded-xl border border-border bg-card p-5 transition-opacity",
         disabled && "pointer-events-none opacity-40"

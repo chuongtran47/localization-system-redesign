@@ -15,13 +15,16 @@ export type ImportResult = {
 }
 
 export type ImportOutcome = {
+  /** The project that was written - not whichever one is selected now. */
+  project: Project
   files: ImportResult[]
   /** Keys no file carried, dropped from the project - 0 unless replacing. */
   retired: number
   retireError: string | null
 }
 
-export function ImportResults({ outcome, project }: { outcome: ImportOutcome; project: Project }) {
+export function ImportResults({ outcome }: { outcome: ImportOutcome }) {
+  const { project } = outcome
   return (
     <div className="flex flex-col gap-3">
       <div className="divide-y divide-border rounded-xl border border-border">
