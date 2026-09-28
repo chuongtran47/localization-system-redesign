@@ -17,7 +17,7 @@ Người dùng nhập một đợt file ngôn ngữ (`.json`) vào một project
 | I2 | Diff view | Port đủ behavior (group thu gọn được, header ghim, hunk `−/+`, số dòng, diffstat, bộ lọc, virtualized, validation), dựng lại bằng style của repo này |
 | I3 | Chế độ | `merge` mặc định; `replace` qua checkbox "Clear the keys these files leave out" |
 | I4 | Retire | Chỉ khi `replace`, sau khi **mọi** file ghi thành công: key không file nào trong đợt mang theo bị xóa khỏi project (`POST /keys/delete`, `scope: "all"`) |
-| I5 | Draft | Import thành công xóa toàn bộ draft và selection của project đó; bước 4 cảnh báo trước nếu project đang có draft |
+| I5 | Draft và coverage | Khi ít nhất một file ghi thành công: xóa toàn bộ draft và selection của project đó, rồi `refresh()` coverage/sidebar/rows — độc lập với retire (§3.1). Bước 4 cảnh báo trước nếu project đang có draft |
 | I6 | Project cho phép | Cả 26 project, gồm 3 kênh Messages (như repo tham chiếu cho phép mọi target) |
 
 ## 3. Kiến trúc
@@ -35,10 +35,17 @@ File (drop/chọn) → File.text() → parseBundleFile → StagedFile { id, name
                                                         │ Confirm
                                                         ▼
             importBundle(target, lang, values, mode) lần lượt, English trước (importOrder)
-                                                        │ nếu replace và không file nào lỗi
+                                                        │ afterImport(...) quyết định các bước sau
                                                         ▼
-            deleteKeys({ target, keys: retiredKeys(...), scope: "all" })  →  xóa draft của project  →  refresh()
+            [chỉ khi replace, có key cần retire, và MỌI file thành công]
+            deleteKeys({ target, keys: retiredKeys(...), scope: "all" })
+                                                        │
+                                                        ▼
+            [khi ÍT NHẤT MỘT importBundle thành công — merge, replace, có hay không retire, kể cả khi file khác lỗi]
+            clearTarget(drafts, target)  →  coverage.refresh()
 ```
+
+**Quy tắc sau batch** (`afterImport`, §3.3): dữ liệu đã đổi ngay khi một file ghi thành công, nên việc xóa draft của project và làm mới coverage/sidebar/rows gắn với "có ít nhất một file thành công", không gắn với retire. Retire là bước bổ sung chạy trước hai việc đó, chỉ khi `replace`, `retiredKeys` không rỗng và không file nào lỗi. Retire lỗi không ngăn hai việc kia (file đã được ghi). Không file nào thành công → không xóa draft, không refresh.
 
 Không có route API mới: `PUT /import/:lang`, `POST /keys/delete`, `GET /entries` đã có từ #1–2. `lib/api.ts` vẫn là module duy nhất chạm backend.
 
@@ -51,7 +58,7 @@ lib/bundle-diff.ts                     port: BundleFileError, DiffKind, DiffEntr
 lib/diff-groups.ts                     tách từ bundle_diff_view (thuần): DiffFilter, GroupDiff, DiffRow, LineNumbers,
                                        groupsOf, numberEntries, flattenGroups, pinnedHeader
 lib/import-plan.ts                     tách từ import_page (thuần): languageFromName, duplicatedLanguages,
-                                       retiredKeys, importOrder, blockerOf
+                                       retiredKeys, importOrder, blockerOf, afterImport
 hooks/use-target-bundles.ts            port: rows của một project ở nhiều ngôn ngữ, cache theo target
 components/import/import-wizard.tsx    trang 4 bước, state của đợt import
 components/import/project-picker.tsx   popover chọn project (dựng trên PopoverMenu)
@@ -61,6 +68,7 @@ components/import/bundle-diff-view.tsx diff kiểu pull request
 components/import/import-results.tsx   kết quả sau khi ghi
 tests/bundle-diff.test.ts, tests/diff-groups.test.ts, tests/import-plan.test.ts
 tests/router.test.ts                   thêm describe("import")
+tests/fixtures/import-vi.json          fixture nhỏ cho test router và kiểm tra UI (§6)
 ```
 
 Sửa:
@@ -78,6 +86,7 @@ Cờ ngôn ngữ đang nằm trong `app-topbar.tsx`; chuyển `flags` sang `lib/
 - `retiredKeys(mode, registryRows, files): string[]` — `[]` khi `merge` hoặc chưa có rows; ngược lại là key của registry không nằm trong bất kỳ file nào.
 - `importOrder(files): StagedFile[]` — file English lên đầu, còn lại giữ thứ tự.
 - `blockerOf(state): string | null` — câu giải thích vì sao Confirm khóa, theo thứ tự: chưa chọn project → chưa có file → file chưa có ngôn ngữ → trùng ngôn ngữ → tải lỗi → đang tải → không có thay đổi. `null` khi được phép.
+- `afterImport({ mode, succeeded, failed, retired }): { retire: boolean; clearDrafts: boolean; refresh: boolean }` — `succeeded`/`failed` là số file ghi thành công/lỗi, `retired` là số key `retiredKeys` trả về. `retire = mode === "replace" && retired > 0 && failed === 0 && succeeded > 0`; `clearDrafts = refresh = succeeded > 0`.
 - `groupsOf(entries, filter)`, `numberEntries(entries)`, `flattenGroups(groups, collapsed)`, `pinnedHeader(rows, items, offset)` — đúng như bản tham chiếu (§4.3).
 
 ## 4. Giao diện
@@ -122,7 +131,7 @@ Mỗi bước là card `rounded-xl border border-border bg-card p-5`; tiêu đ�
 
 ### 4.4 Kết quả
 
-Card chia dòng, mỗi file một dòng: tên mono; lỗi → `AlertTriangle` + thông điệp destructive; thành công → `N new · N added · N changed · N cleared → <file>` muted. Dưới card: lỗi retire (destructive) hoặc "N keys no file carried were removed from <project> and every one of its language files." Nút primary "Open <project>" (link `/<target>`). Toast: thành công "Imported N files into <project>" (kèm mô tả retire nếu có); có file lỗi "X of N could not be written - see the results below"; retire lỗi "Imported, but the keys left out could not be retired".
+Card chia dòng, mỗi file một dòng: tên mono; lỗi → `AlertTriangle` + thông điệp destructive; thành công → `{created} created · {added} added · {changed} changed · {removed} cleared → {file}` muted, lấy thẳng từ các trường `ImportResponse` cùng tên (`created` là key được đăng ký mới — cùng khái niệm với loại diff "New" nhưng là con số server thực sự áp dụng, nên ghi "created" để không lẫn với nhãn của bộ lọc). Dưới card: lỗi retire (destructive) hoặc "N keys no file carried were removed from <project> and every one of its language files." Nút primary "Open <project>" (link `/<target>`). Toast: thành công "Imported N files into <project>" (kèm mô tả retire nếu có); có file lỗi "X of N could not be written - see the results below"; retire lỗi "Imported, but the keys left out could not be retired".
 
 ### 4.5 Sidebar và workspace
 
@@ -141,7 +150,7 @@ Card chia dòng, mỗi file một dòng: tên mono; lỗi → `AlertTriangle` + 
 - **Một file ghi lỗi** → vẫn ghi các file còn lại; không retire; kết quả và toast nêu rõ.
 - **Retire lỗi** → file đã ghi giữ nguyên; kết quả nêu lỗi retire.
 - **Đổi project khi đã có file** → giữ file, tải lại bundle của project mới, xóa kết quả cũ.
-- **Draft** → xóa theo I5 chỉ khi ít nhất một file ghi thành công.
+- **Draft và coverage** → theo quy tắc sau batch (§3.1): xóa draft của project và `refresh()` khi ít nhất một file ghi thành công, kể cả khi file khác lỗi hoặc retire lỗi.
 
 ## 6. Kiểm thử
 
@@ -151,7 +160,13 @@ Card chia dòng, mỗi file một dòng: tên mono; lỗi → `AlertTriangle` + 
   - `parseBundleFile`: flat; nested → dotted; số/boolean/null; JSON hỏng, mảng gốc, object rỗng, giá trị là list → `BundleFileError` với thông điệp đúng.
   - `diffBundle` trên rows tổng hợp: merge giữ key vắng mặt (unchanged); replace làm rỗng (removed); before rỗng → added; khác nhau → changed; key lạ hợp lệ → new (source = value khi file là `en`, rỗng khi không); key lạ không hợp lệ → `invalid`; `errors` đếm entry có issue level error; `changeCount`.
 - `diff-groups`: `groupsOf` lọc theo filter và tính additions/deletions như `git` (changed = +1 −1, unchanged = 0); `numberEntries` không đánh số phía rỗng; `flattenGroups` bỏ hunk của group thu gọn; `pinnedHeader` trả null khi chưa cuộn và khi header của chính group còn trên màn hình.
-- `import-plan`: `languageFromName` (`vi.json`, `school.vi.json`, `vi_VN.json`, `zh-Hans.json`, `ZH-HANS.json`, `messages.json` → null); `duplicatedLanguages`; `retiredKeys` (merge → []; replace → key không file nào mang, tính trên cả đợt); `importOrder` (en lên đầu); `blockerOf` theo đúng thứ tự ưu tiên.
+- `import-plan`: `languageFromName` (`vi.json`, `school.vi.json`, `vi_VN.json`, `zh-Hans.json`, `ZH-HANS.json`, `messages.json` → null); `duplicatedLanguages`; `retiredKeys` (merge → []; replace → key không file nào mang, tính trên cả đợt); `importOrder` (en lên đầu); `blockerOf` theo đúng thứ tự ưu tiên; `afterImport`:
+  - merge, 2 thành công → `{ retire: false, clearDrafts: true, refresh: true }`;
+  - replace, `retired` 0, 1 thành công → không retire, vẫn clear + refresh;
+  - replace, `retired` 3, 2 thành công 0 lỗi → retire + clear + refresh;
+  - replace, `retired` 3, 1 thành công 1 lỗi → không retire, vẫn clear + refresh;
+  - 0 thành công 2 lỗi → cả ba đều false.
+- `drafts`: `clearTarget` xóa mọi slot và selection của target, không đụng target khác.
 - `router` — `PUT /import/:lang` trên `web/school-portal`:
   - merge `{ "user.form.actions.cancel": "Hủy bỏ", "home.brand.fresh": "Mới", "bad key.x": "x" }` → `changed 1, created 1, unchanged 499, invalid ["bad key.x"]`; `home.brand.fresh` có mặt ở `en` với trạng thái missing.
   - replace `{ "user.form.actions.cancel": "Hủy bỏ" }` → `changed 1, removed 499`.
@@ -159,7 +174,19 @@ Card chia dòng, mỗi file một dòng: tên mono; lỗi → `AlertTriangle` + 
 
 **Gate:** `npm run typecheck`, `npm test`, `npm run build`.
 
-**Kiểm tra UI** (script CDP tạm, như #1–2): mở `/import?target=web/school-portal`; nạp `vi.json` (tự nhận Vietnamese) có một thay đổi và một key mới → diff hiện Changed 1 / New 1; nạp thêm file không đoán được ngôn ngữ → Confirm khóa với câu đúng; chọn ngôn ngữ trùng → viền đỏ; bật Replace → khối cảnh báo retire; Import → kết quả đúng số, toast, sidebar/coverage cập nhật; draft của project bị xóa; nút Import ở workspace dẫn vào trang với project chọn sẵn; mục sidebar "Import files" tô sáng trên `/import`.
+**Fixture:** `tests/fixtures/import-vi.json` — file nhỏ, **không** phải sample 500 key:
+
+```json
+{
+  "user": { "form": { "actions": { "cancel": "Hủy bỏ" } } },
+  "home.brand.fresh": "Mới",
+  "bad key.x": "x"
+}
+```
+
+(nested + flat trong cùng một file; một key đổi giá trị, một key mới hợp lệ, một key tên không hợp lệ). Với merge trên `web/school-portal` (seed): diff = Changed 1, New 1, Unchanged 499, `invalid` 1; replace thêm Removed 499 và retire 499 key (mọi key trừ `user.form.actions.cancel`).
+
+**Kiểm tra UI** (script CDP tạm, như #1–2): mở `/import?target=web/school-portal`; nạp `tests/fixtures/import-vi.json` (tên chứa `vi`, tự nhận Vietnamese) → diff hiện Changed 1 / New 1 và dòng báo 1 key không hợp lệ; Import (merge) → kết quả `1 created · 0 added · 1 changed · 0 cleared`, sidebar/coverage cập nhật dù không retire; nạp thêm file không đoán được ngôn ngữ → Confirm khóa với câu đúng; chọn ngôn ngữ trùng → viền đỏ; bật Replace → khối cảnh báo retire; Import → kết quả đúng số, toast, sidebar/coverage cập nhật; draft của project bị xóa; nút Import ở workspace dẫn vào trang với project chọn sẵn; mục sidebar "Import files" tô sáng trên `/import`.
 
 ## 7. Giữ nguyên
 
