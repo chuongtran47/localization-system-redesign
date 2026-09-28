@@ -8,6 +8,7 @@ import { destructiveButton, outlineButton, primaryButton } from "@/components/bu
 import { useDrafts } from "@/components/draft-provider"
 import { SkeletonRows } from "@/components/skeleton-rows"
 import { StatCard } from "@/components/stat-card"
+import { TemplateWorkspace } from "@/components/templates/template-workspace"
 import { TranslationList } from "@/components/translation-list"
 import { TranslationRow } from "@/components/translation-row"
 import { AddKeyDialog } from "@/components/translations/add-key-dialog"
@@ -43,18 +44,7 @@ import { ALL_GROUPS, resolveGroup, statusFilters, viewOf, type StatusFilter } fr
 
 /** Loose UI strings and message templates are different screens over the same route. */
 export function TranslationWorkspace({ project }: { project: Project }) {
-  if (project.profile.kind !== "ui") {
-    return (
-      <div className="mx-auto max-w-[1400px] px-6 py-6">
-        <ProjectProfileCard
-          project={project}
-          title={`${project.name} templates`}
-          message="The template editor for this channel is coming soon."
-        />
-      </div>
-    )
-  }
-  return <UiWorkspace project={project} />
+  return project.profile.kind === "ui" ? <UiWorkspace project={project} /> : <TemplateWorkspace project={project} />
 }
 
 function UiWorkspace({ project }: { project: Project }) {
