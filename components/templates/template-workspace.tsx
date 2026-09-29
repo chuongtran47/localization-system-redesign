@@ -6,6 +6,7 @@ import { Check, ChevronDown, RotateCw } from "lucide-react"
 
 import { outlineButton } from "@/components/button-styles"
 import { PopoverMenu } from "@/components/popover-menu"
+import { useRole } from "@/components/role-provider"
 import { SkeletonRows } from "@/components/skeleton-rows"
 import { StatCard } from "@/components/stat-card"
 import { TemplateDialog } from "@/components/templates/template-dialog"
@@ -39,6 +40,13 @@ export function TemplateWorkspace({ project }: { project: Project }) {
   const { revision, refresh } = useCoverage()
   const { templates, isLoading, error } = useTemplates(target, language, revision)
   const [isExportOpen, setExportOpen] = useState(false)
+  const { role, can } = useRole()
+  // Export forgets it was open when the view changes - it must not come back with the capability.
+  const [openedAs, setOpenedAs] = useState(role)
+  if (openedAs !== role) {
+    setOpenedAs(role)
+    setExportOpen(false)
+  }
 
   const owner = resolveOwner(filters.owner, templates, isLoading)
   const beforeCategory = useMemo(
@@ -185,7 +193,7 @@ export function TemplateWorkspace({ project }: { project: Project }) {
           onSaved={refresh}
         />
       )}
-      {hasTemplates && (
+      {hasTemplates && can.exchangeBundles && (
         <ExportDialog open={isExportOpen} onOpenChange={setExportOpen} project={project} language={language} />
       )}
     </div>
