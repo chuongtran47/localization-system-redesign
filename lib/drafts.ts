@@ -100,6 +100,9 @@ export function setSelected(state: DraftState, target: string, keys: readonly st
 export const clearSelected = (state: DraftState, target: string) =>
   setSelected(state, target, [...selectedOf(state, target)], false)
 
+/** Drops every project's selection and keeps every draft - when the view can no longer delete keys. */
+export const clearAllSelected = (state: DraftState): DraftState => ({ ...state, selected: {} })
+
 export function pruneDeleted(
   state: DraftState,
   target: string,

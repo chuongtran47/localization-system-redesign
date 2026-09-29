@@ -8,6 +8,7 @@ import {
   type TranslationStatus,
 } from "@/lib/locale-data"
 import { ALL_VERSIONS, releaseOf, versions } from "@/lib/release"
+import type { Capabilities } from "@/lib/roles"
 
 export type StatusFilter = TranslationStatus | "all" | "new"
 
@@ -47,6 +48,17 @@ export function parseFilters(params: ParamReader): WorkspaceFilters {
     group: params.get("group") || ALL_GROUPS,
     q: params.get("q") ?? "",
   }
+}
+
+/**
+ * The release filters belong to the developer view. A link that carries them,
+ * opened in another view, shows every key rather than an empty list.
+ */
+export function filtersFor(filters: WorkspaceFilters, can: Pick<Capabilities, "release">): WorkspaceFilters {
+  if (can.release) {
+    return filters
+  }
+  return { ...filters, status: filters.status === "new" ? "all" : filters.status, version: ALL_VERSIONS }
 }
 
 /** A group this project does not have means all groups - once the rows are in. */

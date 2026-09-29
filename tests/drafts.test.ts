@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 
 import {
+  clearAllSelected,
   clearTarget,
   commitSlot,
   discardSlot,
@@ -126,5 +127,20 @@ describe("clearTarget and pendingInTarget", () => {
     expect(selectedOf(state, SCHOOL).size).toBe(0)
     expect(slotOf(state, studentVi).edits).toEqual({ "a.one": "student" })
     expect([...selectedOf(state, STUDENT)]).toEqual(["a.one"])
+  })
+})
+
+describe("clearAllSelected", () => {
+  it("drops every project's selection and keeps every draft", () => {
+    let state = setEdit(emptyDrafts, schoolVi, "nav.home", "Trang chủ", "")
+    state = setKeep(state, studentVi, "nav.back")
+    state = setSelected(state, SCHOOL, ["nav.home", "nav.users"], true)
+    state = setSelected(state, STUDENT, ["nav.back"], true)
+
+    const cleared = clearAllSelected(state)
+
+    expect(selectedOf(cleared, SCHOOL).size).toBe(0)
+    expect(selectedOf(cleared, STUDENT).size).toBe(0)
+    expect(cleared.slots).toBe(state.slots)
   })
 })
