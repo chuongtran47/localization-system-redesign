@@ -6,6 +6,7 @@ import { ChevronDown, Download, FileUp, FlaskConical, Lock, Rocket, Upload } fro
 
 import { outlineButton } from "@/components/button-styles"
 import { PopoverMenu, PopoverMenuItem } from "@/components/popover-menu"
+import { useRole } from "@/components/role-provider"
 import { groupLabel, kindLabel, targetOf, type Project } from "@/lib/projects"
 
 export function WorkspaceHeader({
@@ -25,6 +26,7 @@ export function WorkspaceHeader({
   onExport: () => void
   children?: ReactNode
 }) {
+  const { can } = useRole()
   return (
     <div className="flex flex-wrap items-start justify-between gap-4">
       <div>
@@ -52,23 +54,27 @@ export function WorkspaceHeader({
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
-        {canExport && (
+        {canExport && can.exchangeBundles && (
           <button type="button" onClick={onExport} className={outlineButton}>
             <Download className="size-4" />
             Export
           </button>
         )}
-        {canExport && (
+        {canExport && can.exchangeBundles && (
           <Link href={`/import?target=${targetOf(project)}`} className={outlineButton}>
             <FileUp className="size-4" />
             Import
           </Link>
         )}
-        <button type="button" className={outlineButton}>
-          <Lock className="size-4" />
-          Lock
-        </button>
-        <PublishMenu />
+        {can.release && (
+          <>
+            <button type="button" className={outlineButton}>
+              <Lock className="size-4" />
+              Lock
+            </button>
+            <PublishMenu />
+          </>
+        )}
         {children}
       </div>
     </div>

@@ -6,6 +6,7 @@ import { toast } from "sonner"
 
 import { destructiveButton, outlineButton, primaryButton } from "@/components/button-styles"
 import { useDrafts } from "@/components/draft-provider"
+import { useRole } from "@/components/role-provider"
 import { SkeletonRows } from "@/components/skeleton-rows"
 import { StatCard } from "@/components/stat-card"
 import { TemplateWorkspace } from "@/components/templates/template-workspace"
@@ -36,11 +37,11 @@ import {
   slotKeyOf,
   slotOf,
 } from "@/lib/drafts"
-import { displayedValueOf, languages } from "@/lib/locale-data"
+import { displayedValueOf, languages, SOURCE_LANGUAGE } from "@/lib/locale-data"
 import { targetOf, type Project } from "@/lib/projects"
 import { ALL_VERSIONS, versions } from "@/lib/release"
 import { cn } from "@/lib/utils"
-import { ALL_GROUPS, resolveGroup, statusFilters, viewOf, type StatusFilter } from "@/lib/workspace-view"
+import { ALL_GROUPS, filtersFor, resolveGroup, statusFilters, viewOf, type StatusFilter } from "@/lib/workspace-view"
 
 /** Loose UI strings and message templates are different screens over the same route. */
 export function TranslationWorkspace({ project }: { project: Project }) {
@@ -50,7 +51,9 @@ export function TranslationWorkspace({ project }: { project: Project }) {
 function UiWorkspace({ project }: { project: Project }) {
   const target = targetOf(project)
 
-  const { filters, setParam, setParams } = useWorkspaceParams()
+  const { filters: params, setParam, setParams } = useWorkspaceParams()
+  const { role, can } = useRole()
+  const filters = filtersFor(params, can)
   const { language } = filters
   const { revision, refresh } = useCoverage()
   const { rows, isLoading, error } = useTranslationRows(target, language, revision)
@@ -71,6 +74,17 @@ function UiWorkspace({ project }: { project: Project }) {
   const [doomed, setDoomed] = useState<string[]>([])
   const [isAddOpen, setAddOpen] = useState(false)
   const [isExportOpen, setExportOpen] = useState(false)
+
+  // Admin surfaces forget they were open when the view changes, so none
+  // outlives the capability it needs, nor comes back with it.
+  const [openedAs, setOpenedAs] = useState(role)
+  if (openedAs !== role) {
+    setOpenedAs(role)
+    setAddOpen(false)
+    setDoomed([])
+    setExportOpen(false)
+  }
+  const isReadOnly = language === SOURCE_LANGUAGE && !can.editSource
 
   const languageInfo = languages.find((item) => item.code === language) ?? languages[0]
   const hasKeys = rows.length > 0
@@ -135,7 +149,7 @@ function UiWorkspace({ project }: { project: Project }) {
   }
 
   const statusTabs = statusFilters
-    .filter((item) => item.id !== "new" || view.hasManual || filters.status === "new")
+    .filter((item) => item.id !== "new" || (can.release && (view.hasManual || filters.status === "new")))
     .map((item) => ({ id: item.id, label: item.label, count: statusCounts[item.id] }))
 
   return (
@@ -152,10 +166,12 @@ function UiWorkspace({ project }: { project: Project }) {
         canExport={hasKeys}
         onExport={() => setExportOpen(true)}
       >
-        <button type="button" onClick={() => setAddOpen(true)} className={primaryButton}>
-          <Plus className="size-4" />
-          Add key
-        </button>
+        {can.manageKeys && (
+          <button type="button" onClick={() => setAddOpen(true)} className={primaryButton}>
+            <Plus className="size-4" />
+            Add key
+          </button>
+        )}
       </WorkspaceHeader>
 
       {/* Stat cards */}
@@ -199,25 +215,29 @@ function UiWorkspace({ project }: { project: Project }) {
 
       {hasKeys && (
         <>
-          {/* Version pills */}
-          <div className="mt-6 flex flex-wrap items-center gap-1.5">
-            <span className="mr-1 text-xs font-medium text-muted-foreground">Version</span>
-            {versions.map((v) => (
-              <button
-                key={v}
-                type="button"
-                onClick={() => setParam("version", v === ALL_VERSIONS ? null : v)}
-                className={cn(
-                  "rounded-full border px-2.5 py-1 text-xs font-medium transition-colors",
-                  filters.version === v
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-border bg-card text-muted-foreground hover:bg-accent/40 hover:text-foreground"
-                )}
-              >
-                {v}
-              </button>
-            ))}
-          </div>
+          {can.release && (
+            <>
+              {/* Version pills */}
+              <div className="mt-6 flex flex-wrap items-center gap-1.5">
+                <span className="mr-1 text-xs font-medium text-muted-foreground">Version</span>
+                {versions.map((v) => (
+                  <button
+                    key={v}
+                    type="button"
+                    onClick={() => setParam("version", v === ALL_VERSIONS ? null : v)}
+                    className={cn(
+                      "rounded-full border px-2.5 py-1 text-xs font-medium transition-colors",
+                      filters.version === v
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-card text-muted-foreground hover:bg-accent/40 hover:text-foreground"
+                    )}
+                  >
+                    {v}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
 
           {/* Status tabs, group and count */}
           <div className="mt-5 flex flex-wrap items-end justify-between gap-3 border-b border-border">
@@ -256,23 +276,28 @@ function UiWorkspace({ project }: { project: Project }) {
         ) : isLoading ? (
           <SkeletonRows />
         ) : !hasKeys ? (
-          <ProjectProfileCard
-            project={project}
-            title={`No keys in ${project.name} yet`}
-            message="Add the first key below. It is created in this project only, and in every language at once."
-            action={
-              <button type="button" onClick={() => setAddOpen(true)} className={primaryButton}>
-                <Plus className="size-4" />
-                Add key
-              </button>
-            }
-          />
+          can.manageKeys ? (
+            <ProjectProfileCard
+              project={project}
+              title={`No keys in ${project.name} yet`}
+              message="Add the first key below. It is created in this project only, and in every language at once."
+              action={
+                <button type="button" onClick={() => setAddOpen(true)} className={primaryButton}>
+                  <Plus className="size-4" />
+                  Add key
+                </button>
+              }
+            />
+          ) : (
+            <ProjectProfileCard project={project} title={`No strings to translate in ${project.name} yet`} message="" />
+          )
         ) : (
           <TranslationList
             rows={view.visible}
             languageName={languageInfo.name}
             allSelected={view.visible.length > 0 && selectedInView === view.visible.length}
             someSelected={selectedInView > 0 && selectedInView < view.visible.length}
+            selectable={can.manageKeys}
             onSelectAll={handleSelectAll}
             renderRow={(row) => {
               const isKeepPending = slot.keeps.has(row.key)
@@ -287,6 +312,9 @@ function UiWorkspace({ project }: { project: Project }) {
                   language={language}
                   profile={project.profile}
                   rtl={languageInfo.rtl ?? false}
+                  readOnly={isReadOnly}
+                  canManage={can.manageKeys}
+                  showOrigin={can.release}
                   onChange={handleChange}
                   onKeep={handleKeep}
                   onConfirm={handleConfirm}
@@ -300,9 +328,9 @@ function UiWorkspace({ project }: { project: Project }) {
       </div>
 
       {/* Trays: a selection and unsaved edits can both be open, so they stack. */}
-      {(selected.size > 0 || pending > 0) && (
+      {((can.manageKeys && selected.size > 0) || (!isReadOnly && pending > 0)) && (
         <div className="sticky bottom-4 z-10 -mt-6 space-y-2">
-          {selected.size > 0 && (
+          {can.manageKeys && selected.size > 0 && (
             <Tray>
               <span className="text-sm">
                 {selected.size.toLocaleString()} selected
@@ -321,7 +349,7 @@ function UiWorkspace({ project }: { project: Project }) {
               </div>
             </Tray>
           )}
-          {pending > 0 && (
+          {!isReadOnly && pending > 0 && (
             <Tray>
               <span className="text-sm">
                 {pending} unsaved {pending === 1 ? "key" : "keys"}{" "}
@@ -345,17 +373,21 @@ function UiWorkspace({ project }: { project: Project }) {
         </div>
       )}
 
-      <AddKeyDialog open={isAddOpen} onOpenChange={setAddOpen} project={project} onCreated={handleCreated} />
-      {hasKeys && (
+      {can.manageKeys && (
+        <AddKeyDialog open={isAddOpen} onOpenChange={setAddOpen} project={project} onCreated={handleCreated} />
+      )}
+      {hasKeys && can.exchangeBundles && (
         <ExportDialog open={isExportOpen} onOpenChange={setExportOpen} project={project} language={language} />
       )}
-      <DeleteKeysDialog
-        project={project}
-        language={language}
-        keys={doomed}
-        onClose={() => setDoomed([])}
-        onDeleted={handleDeleted}
-      />
+      {can.manageKeys && (
+        <DeleteKeysDialog
+          project={project}
+          language={language}
+          keys={doomed}
+          onClose={() => setDoomed([])}
+          onDeleted={handleDeleted}
+        />
+      )}
     </div>
   )
 }

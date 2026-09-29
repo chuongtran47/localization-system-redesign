@@ -5,6 +5,7 @@ import Link from "next/link"
 import { usePathname, useSearchParams } from "next/navigation"
 import { ChevronsUpDown, FileUp, Languages, Plus, Search } from "lucide-react"
 
+import { useRole } from "@/components/role-provider"
 import { useCoverage } from "@/hooks/use-coverage"
 import { useWorkspaceParams } from "@/hooks/use-workspace-params"
 import { outstandingOf, targetLanguageCoverage } from "@/lib/coverage"
@@ -18,6 +19,7 @@ export function AppSidebar() {
   const lang = useSearchParams().get("lang")
   const { filters } = useWorkspaceParams()
   const { coverage } = useCoverage()
+  const { can } = useRole()
 
   const filtered = projects.filter((p) => p.name.toLowerCase().includes(query.toLowerCase()))
 
@@ -92,25 +94,31 @@ export function AppSidebar() {
         })}
       </nav>
 
-      {/* Footer */}
-      <div className="space-y-2 border-t border-sidebar-border p-3">
-        <Link
-          href={lang ? `/import?lang=${encodeURIComponent(lang)}` : "/import"}
-          className={cn(
-            "flex w-full items-center justify-center gap-1.5 rounded-lg border px-2.5 py-2 text-xs font-medium transition-colors",
-            pathname === "/import"
-              ? "border-transparent bg-sidebar-accent text-sidebar-accent-foreground"
-              : "border-sidebar-border text-muted-foreground hover:bg-accent/40 hover:text-foreground"
+      {/* Footer - developer tools only; a view without them has no footer at all. */}
+      {(can.exchangeBundles || can.manageApps) && (
+        <div className="space-y-2 border-t border-sidebar-border p-3">
+          {can.exchangeBundles && (
+            <Link
+              href={lang ? `/import?lang=${encodeURIComponent(lang)}` : "/import"}
+              className={cn(
+                "flex w-full items-center justify-center gap-1.5 rounded-lg border px-2.5 py-2 text-xs font-medium transition-colors",
+                pathname === "/import"
+                  ? "border-transparent bg-sidebar-accent text-sidebar-accent-foreground"
+                  : "border-sidebar-border text-muted-foreground hover:bg-accent/40 hover:text-foreground"
+              )}
+            >
+              <FileUp className="size-3.5" />
+              Import files
+            </Link>
           )}
-        >
-          <FileUp className="size-3.5" />
-          Import files
-        </Link>
-        <button className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-sidebar-border px-2.5 py-2 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground">
-          <Plus className="size-3.5" />
-          New application
-        </button>
-      </div>
+          {can.manageApps && (
+            <button className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-sidebar-border px-2.5 py-2 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground">
+              <Plus className="size-3.5" />
+              New application
+            </button>
+          )}
+        </div>
+      )}
     </aside>
   )
 }

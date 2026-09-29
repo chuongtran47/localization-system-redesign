@@ -32,6 +32,12 @@ export type TranslationRowProps = {
   language: LanguageCode
   profile: ProjectProfile
   rtl: boolean
+  /** The English, in a view that may not edit it: shown, not editable. */
+  readOnly: boolean
+  /** Select and delete - the developer view's key management. */
+  canManage: boolean
+  /** The "New" badge on keys added here - part of the release view. */
+  showOrigin: boolean
   onChange: (key: string, value: string) => void
   onKeep: (key: string) => void
   onConfirm: (key: string) => void
@@ -48,17 +54,22 @@ export function TranslationRow({
   language,
   profile,
   rtl,
+  readOnly,
+  canManage,
+  showOrigin,
   onChange,
   onKeep,
   onConfirm,
   onSelect,
   onDelete,
 }: TranslationRowProps) {
-  const issues = checkTranslation(row.source, value, {
-    language,
-    lengthBudget: profile.lengthBudget,
-    maxLength: profile.maxLength,
-  })
+  const issues = readOnly
+    ? []
+    : checkTranslation(row.source, value, {
+        language,
+        lengthBudget: profile.lengthBudget,
+        maxLength: profile.maxLength,
+      })
   const hasError = issues.some((issue) => issue.level === "error")
   const hasWarning = !hasError && issues.length > 0
   const isKept = isKeepPending || (row.keptSource && value === row.source)
@@ -66,11 +77,12 @@ export function TranslationRow({
   // confirming would save the old English as if it were a translation.
   const isStaleKeep = row.status === "outdated" && row.keptSource
   const canKeep =
+    !readOnly &&
     (row.status === "missing" || isStaleKeep) &&
     !isKeepPending &&
     row.source !== "" &&
     language !== SOURCE_LANGUAGE
-  const showOutdated = row.status === "outdated" && !isDirty
+  const showOutdated = !readOnly && row.status === "outdated" && !isDirty
 
   const handleCopy = async () => {
     if (await copyText(row.source)) {
@@ -101,17 +113,19 @@ export function TranslationRow({
       )}
     >
       <div className="flex h-8 items-center justify-center">
-        <Checkbox
-          checked={isSelected}
-          aria-label={`Select ${row.key}`}
-          onCheckedChange={(checked) => onSelect(row.key, checked === true)}
-        />
+        {canManage && (
+          <Checkbox
+            checked={isSelected}
+            aria-label={`Select ${row.key}`}
+            onCheckedChange={(checked) => onSelect(row.key, checked === true)}
+          />
+        )}
       </div>
 
       <div className="min-w-0 pt-1">
         <div className="flex items-center gap-1.5">
           <code className="block truncate font-mono text-[13px] text-foreground">{row.key}</code>
-          {row.origin === "manual" && (
+          {showOrigin && row.origin === "manual" && (
             <span className="shrink-0 rounded-full bg-accent px-1.5 text-[10px] font-semibold text-accent-foreground">
               New
             </span>
@@ -123,7 +137,11 @@ export function TranslationRow({
       </div>
 
       <div className="min-w-0 space-y-1.5">
-        {row.source.length <= SHORT_SOURCE ? (
+        {readOnly ? (
+          <p dir={rtl ? "rtl" : undefined} className="whitespace-pre-wrap py-1.5 text-sm">
+            {value}
+          </p>
+        ) : row.source.length <= SHORT_SOURCE ? (
           <Input {...field} className="h-8" />
         ) : (
           <Textarea {...field} className="min-h-16 resize-y" />
@@ -177,14 +195,16 @@ export function TranslationRow({
         <button type="button" className={iconButton} aria-label={`Copy the English for ${row.key}`} onClick={handleCopy}>
           <Copy className="size-3.5" />
         </button>
-        <button
-          type="button"
-          className={iconButton}
-          aria-label={`Paste the English into ${row.key}`}
-          onClick={() => onChange(row.key, row.source)}
-        >
-          <ClipboardPaste className="size-3.5" />
-        </button>
+        {!readOnly && (
+          <button
+            type="button"
+            className={iconButton}
+            aria-label={`Paste the English into ${row.key}`}
+            onClick={() => onChange(row.key, row.source)}
+          >
+            <ClipboardPaste className="size-3.5" />
+          </button>
+        )}
         <Tooltip>
           <TooltipTrigger render={<button type="button" className={iconButton} aria-label="View history" />}>
             <History className="size-3.5" />
@@ -200,14 +220,16 @@ export function TranslationRow({
             </span>
           </TooltipContent>
         </Tooltip>
-        <button
-          type="button"
-          className={cn(iconButton, "hover:bg-destructive/10 hover:text-destructive")}
-          aria-label={`Delete ${row.key}`}
-          onClick={() => onDelete(row.key)}
-        >
-          <Trash2 className="size-3.5" />
-        </button>
+        {canManage && (
+          <button
+            type="button"
+            className={cn(iconButton, "hover:bg-destructive/10 hover:text-destructive")}
+            aria-label={`Delete ${row.key}`}
+            onClick={() => onDelete(row.key)}
+          >
+            <Trash2 className="size-3.5" />
+          </button>
+        )}
       </div>
     </div>
   )

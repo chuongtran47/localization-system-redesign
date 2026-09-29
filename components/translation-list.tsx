@@ -17,6 +17,7 @@ export function TranslationList({
   languageName,
   allSelected,
   someSelected,
+  selectable,
   onSelectAll,
   renderRow,
 }: {
@@ -24,6 +25,7 @@ export function TranslationList({
   languageName: string
   allSelected: boolean
   someSelected: boolean
+  selectable: boolean
   onSelectAll: (selected: boolean) => void
   renderRow: (row: TranslationRow) => ReactNode
 }) {
@@ -58,12 +60,14 @@ export function TranslationList({
         )}
       >
         <span className="flex justify-center">
-          <Checkbox
-            checked={allSelected}
-            indeterminate={someSelected}
-            aria-label={`Select all ${rows.length} keys in view`}
-            onCheckedChange={(checked) => onSelectAll(checked === true)}
-          />
+          {selectable && (
+            <Checkbox
+              checked={allSelected}
+              indeterminate={someSelected}
+              aria-label={`Select all ${rows.length} keys in view`}
+              onCheckedChange={(checked) => onSelectAll(checked === true)}
+            />
+          )}
         </span>
         <span>Key</span>
         <span>{languageName}</span>
