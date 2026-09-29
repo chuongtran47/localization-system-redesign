@@ -2,11 +2,12 @@
 
 import { useEffect, useRef, useState } from "react"
 import { usePathname } from "next/navigation"
-import { Bell, Check, ChevronDown, RotateCcw, Search } from "lucide-react"
+import { Bell, Check, ChevronDown, Code2, Languages, RotateCcw, Search, type LucideIcon } from "lucide-react"
 import { toast } from "sonner"
 
 import { useDrafts } from "@/components/draft-provider"
 import { PopoverMenu, PopoverMenuItem } from "@/components/popover-menu"
+import { useRole } from "@/components/role-provider"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { useCoverage } from "@/hooks/use-coverage"
 import { useWorkspaceParams } from "@/hooks/use-workspace-params"
@@ -14,14 +15,18 @@ import { messageOf, resetData } from "@/lib/api"
 import { targetLanguageCoverage } from "@/lib/coverage"
 import { emptyDrafts } from "@/lib/drafts"
 import { languageFlags } from "@/lib/language-flags"
-import { languages, type LanguageCode } from "@/lib/locale-data"
+import { languages, SOURCE_LANGUAGE, type LanguageCode } from "@/lib/locale-data"
 import { findProjectByPath, targetOf } from "@/lib/projects"
+import { ROLES, roleHint, roleLabel, type Role } from "@/lib/roles"
+
+const roleIcon: Record<Role, LucideIcon> = { developer: Code2, translator: Languages }
 
 export function AppTopbar() {
   const { filters, setParam } = useWorkspaceParams()
   const project = findProjectByPath(usePathname())
   const { coverage, refresh } = useCoverage()
   const { update } = useDrafts()
+  const { role, can, setRole } = useRole()
   const searchRef = useRef<HTMLInputElement>(null)
 
   // Typed text is local while the field has focus, so a slow URL update never
@@ -121,7 +126,12 @@ export function AppTopbar() {
                     className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-sm transition-colors hover:bg-accent/50"
                   >
                     <span className="text-base leading-none">{languageFlags[lang.code]}</span>
-                    <span className="flex-1">{lang.name}</span>
+                    <span className="flex-1">
+                      {lang.name}
+                      {lang.code === SOURCE_LANGUAGE && !can.editSource && (
+                        <span className="text-muted-foreground"> · view only</span>
+                      )}
+                    </span>
                     <span className="text-xs tabular-nums text-muted-foreground">{pct === null ? "—" : `${pct}%`}</span>
                     {lang.code === current.code && <Check className="size-4 text-primary" />}
                   </button>
@@ -141,7 +151,7 @@ export function AppTopbar() {
         {/* User */}
         <PopoverMenu
           label="user menu"
-          widthClass="w-60"
+          widthClass="w-64"
           trigger={(toggle) => (
             <button
               type="button"
@@ -153,22 +163,41 @@ export function AppTopbar() {
               </span>
               <span className="hidden text-left leading-tight sm:block">
                 <span className="block text-xs font-medium">Logan Le</span>
-                <span className="block text-[11px] text-muted-foreground">Maintainer</span>
+                <span className="block text-[11px] text-muted-foreground">{roleLabel[role]} view</span>
               </span>
               <ChevronDown className="size-3.5 text-muted-foreground" />
             </button>
           )}
         >
           {(close) => (
-            <PopoverMenuItem
-              icon={RotateCcw}
-              label="Reset demo data"
-              hint="Re-seed every project from the sample data"
-              onClick={() => {
-                close()
-                void handleReset()
-              }}
-            />
+            <>
+              <p className="px-2.5 pb-1 pt-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                View as
+              </p>
+              {ROLES.map((item) => (
+                <PopoverMenuItem
+                  key={item}
+                  icon={roleIcon[item]}
+                  label={roleLabel[item]}
+                  hint={roleHint[item]}
+                  selected={item === role}
+                  onClick={() => {
+                    close()
+                    setRole(item)
+                  }}
+                />
+              ))}
+              <div className="my-1 h-px bg-border" />
+              <PopoverMenuItem
+                icon={RotateCcw}
+                label="Reset demo data"
+                hint="Re-seed every project from the sample data"
+                onClick={() => {
+                  close()
+                  void handleReset()
+                }}
+              />
+            </>
           )}
         </PopoverMenu>
       </div>

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, type ReactNode } from "react"
-import type { LucideIcon } from "lucide-react"
+import { Check, type LucideIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
@@ -43,16 +43,20 @@ export function PopoverMenuItem({
   icon: Icon,
   label,
   hint,
+  selected,
   onClick,
 }: {
   icon: LucideIcon
   label: string
   hint: string
+  /** Marks the current choice in a menu of options. */
+  selected?: boolean
   onClick?: () => void
 }) {
   return (
     <button
       type="button"
+      aria-pressed={selected}
       onClick={onClick}
       className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition-colors hover:bg-accent/50"
     >
@@ -61,6 +65,7 @@ export function PopoverMenuItem({
         <span className="block text-sm font-medium">{label}</span>
         <span className="block text-[11px] text-muted-foreground">{hint}</span>
       </span>
+      {selected && <Check className="size-4 shrink-0 text-primary" />}
     </button>
   )
 }
