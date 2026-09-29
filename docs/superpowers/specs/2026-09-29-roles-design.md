@@ -62,12 +62,34 @@ Việc dịch (sửa bản dịch, Keep English, Still correct, Save/Discard, d�
 ### 3.2 Lưu và đọc role
 
 - `app/(workspace)/layout.tsx` (server) đọc `cookies().get(ROLE_COOKIE)`, `parseRole`, truyền `initialRole` vào `WorkspaceShell` → `RoleProvider`. HTML đầu tiên đã đúng role. Cái giá: `/import` (và mọi route trong group) render động.
-- `components/role-provider.tsx` (client): state `role` khởi tạo từ `initialRole`; `useRole()` → `{ role, can, setRole }`.
-- `setRole(next)`: đặt state ngay (giao diện đổi tức thì), ghi `document.cookie = "lingua-role=<next>; path=/; max-age=31536000; samesite=lax"`, rồi `router.refresh()`. State phía client (draft, lựa chọn dòng, dialog) không bị xóa.
+- `components/role-provider.tsx` (client): state `role` khởi tạo từ `initialRole`; `useRole()` → `{ role, can, setRole }`. Khi `initialRole` đổi (server render lại sau khi cookie đổi), state theo server.
+- `setRole(next)`: đặt state ngay (giao diện đổi tức thì), ghi `document.cookie = "lingua-role=<next>; path=/; max-age=31536000; samesite=lax"`, rồi `router.refresh()`. Draft dịch được giữ; surface quản trị theo quy tắc ở §3.4.
 
 ### 3.3 Chặn route chỉ dành cho developer
 
 `components/role-gate.tsx`: `RoleGate({ capability, feature, children })` — có quyền thì render `children`; không thì hiện khối (card viền đứt như `ProjectProfileCard`): tiêu đề "`<feature>` is part of the developer view" và nút outline "Switch to developer view" (`setRole("developer")`). `/import` bọc `ImportWizard` bằng `RoleGate capability="exchangeBundles" feature="Import"`.
+
+### 3.4 Đổi role khi đang mở surface quản trị (bắt buộc)
+
+Modal và tray được render ở cấp workspace, tách khỏi nút mở trên header, nên ẩn nút là chưa đủ: một modal đang mở vẫn thao tác và submit được. Quy tắc:
+
+1. **Draft dịch giữ nguyên** khi đổi role (cả hai chiều).
+2. **Surface thuộc quyền bị mất phải unmount ngay trong lần render đổi role**:
+
+   | Surface | Quyền | Nơi giữ state mở |
+   |---|---|---|
+   | `AddKeyDialog` | `manageKeys` | `UiWorkspace` (`isAddOpen`) |
+   | `DeleteKeysDialog` (nút xóa từng dòng và xóa hàng loạt) | `manageKeys` | `UiWorkspace` (`doomed`) |
+   | Tray "N selected" và danh sách dòng đang chọn | `manageKeys` | `DraftProvider` (`selected`) |
+   | `ExportDialog` (workspace UI và trang template) | `exchangeBundles` | `UiWorkspace`, `TemplateWorkspace` (`isExportOpen`) |
+   | Import wizard | `exchangeBundles` | state cục bộ của `ImportWizard` |
+
+   Render mỗi surface với điều kiện `can.<quyền> && <state mở>`, nên nó biến mất cùng lần render role mới.
+3. **Không tự mở lại khi quyền quay lại.** State mở được xóa khi quyền mất, không chỉ bị che:
+   - `UiWorkspace` và `TemplateWorkspace` nhớ role mà chúng render lần trước; khi role khác đi, chúng đặt lại `isAddOpen = false`, `doomed = []`, `isExportOpen = false` ngay trong lúc render (mẫu "điều chỉnh state khi prop đổi" của React, không dùng effect).
+   - `setRole` sang role không có `manageKeys` xóa danh sách dòng đang chọn của mọi project (`clearAllSelected` mới trong `lib/drafts.ts`). `RoleProvider` nằm trong `DraftProvider` để làm được việc này.
+   - Import wizard bị `RoleGate` unmount, nên file đã thả vào và bước đang làm mất theo; chuyển về Developer thấy wizard mới từ đầu.
+4. **Request đã gửi thì không thu hồi được.** Nếu một lệnh xóa/tạo/export đã gửi đi trước lúc đổi role, nó vẫn hoàn tất và làm mới dữ liệu. Sau khi đổi role, không còn nút hay form nào gọi được action quản trị.
 
 ## 4. Thay đổi trên từng màn hình
 
@@ -96,7 +118,7 @@ Translator: header còn breadcrumb, tên, badge loại, "Inferred", dòng phụ.
 
 ### 4.5 Danh sách string (workspace UI)
 
-- **Quản lý key** (`manageKeys`): checkbox từng dòng và checkbox chọn tất cả ở header danh sách, nút xóa, thanh "N selected", `AddKeyDialog`, `DeleteKeysDialog`. Không có quyền → không render; cột checkbox để trống để các cột vẫn thẳng hàng.
+- **Quản lý key** (`manageKeys`): checkbox từng dòng và checkbox chọn tất cả ở header danh sách, nút xóa, thanh "N selected", `AddKeyDialog`, `DeleteKeysDialog`. Không có quyền → không render; cột checkbox để trống để các cột vẫn thẳng hàng. Đổi role khi các surface này đang mở: theo §3.4.
 - **Release** (`release`): thanh version, tab "Added here", badge "New" trên dòng. Không có quyền → `filtersFor(filters, can)` (trong `lib/workspace-view.ts`) đổi `status: "new"` → `"all"` và `version` → All, nên link của developer mở ở view translator không ra danh sách trống.
 - **Service chưa có string**: translator thấy "No strings to translate in `<project>` yet." (không có nút Add key); developer giữ nguyên.
 - **English không có `editSource`**: `TranslationRow` nhận `readOnly` — hiện English dạng chữ (`whitespace-pre-wrap`), không ô nhập, không Keep English / Still correct / Paste, không kiểm tra validation; còn Copy và lịch sử. Thanh "N unsaved keys" không hiện trên màn chỉ-đọc; draft English của developer vẫn nằm trong `DraftProvider` và hiện lại khi chuyển về developer.
@@ -108,7 +130,8 @@ Header theo §4.4. Dialog không đổi (English của template vốn chỉ xem 
 ## 5. Lỗi và edge case
 
 - Cookie rỗng / sửa tay / `admin` → `developer`.
-- Đổi role khi còn draft hoặc lựa chọn dòng → giữ nguyên, chỉ ẩn phần role mới không có quyền; chuyển về thì hiện lại đúng như cũ.
+- Đổi role khi còn draft dịch → draft giữ nguyên; chuyển về thì tray "N unsaved keys" hiện lại như cũ.
+- Đổi role khi đang mở dialog/tray quản trị hoặc đang chọn dòng → surface unmount ngay, state mở và danh sách dòng đang chọn bị xóa; chuyển về Developer không tự mở lại (§3.4).
 - Link chứa `?status=new`, `?version=` mở bằng view translator → All (§4.5). Link `/import` → khối ở §3.3.
 - Mock backend không có xác thực: quyền chỉ được áp ở UI. Gọi thẳng API vẫn làm được mọi việc — ghi vào danh sách cho BA/product (§7).
 
@@ -118,6 +141,7 @@ Header theo §4.4. Dialog không đổi (English của template vốn chỉ xem 
 - `capabilitiesOf` của hai role (đủ 5 quyền, đúng bảng §3.1).
 - `parseRole`: `"translator"` → translator; `"developer"`, `undefined`, `""`, `"admin"` → developer.
 - `filtersFor`: không có `release` → `new` thành `all`, version thành All; có `release` → giữ nguyên.
+- `tests/drafts.test.ts` — `clearAllSelected`: xóa dòng đang chọn của mọi project, giữ nguyên edit và keep của mọi slot.
 
 **Gate:** `npm run typecheck`, `npm test`, `npm run build`.
 
@@ -132,6 +156,13 @@ Header theo §4.4. Dialog không đổi (English của template vốn chỉ xem 
 - Dịch một string tiếng Việt → Save → toast; reload vẫn là Translator view.
 - Trang `/messages/email` ở view translator: header không có Export/Import/Lock/Publish; dialog dịch vẫn Save được.
 - Chuyển về Developer → mọi thứ trở lại.
+- **Surface quản trị khi đổi role** (§3.4), mỗi surface một lượt ở view Developer, rồi chuyển sang Translator bằng menu người dùng (bấm bằng script khi modal đang mở):
+  - `AddKeyDialog` đang mở, đã gõ tên key → biến mất; không còn nút "Add key" nào gọi được.
+  - `DeleteKeysDialog` mở từ nút xóa của một dòng → biến mất; key vẫn còn.
+  - `ExportDialog` ở workspace UI và ở `/messages/email` → biến mất.
+  - Chọn 2 dòng → tray "2 selected" biến mất.
+  - Import wizard đã thả một file → thay bằng khối "Import is part of the developer view".
+  - Chuyển về Developer → không dialog nào tự mở lại, không dòng nào còn được chọn, wizard trống; draft dịch gõ trước đó vẫn còn trong tray "N unsaved keys".
 
 **Hồi quy view developer:** chạy `steps-flows.txt` trước khi sửa và sau khi sửa, `diff` phải rỗng (bước Reset đi qua menu người dùng, nên không phải viết lại); chạy lại checklist template, kết quả không đổi.
 
