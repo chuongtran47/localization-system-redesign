@@ -300,13 +300,16 @@ function UiWorkspace({ project }: { project: Project }) {
             selectable={can.manageKeys}
             onSelectAll={handleSelectAll}
             renderRow={(row) => {
-              const isKeepPending = slot.keeps.has(row.key)
-              const value = slot.edits[row.key] ?? (isKeepPending ? row.source : displayedValueOf(row))
+              // A view that cannot edit the English shows what is saved; a
+              // developer's unsaved English stays in the drafts, out of sight.
+              const edits: Readonly<Record<string, string>> = isReadOnly ? {} : slot.edits
+              const isKeepPending = !isReadOnly && slot.keeps.has(row.key)
+              const value = edits[row.key] ?? (isKeepPending ? row.source : displayedValueOf(row))
               return (
                 <TranslationRow
                   row={row}
                   value={value}
-                  isDirty={row.key in slot.edits || isKeepPending}
+                  isDirty={row.key in edits || isKeepPending}
                   isKeepPending={isKeepPending}
                   isSelected={selected.has(row.key)}
                   language={language}

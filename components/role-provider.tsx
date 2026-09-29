@@ -29,6 +29,9 @@ export function RoleProvider({ initialRole, children }: { initialRole: Role; chi
   }
 
   const setRole = (next: Role) => {
+    // Written even when this tab already shows `next`: another tab may have
+    // changed the cookie since, and this choice is the one to remember.
+    document.cookie = roleCookie(next)
     if (next === role) {
       return
     }
@@ -38,7 +41,6 @@ export function RoleProvider({ initialRole, children }: { initialRole: Role; chi
     if (!capabilitiesOf(next).manageKeys) {
       update(clearAllSelected)
     }
-    document.cookie = roleCookie(next)
     router.refresh()
   }
 
