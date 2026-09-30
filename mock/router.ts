@@ -39,7 +39,7 @@ import type {
 } from "../lib/api-types"
 import { safeFileName } from "../lib/file-name"
 import { HttpError, type Store } from "./store"
-import { createZip, type Bytes } from "./zip"
+import { createZip, type Bytes } from "../lib/zip"
 
 /**
  * Answers one request, and turns any failure into the `{ error }` body that
