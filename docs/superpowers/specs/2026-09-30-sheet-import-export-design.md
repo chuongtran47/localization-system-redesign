@@ -244,7 +244,7 @@ Lỗi đọc file hiện như lỗi file JSON hiện nay (toast, mỗi file mộ
 ## 7. Kiểm thử
 
 **Vitest:**
-- `csv`: ghi → đọc giữ nguyên giá trị (tiếng Việt, Ả Rập, `"`, `,`, xuống dòng, khoảng trắng hai đầu, `=SUM(A1)`, `-5`, `@x`, `	=x`, `'=SUM(A1)`, `'Tis`, `''`); đọc file dùng `;` và tab; BOM.
+- `csv`: ghi → đọc giữ nguyên giá trị (tiếng Việt, Ả Rập, `"`, `,`, xuống dòng, khoảng trắng hai đầu, `=SUM(A1)`, `-5`, `@x`, `<tab>=x`, `'=SUM(A1)`, `'Tis`, `''`); đọc file dùng `;` và tab; BOM.
 - `xlsx`: ghi → đọc giữ nguyên các giá trị trên và HTML; fixture `excel-saved.xlsx` (shared strings, rich text nhiều `<r>`, ô số, ô `str` có công thức, ô bị bỏ giữa hàng, thực thể XML, sheet đầu tiên không tên `sheet1.xml`); bytes không phải zip → `SheetFileError`.
 - `sheet`: `sheetGridOf` cho UI strings và template, cả `todo` và `all`; `parseSheet` tìm cột theo tiêu đề (đảo thứ tự, thêm cột, mã ngôn ngữ khác hoa thường), các lỗi ở §6; `checkRulesOf` cho project UI và cho `invite_coach.body` (html, 4000), `invite_coach.subject`, key không khớp field; `planSheet` đủ các dòng của bảng §3.4, so theo giá trị hiển thị; `diffSheet`: Keep English trên key `missing` mà bundle giữ bản sao English → `added` với `keep: true` (không phải `unchanged`), body email thiếu `</p>` → issue `html`.
 - `router`: `POST /sheet` trả `.xlsx` đọc lại được và `.csv`, đúng số hàng `todo`/`all` trên seed (School Portal vi: `todo` = 7; `messages/email` vi: `todo` = 1), header `content-type`/`content-disposition`; các lỗi 400/404 ở §4.4. `PUT /translations` với `sources`: key có English đã đổi → không ghi và có trong `stale`; key khớp → ghi; không truyền `sources` → hành vi cũ, `stale: []`.
