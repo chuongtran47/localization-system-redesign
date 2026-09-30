@@ -234,6 +234,11 @@ function Hunk({ entry, numbers, isRtl }: { entry: DiffEntry; numbers: LineNumber
         <span className={cn("shrink-0 rounded-full border px-2 py-0.5 text-[11px] font-medium", kindTone[entry.kind])}>
           {kindLabel[entry.kind]}
         </span>
+        {entry.keep && (
+          <span className="shrink-0 rounded-full border border-border px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
+            Keep English
+          </span>
+        )}
       </div>
 
       {entry.kind === "unchanged" ? (

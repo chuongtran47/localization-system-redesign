@@ -12,11 +12,12 @@ import { BundleDiffView } from "@/components/import/bundle-diff-view"
 import { FileRow } from "@/components/import/file-row"
 import { ImportResults, type ImportOutcome, type ImportResult } from "@/components/import/import-results"
 import { ProjectPicker } from "@/components/import/project-picker"
+import { useRole } from "@/components/role-provider"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { useCoverage } from "@/hooks/use-coverage"
 import { useTargetBundles } from "@/hooks/use-target-bundles"
-import { deleteKeys, importBundle, messageOf } from "@/lib/api"
+import { deleteKeys, importBundle, messageOf, saveTranslations } from "@/lib/api"
 import type { ImportMode } from "@/lib/api-types"
 import { BundleFileError, changeCount, diffBundle, parseBundleFile, type BundleDiff } from "@/lib/bundle-diff"
 import { clearTarget, pendingInTarget } from "@/lib/drafts"
@@ -31,6 +32,17 @@ import {
 } from "@/lib/import-plan"
 import { languages, type LanguageCode } from "@/lib/locale-data"
 import { findProjectByTarget, projectPath, targetOf, type Project } from "@/lib/projects"
+import {
+  checkRulesOf,
+  diffSheet,
+  isSheetFileName,
+  planSheet,
+  readSheetFile,
+  SheetFileError,
+  skippedSummary,
+  type SheetPlan,
+} from "@/lib/sheet"
+import type { Bytes } from "@/lib/zip"
 import { cn } from "@/lib/utils"
 
 /**
@@ -57,6 +69,7 @@ export function ImportWizard() {
 
   const { revision, refresh } = useCoverage()
   const { drafts, update } = useDrafts()
+  const { can } = useRole()
 
   // A file dropped anywhere but the zone would make the browser open it and
   // leave the page, taking the staged batch with it.
@@ -80,6 +93,22 @@ export function ImportWizard() {
   )
   const bundles = useTargetBundles(target, codes, revision)
 
+  const hasSheets = files.some((file) => file.kind === "sheet")
+  const hasBundles = files.some((file) => file.kind === "bundle")
+  // A sheet only ever fills in translations, and a view without bundles never replaces.
+  const effectiveMode: ImportMode = hasSheets || !can.exchangeBundles ? "merge" : mode
+
+  const plans = useMemo(() => {
+    const out = new Map<string, SheetPlan>()
+    for (const file of files) {
+      const rows = file.language ? bundles.rows.get(file.language) : undefined
+      if (file.kind === "sheet" && file.sheet && rows) {
+        out.set(file.id, planSheet(file.sheet, rows))
+      }
+    }
+    return out
+  }, [files, bundles.rows])
+
   const diffs = useMemo(() => {
     const out = new Map<string, BundleDiff>()
     if (!project) {
@@ -90,22 +119,25 @@ export function ImportWizard() {
       if (!file.language || !rows) {
         continue
       }
+      const plan = plans.get(file.id)
       out.set(
         file.id,
-        diffBundle(rows, file.values, {
-          mode,
-          language: file.language,
-          lengthBudget: project.profile.lengthBudget,
-          maxLength: project.profile.maxLength,
-        })
+        file.kind === "sheet" && plan
+          ? diffSheet(rows, plan, { language: file.language, rulesOf: (key) => checkRulesOf(project, key) })
+          : diffBundle(rows, file.values, {
+              mode: effectiveMode,
+              language: file.language,
+              lengthBudget: project.profile.lengthBudget,
+              maxLength: project.profile.maxLength,
+            })
       )
     }
     return out
-  }, [files, bundles.rows, mode, project])
+  }, [files, bundles.rows, effectiveMode, project, plans])
 
   const totalChanges = [...diffs.values()].reduce((sum, diff) => sum + changeCount(diff.counts), 0)
   const duplicated = useMemo(() => duplicatedLanguages(files), [files])
-  const retired = useMemo(() => retiredKeys(mode, [...bundles.rows.values()][0], files), [mode, bundles.rows, files])
+  const retired = useMemo(() => retiredKeys(effectiveMode, [...bundles.rows.values()][0], files), [effectiveMode, bundles.rows, files])
   const unassigned = files.filter((file) => file.language === null).length
   const selected = files.find((file) => file.id === selectedId) ?? files[0] ?? null
   const draftCount = target ? pendingInTarget(drafts, target) : 0
@@ -113,6 +145,7 @@ export function ImportWizard() {
   const blocker = blockerOf({
     hasTarget: target !== null,
     fileCount: files.length,
+    mixed: hasSheets && hasBundles,
     unassigned,
     duplicated: duplicated.size,
     isLoading: bundles.isLoading,
@@ -139,14 +172,31 @@ export function ImportWizard() {
 
     for (const file of Array.from(list)) {
       try {
-        added.push({
-          id: `file-${(fileSeq.current += 1)}`,
-          name: file.name,
-          values: parseBundleFile(await file.text()),
-          language: languageFromName(file.name),
-        })
+        if (isSheetFileName(file.name)) {
+          const sheet = await readSheetFile({ name: file.name, bytes: new Uint8Array(await file.arrayBuffer()) as Bytes })
+          added.push({
+            id: `file-${(fileSeq.current += 1)}`,
+            kind: "sheet",
+            name: file.name,
+            values: {},
+            sheet,
+            language: sheet.language,
+          })
+        } else if (!can.exchangeBundles) {
+          failed.push(`${file.name} - JSON bundles are imported in the developer view`)
+        } else {
+          added.push({
+            id: `file-${(fileSeq.current += 1)}`,
+            kind: "bundle",
+            name: file.name,
+            values: parseBundleFile(await file.text()),
+            language: languageFromName(file.name),
+          })
+        }
       } catch (cause: unknown) {
-        failed.push(`${file.name} - ${cause instanceof BundleFileError ? cause.message : messageOf(cause)}`)
+        failed.push(
+          `${file.name} - ${cause instanceof BundleFileError || cause instanceof SheetFileError ? cause.message : messageOf(cause)}`
+        )
       }
     }
 
@@ -184,15 +234,37 @@ export function ImportWizard() {
         continue
       }
       try {
-        const response = await importBundle(target, file.language, file.values, mode)
-        done.push({ id: file.id, name: file.name, language: file.language, response, error: null })
+        const rows = bundles.rows.get(file.language)
+        if (file.kind === "sheet" && file.sheet && rows) {
+          // Planned again from the latest values; the server still checks each English (`sources`).
+          const plan = planSheet(file.sheet, rows)
+          const saved = await saveTranslations(target, file.language, plan.values, plan.keepKeys, plan.sources)
+          done.push({
+            id: file.id,
+            name: file.name,
+            language: file.language,
+            response: null,
+            sheet: { saved: saved.saved, stale: saved.stale.length, file: saved.file },
+            error: null,
+          })
+        } else {
+          const response = await importBundle(target, file.language, file.values, effectiveMode)
+          done.push({ id: file.id, name: file.name, language: file.language, response, sheet: null, error: null })
+        }
       } catch (cause: unknown) {
-        done.push({ id: file.id, name: file.name, language: file.language, response: null, error: messageOf(cause) })
+        done.push({
+          id: file.id,
+          name: file.name,
+          language: file.language,
+          response: null,
+          sheet: null,
+          error: messageOf(cause),
+        })
       }
     }
 
     const failed = done.filter((result) => result.error).length
-    const steps = afterImport({ mode, succeeded: done.length - failed, failed, retired: retired.length })
+    const steps = afterImport({ mode: effectiveMode, succeeded: done.length - failed, failed, retired: retired.length })
 
     let retiredCount = 0
     let retireError: string | null = null
@@ -239,7 +311,9 @@ export function ImportWizard() {
             <span>/</span>
             <span className="text-foreground">Import</span>
           </div>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight">Import language files</h1>
+          <h1 className="mt-1 text-2xl font-semibold tracking-tight">
+            {can.exchangeBundles ? "Import language files" : "Import translations"}
+          </h1>
           <p className="mt-1 text-sm text-muted-foreground">Nothing is written until you confirm.</p>
         </div>
         {project && (
@@ -259,7 +333,11 @@ export function ImportWizard() {
           <input
             ref={fileRef}
             type="file"
-            accept="application/json,.json"
+            accept={
+              can.exchangeBundles
+                ? "application/json,.json,.xlsx,.csv,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                : ".xlsx,.csv,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            }
             multiple
             className="hidden"
             onChange={(event) => {
@@ -284,9 +362,9 @@ export function ImportWizard() {
           >
             <Upload className="size-6 text-muted-foreground" />
             <p className="text-sm">
-              Drop <code className="font-mono text-xs">.json</code> files here
+              {can.exchangeBundles ? "Drop .json, .xlsx or .csv files here" : "Drop .xlsx or .csv files here"}
             </p>
-            {files.length === 0 && (
+            {files.length === 0 && can.exchangeBundles && (
               <p className="text-xs text-muted-foreground">
                 Flat or nested - <code className="font-mono">{`{ "nav.home": "…" }`}</code> and{" "}
                 <code className="font-mono">{`{ "nav": { "home": "…" } }`}</code> both read the same.
@@ -334,19 +412,21 @@ export function ImportWizard() {
               <div className="h-40 animate-pulse rounded-xl bg-muted" />
             </div>
           ) : (
-            selected && <DiffForFile file={selected} diff={diffs.get(selected.id)} />
+            selected && <DiffForFile file={selected} diff={diffs.get(selected.id)} plan={plans.get(selected.id)} projectName={project?.name ?? ""} />
           )}
 
-          <Label className="mt-4 flex items-start gap-2 font-normal">
-            <Checkbox
-              checked={mode === "replace"}
-              onCheckedChange={(checked) => {
-                setMode(checked === true ? "replace" : "merge")
-                setOutcome(null)
-              }}
-            />
-            <span className="text-sm">Clear the keys these files leave out</span>
-          </Label>
+          {can.exchangeBundles && !hasSheets && (
+            <Label className="mt-4 flex items-start gap-2 font-normal">
+              <Checkbox
+                checked={mode === "replace"}
+                onCheckedChange={(checked) => {
+                  setMode(checked === true ? "replace" : "merge")
+                  setOutcome(null)
+                }}
+              />
+              <span className="text-sm">Clear the keys these files leave out</span>
+            </Label>
+          )}
 
           {retired.length > 0 && (
             <div className="mt-3 flex items-start gap-2 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">
@@ -430,7 +510,17 @@ function Step({
   )
 }
 
-function DiffForFile({ file, diff }: { file: StagedFile; diff: BundleDiff | undefined }) {
+function DiffForFile({
+  file,
+  diff,
+  plan,
+  projectName,
+}: {
+  file: StagedFile
+  diff: BundleDiff | undefined
+  plan: SheetPlan | undefined
+  projectName: string
+}) {
   const language = languages.find((item) => item.code === file.language)
 
   if (!language) {
@@ -449,6 +539,9 @@ function DiffForFile({ file, diff }: { file: StagedFile; diff: BundleDiff | unde
       <p className="text-xs text-muted-foreground">
         <code className="font-mono text-foreground">{file.name}</code> → {language.name}
       </p>
+      {plan && skippedSummary(plan.skipped, projectName) && (
+        <p className="text-xs tabular-nums text-muted-foreground">{skippedSummary(plan.skipped, projectName)}</p>
+      )}
       <BundleDiffView
         key={`${file.id}:${language.code}`}
         diff={diff}

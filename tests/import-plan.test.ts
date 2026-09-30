@@ -13,6 +13,7 @@ import type { TranslationRow } from "@/lib/locale-data"
 
 const file = (id: string, language: StagedFile["language"], keys: string[] = []): StagedFile => ({
   id,
+  kind: "bundle",
   name: `${id}.json`,
   values: Object.fromEntries(keys.map((key) => [key, key])),
   language,
@@ -72,12 +73,18 @@ describe("blockerOf", () => {
   const ready = {
     hasTarget: true,
     fileCount: 2,
+    mixed: false,
     unassigned: 0,
     duplicated: 0,
     isLoading: false,
     error: null,
     totalChanges: 3,
   }
+
+  it("refuses a batch that mixes JSON files and sheets", () => {
+    expect(blockerOf({ ...ready, mixed: true, unassigned: 1 })).toBe("Import JSON files and sheets separately.")
+    expect(blockerOf({ ...ready, mixed: true, fileCount: 0 })).toBe("Add at least one file.")
+  })
 
   it("is null when the batch can be imported", () => {
     expect(blockerOf(ready)).toBeNull()

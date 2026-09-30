@@ -6,14 +6,19 @@ import {
   type LocaleBundle,
   type TranslationRow,
 } from "@/lib/locale-data"
+import type { ParsedSheet } from "@/lib/sheet"
 
 /** A file that parsed, waiting for a language and a reviewer. */
 export type StagedFile = {
   id: string
+  /** A JSON bundle, or an Excel/CSV sheet - see `lib/sheet.ts`. A batch holds one kind. */
+  kind: "bundle" | "sheet"
   name: string
   values: LocaleBundle
   /** Null until somebody says which language it is - never guessed silently. */
   language: LanguageCode | null
+  /** The parsed sheet; its language is already `language`. Absent for a bundle. */
+  sheet?: ParsedSheet
 }
 
 /**
@@ -61,6 +66,7 @@ export function importOrder(files: StagedFile[]): StagedFile[] {
 export type BlockerState = {
   hasTarget: boolean
   fileCount: number
+  mixed: boolean
   unassigned: number
   duplicated: number
   isLoading: boolean
@@ -75,6 +81,9 @@ export function blockerOf(state: BlockerState): string | null {
   }
   if (state.fileCount === 0) {
     return "Add at least one file."
+  }
+  if (state.mixed) {
+    return "Import JSON files and sheets separately."
   }
   if (state.unassigned > 0) {
     return `${state.unassigned} ${state.unassigned === 1 ? "file has" : "files have"} no language yet.`

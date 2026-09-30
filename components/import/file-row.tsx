@@ -1,11 +1,12 @@
 "use client"
 
-import { AlertTriangle, FileJson, X } from "lucide-react"
+import { AlertTriangle, FileJson, FileSpreadsheet, X } from "lucide-react"
 
 import { LanguagePicker } from "@/components/import/language-picker"
 import { changeCount, type BundleDiff } from "@/lib/bundle-diff"
 import type { StagedFile } from "@/lib/import-plan"
-import type { LanguageCode } from "@/lib/locale-data"
+import { languageFlags } from "@/lib/language-flags"
+import { languages, type LanguageCode } from "@/lib/locale-data"
 import { cn } from "@/lib/utils"
 
 /** One staged file: what it is, which language it claims, what it would cost. */
@@ -36,10 +37,16 @@ export function FileRow({
       )}
     >
       <button type="button" onClick={onSelect} className="flex min-w-0 flex-1 items-center gap-2 text-left">
-        <FileJson className="size-4 shrink-0 text-muted-foreground" />
+        {file.kind === "sheet" ? (
+          <FileSpreadsheet className="size-4 shrink-0 text-muted-foreground" />
+        ) : (
+          <FileJson className="size-4 shrink-0 text-muted-foreground" />
+        )}
         <span className="min-w-0 truncate font-mono text-xs">{file.name}</span>
         <span className="shrink-0 rounded-full border border-border px-2 py-0.5 text-[11px] font-medium tabular-nums text-muted-foreground">
-          {Object.keys(file.values).length.toLocaleString()} keys
+          {file.kind === "sheet"
+            ? `Sheet · ${(file.sheet?.rows.length ?? 0).toLocaleString()} rows`
+            : `${Object.keys(file.values).length.toLocaleString()} keys`}
         </span>
         {changes !== null && (
           <span
@@ -59,7 +66,21 @@ export function FileRow({
         )}
       </button>
 
-      <LanguagePicker value={file.language} invalid={isDuplicate} onChange={onAssign} />
+      {file.kind === "sheet" ? (
+        // A sheet names its language in its own header - nothing to pick.
+        <span
+          aria-invalid={isDuplicate || undefined}
+          className={cn(
+            "flex items-center gap-1.5 rounded-lg border border-input px-2.5 py-1 text-xs",
+            isDuplicate && "border-destructive text-destructive"
+          )}
+        >
+          <span className="leading-none">{file.language ? languageFlags[file.language] : ""}</span>
+          {languages.find((item) => item.code === file.language)?.name}
+        </span>
+      ) : (
+        <LanguagePicker value={file.language} invalid={isDuplicate} onChange={onAssign} />
+      )}
 
       <button
         type="button"

@@ -1,14 +1,11 @@
 import { Suspense } from "react"
 
-import { ImportWizard } from "@/components/import/import-wizard"
-import { RoleGate } from "@/components/role-gate"
+import { ImportPageClient } from "@/components/import/import-page-client"
 
 export default function ImportPage() {
   return (
     <Suspense>
-      <RoleGate capability="exchangeBundles" feature="Import">
-        <ImportWizard />
-      </RoleGate>
+      <ImportPageClient />
     </Suspense>
   )
 }

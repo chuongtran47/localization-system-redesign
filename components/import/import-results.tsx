@@ -11,6 +11,8 @@ export type ImportResult = {
   name: string
   language: LanguageCode
   response: ImportResponse | null
+  /** What a sheet's save did - `stale`: keys whose English changed after the preview. */
+  sheet: { saved: number; stale: number; file: string } | null
   error: string | null
 }
 
@@ -35,6 +37,11 @@ export function ImportResults({ outcome }: { outcome: ImportOutcome }) {
               <span className="text-xs tabular-nums text-muted-foreground">
                 {result.response.created} created · {result.response.added} added · {result.response.changed} changed ·{" "}
                 {result.response.removed} cleared → <span className="font-mono">{result.response.file}</span>
+              </span>
+            ) : result.sheet ? (
+              <span className="text-xs tabular-nums text-muted-foreground">
+                {result.sheet.saved} saved → <span className="font-mono">{result.sheet.file}</span>
+                {result.sheet.stale > 0 && ` · ${result.sheet.stale} skipped - English changed since the preview`}
               </span>
             ) : (
               <span className="flex items-center gap-1.5 text-xs text-destructive">
