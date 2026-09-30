@@ -56,6 +56,7 @@ import type {
 import { outstandingOf } from "../lib/coverage";
 import { safeEntryName } from "../lib/file-name";
 import {
+  sameSource,
   groupKeyOf,
   IMPORT_AUTHOR,
   isValidKey,
@@ -703,11 +704,11 @@ export function createStore(files: FileStore, seeds: SeedSource) {
       values: Record<string, string>,
       keep: string[],
       by: string,
+      sources?: Record<string, string>,
     ): SaveTranslationsResponse {
       const language = languageOf(code);
       const isSource = language === SOURCE_LANGUAGE;
       const source = bundle(target, SOURCE_LANGUAGE);
-      const keys = Object.keys(values);
       const at = new Date().toISOString();
 
       for (const key of keep) {
@@ -722,12 +723,22 @@ export function createStore(files: FileStore, seeds: SeedSource) {
         }
       }
 
-      const kept = Object.fromEntries(keep.map((key) => [key, source[key]]));
+      // A value written for an English that has since changed would read as
+      // up to date. The caller says which English it translated; a key whose
+      // English moved on is left alone and reported back.
+      const stale = sources
+        ? [...Object.keys(values), ...keep].filter(
+            (key) => key in sources && !sameSource(sources[key], source[key] ?? ""),
+          )
+        : [];
+      const skip = new Set(stale);
+      const keys = Object.keys(values).filter((key) => !skip.has(key));
+      const kept = keep.filter((key) => !skip.has(key));
 
       writeBundle(target, language, {
         ...bundle(target, language),
-        ...values,
-        ...kept,
+        ...Object.fromEntries(keys.map((key) => [key, values[key]])),
+        ...Object.fromEntries(kept.map((key) => [key, source[key]])),
       });
 
       const log = { ...auditLog(target, language) };
@@ -740,14 +751,15 @@ export function createStore(files: FileStore, seeds: SeedSource) {
           log[key] = isSource ? { by, at } : stampOf(by, at, source[key] ?? "");
         }
       }
-      for (const key of keep) {
+      for (const key of kept) {
         log[key] = { ...stampOf(by, at, source[key]), keepSource: true };
       }
       writeAuditLog(target, language, log);
 
       return {
-        saved: keys.length + keep.length,
+        saved: keys.length + kept.length,
         file: relativeBundlePath(target, language),
+        stale,
       };
     },
 

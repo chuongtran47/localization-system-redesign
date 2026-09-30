@@ -12,16 +12,18 @@ describe("capabilitiesOf", () => {
       exchangeBundles: true,
       release: true,
       manageApps: true,
+      exchangeSheets: true,
     })
   })
 
-  it("gives the translator none - translating is not a capability", () => {
+  it("gives the translator sheets only - translating is not a capability", () => {
     expect(capabilitiesOf("translator")).toEqual({
       manageKeys: false,
       editSource: false,
       exchangeBundles: false,
       release: false,
       manageApps: false,
+      exchangeSheets: true,
     })
   })
 })

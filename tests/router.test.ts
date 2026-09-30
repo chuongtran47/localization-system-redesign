@@ -8,10 +8,14 @@ import type {
   DeleteKeysResponse,
   EntriesResponse,
   ImportResponse,
+  SaveTranslationsResponse,
   TemplatesResponse,
 } from "@/lib/api-types"
 import { parseBundleFile } from "@/lib/bundle-diff"
+import { readCsv } from "@/lib/csv"
 import type { TranslationRow } from "@/lib/locale-data"
+import { readXlsx } from "@/lib/xlsx"
+import type { Bytes } from "@/lib/zip"
 import type { Store } from "@/mock/store"
 import { call, callJson, createTestStore } from "./helpers/backend"
 import { readZip } from "./helpers/zip"
@@ -300,5 +304,87 @@ describe("templates", () => {
 
     const fixed = (await templates("messages/email", "vi")).find((t) => t.template.id === "visitation_scheduled")
     expect(fixed?.needsFix).toBe(0)
+  })
+})
+
+describe("sheets", () => {
+  const base = { target: SCHOOL, language: "vi", rows: "todo", format: "xlsx", name: "school-portal.vi" }
+
+  async function sheet(input: Record<string, unknown>) {
+    const response = await call(store, "POST", "/sheet", input)
+    return { response, bytes: new Uint8Array(await response.arrayBuffer()) as Bytes }
+  }
+
+  it("exports the strings to translate, or all of them", async () => {
+    const todo = await sheet(base)
+    expect(todo.response.headers.get("content-type")).toBe(
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+    expect(todo.response.headers.get("content-disposition")).toContain('filename="school-portal.vi.xlsx"')
+    const grid = await readXlsx(todo.bytes)
+    expect(grid[0]).toEqual(["Key", "English", "Vietnamese (vi)", "Status"])
+    expect(grid).toHaveLength(1 + 7)
+
+    const all = await sheet({ ...base, rows: "all", format: "csv" })
+    expect(all.response.headers.get("content-type")).toBe("text/csv; charset=utf-8")
+    expect(readCsv(new TextDecoder().decode(all.bytes))).toHaveLength(1 + 500)
+  })
+
+  it("exports a template channel with its template and field columns", async () => {
+    const target = { ...base, target: "messages/email", format: "csv", name: "email.vi" }
+    const all = readCsv(new TextDecoder().decode((await sheet({ ...target, rows: "all" })).bytes))
+    expect(all[0]).toEqual(["Key", "Template", "Field", "English", "Vietnamese (vi)", "Status"])
+    expect(all).toHaveLength(1 + 40)
+    const todo = readCsv(new TextDecoder().decode((await sheet(target)).bytes))
+    expect(todo.slice(1).map((row) => row[0])).toEqual(["visitation_scheduled.body"])
+  })
+
+  it("rejects what it cannot export", async () => {
+    expect((await callJson<ApiErrorBody>(store, "POST", "/sheet", { ...base, target: "web/nope" })).status).toBe(404)
+    const cases: [Record<string, string>, string][] = [
+      [{ language: "xx" }, 'Unknown language "xx"'],
+      [{ language: "en" }, "Sheets carry translations; pick a language other than English"],
+      [{ rows: "some" }, 'Expected "rows" to be "todo" or "all"'],
+      [{ format: "xls" }, 'Expected "format" to be "xlsx" or "csv"'],
+    ]
+    for (const [patch, message] of cases) {
+      const { status, body } = await callJson<ApiErrorBody>(store, "POST", "/sheet", { ...base, ...patch })
+      expect(status).toBe(400)
+      expect(body.error).toBe(message)
+    }
+  })
+})
+
+describe("saving with the English it was translated from", () => {
+  it("skips a key whose English changed since, and saves the rest", async () => {
+    const cancelBefore = (await rowOf(SCHOOL, "vi", CANCEL))!.source
+    const copySource = (await rowOf(SCHOOL, "vi", COPY))!.source
+    await call(store, "PUT", `/translations/en?target=${SCHOOL}`, { values: { [CANCEL]: "Cancel it" }, by: "T" })
+
+    const { body } = await callJson<SaveTranslationsResponse>(store, "PUT", `/translations/vi?target=${SCHOOL}`, {
+      values: { [CANCEL]: "Hủy nhé", [COPY]: "GrapeSEED VN" },
+      sources: { [CANCEL]: cancelBefore, [COPY]: copySource },
+      by: "T",
+    })
+
+    expect(body.stale).toEqual([CANCEL])
+    expect(body.saved).toBe(1)
+    expect((await rowOf(SCHOOL, "vi", CANCEL))?.target).not.toBe("Hủy nhé")
+    expect((await rowOf(SCHOOL, "vi", COPY))?.target).toBe("GrapeSEED VN")
+  })
+
+  it("keeps the old behaviour without sources, and rejects sources that are not text", async () => {
+    const { body } = await callJson<SaveTranslationsResponse>(store, "PUT", `/translations/vi?target=${SCHOOL}`, {
+      values: { [CANCEL]: "Hủy" },
+      by: "T",
+    })
+    expect(body.stale).toEqual([])
+
+    const bad = await callJson<ApiErrorBody>(store, "PUT", `/translations/vi?target=${SCHOOL}`, {
+      values: {},
+      sources: { [CANCEL]: 3 },
+    })
+    expect(bad.status).toBe(400)
+    expect(bad.body.error).toBe('Expected "sources" to be an object of key: English text')
   })
 })

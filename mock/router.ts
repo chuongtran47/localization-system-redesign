@@ -17,6 +17,7 @@
  *                                    save a batch of one app's translations
  *   PUT    /import/:lang?target=     replace one app's language file wholesale
  *   POST   /export                   a .zip, one named file per language
+ *   POST   /sheet                    one app in one language as .xlsx or .csv
  *   GET    /coverage                 per-language totals, every app
  *   POST   /reset                    re-seed from sample-data
  *
@@ -36,8 +37,14 @@ import type {
   ExportRequest,
   ImportRequest,
   SaveTranslationsRequest,
+  SheetExportRequest,
 } from "../lib/api-types"
+import { writeCsv } from "../lib/csv"
 import { safeFileName } from "../lib/file-name"
+import { languages, SOURCE_LANGUAGE } from "../lib/locale-data"
+import { findProjectByTarget, targetOf } from "../lib/projects"
+import { isTemplateProject, sheetGridOf, sheetWidthsOf } from "../lib/sheet"
+import { writeXlsx } from "../lib/xlsx"
 import { HttpError, type Store } from "./store"
 import { createZip, type Bytes } from "../lib/zip"
 
@@ -134,6 +141,15 @@ async function route(
     ) {
       throw new HttpError(400, `Expected "keep" to be a list of keys`)
     }
+    if (
+      input.sources !== undefined &&
+      (typeof input.sources !== "object" ||
+        input.sources === null ||
+        Array.isArray(input.sources) ||
+        Object.values(input.sources).some((value) => typeof value !== "string"))
+    ) {
+      throw new HttpError(400, `Expected "sources" to be an object of key: English text`)
+    }
     return json(
       200,
       store.saveTranslations(
@@ -141,7 +157,8 @@ async function route(
         translations[1],
         input.values,
         input.keep ?? [],
-        author(input.by)
+        author(input.by),
+        input.sources
       )
     )
   }
@@ -200,6 +217,45 @@ async function route(
     return zip(`${name}.zip`, await createZip(files))
   }
 
+  if (method === "POST" && path === "/sheet") {
+    const input = await body<SheetExportRequest>(request)
+    const project = findProjectByTarget(input.target ?? "")
+    if (!project) {
+      throw new HttpError(404, `Unknown project "${input.target}"`)
+    }
+    if (!languages.some((item) => item.code === input.language)) {
+      throw new HttpError(400, `Unknown language "${input.language}"`)
+    }
+    if (input.language === SOURCE_LANGUAGE) {
+      throw new HttpError(400, "Sheets carry translations; pick a language other than English")
+    }
+    if (input.rows !== "todo" && input.rows !== "all") {
+      throw new HttpError(400, `Expected "rows" to be "todo" or "all"`)
+    }
+    if (input.format !== "xlsx" && input.format !== "csv") {
+      throw new HttpError(400, `Expected "format" to be "xlsx" or "csv"`)
+    }
+
+    const target = targetOf(project)
+    const grid = sheetGridOf({
+      project,
+      language: input.language,
+      rows: store.entries(target, input.language).entries,
+      templates: isTemplateProject(project) ? store.templates(target, input.language).templates : undefined,
+      scope: input.rows,
+    })
+    const name = safeFileName(input.name ?? "", `${project.id}.${input.language}`)
+
+    if (input.format === "csv") {
+      return attachment(`${name}.csv`, "text/csv; charset=utf-8", new TextEncoder().encode(writeCsv(grid)) as Bytes)
+    }
+    return attachment(
+      `${name}.xlsx`,
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      await writeXlsx(grid, { sheetName: `${project.name} · ${input.language}`, widths: sheetWidthsOf(project) })
+    )
+  }
+
   if (method === "GET" && path === "/coverage") {
     return json(200, store.coverage())
   }
@@ -256,10 +312,14 @@ function empty(): Response {
 }
 
 function zip(filename: string, data: Bytes): Response {
+  return attachment(filename, "application/zip", data)
+}
+
+function attachment(filename: string, contentType: string, data: Bytes): Response {
   return new Response(data, {
     status: 200,
     headers: {
-      "content-type": "application/zip",
+      "content-type": contentType,
       // The browser reads the download name from here, so the name typed into
       // the export dialog survives the round trip.
       //

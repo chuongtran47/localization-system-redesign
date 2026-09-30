@@ -30,6 +30,8 @@ export type Capabilities = {
   editSource: boolean
   /** Import and export JSON bundles. */
   exchangeBundles: boolean
+  /** Download and upload Excel/CSV sheets of translations. */
+  exchangeSheets: boolean
   /** Lock, Publish, the version filter, and the keys added here. */
   release: boolean
   /** New application. */
@@ -37,8 +39,8 @@ export type Capabilities = {
 }
 
 const capabilities: Record<Role, Capabilities> = {
-  developer: { manageKeys: true, editSource: true, exchangeBundles: true, release: true, manageApps: true },
-  translator: { manageKeys: false, editSource: false, exchangeBundles: false, release: false, manageApps: false },
+  developer: { manageKeys: true, editSource: true, exchangeBundles: true, exchangeSheets: true, release: true, manageApps: true },
+  translator: { manageKeys: false, editSource: false, exchangeBundles: false, exchangeSheets: true, release: false, manageApps: false },
 }
 
 export const capabilitiesOf = (role: Role): Capabilities => capabilities[role]

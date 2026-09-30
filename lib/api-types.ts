@@ -127,6 +127,11 @@ export type SaveTranslationsRequest = {
    * and English itself cannot be kept.
    */
   keep?: string[]
+  /**
+   * The English each value was translated from. A key whose English has
+   * changed since is neither written nor kept, and comes back in `stale`.
+   */
+  sources?: Record<string, string>
   /** Who is saving them, for the audit trail - see `CreateKeyRequest`. */
   by?: string
 }
@@ -135,6 +140,8 @@ export type SaveTranslationsResponse = {
   saved: number
   /** Where the server wrote them, so the UI can say so. */
   file: string
+  /** Keys skipped because their English changed since `sources` - always present, empty without it. */
+  stale: string[]
 }
 
 /**
@@ -250,3 +257,13 @@ export type ApiErrorBody = {
 export type SheetRows = "todo" | "all"
 
 export type SheetFormat = "xlsx" | "csv"
+
+export type SheetExportRequest = {
+  target: string
+  /** Any language but English. */
+  language: LanguageCode
+  rows: SheetRows
+  format: SheetFormat
+  /** File name without the extension; the server sanitises it. */
+  name: string
+}

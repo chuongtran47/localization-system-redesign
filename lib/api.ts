@@ -18,6 +18,7 @@ import type {
   ImportResponse,
   SaveTranslationsRequest,
   SaveTranslationsResponse,
+  SheetExportRequest,
   TemplatesResponse,
 } from "@/lib/api-types"
 import { currentUser } from "@/lib/current-user"
@@ -106,11 +107,12 @@ export function saveTranslations(
   target: string,
   lang: LanguageCode,
   values: Record<string, string>,
-  keep: string[] = []
+  keep: string[] = [],
+  sources?: Record<string, string>
 ) {
   return request<SaveTranslationsResponse>(`/translations/${lang}?${query({ target })}`, {
     method: "PUT",
-    body: JSON.stringify({ values, keep, by: currentUser.name } satisfies SaveTranslationsRequest),
+    body: JSON.stringify({ values, keep, sources, by: currentUser.name } satisfies SaveTranslationsRequest),
   })
 }
 
@@ -130,16 +132,21 @@ export function fetchCoverage() {
   return request<CoverageResponse>("/coverage")
 }
 
-export async function exportBundle(input: ExportRequest) {
-  const response = await send("/export", { method: "POST", body: JSON.stringify(input) })
+function filenameOf(response: Response, fallback: string) {
   const disposition = response.headers.get("content-disposition") ?? ""
   const encoded = /filename\*=UTF-8''([^;]+)/i.exec(disposition)
   const plain = /filename="([^"]+)"/.exec(disposition)
+  return encoded ? decodeURIComponent(encoded[1]) : (plain?.[1] ?? fallback)
+}
 
-  return {
-    blob: await response.blob(),
-    filename: encoded ? decodeURIComponent(encoded[1]) : (plain?.[1] ?? "translations.zip"),
-  }
+export async function exportBundle(input: ExportRequest) {
+  const response = await send("/export", { method: "POST", body: JSON.stringify(input) })
+  return { blob: await response.blob(), filename: filenameOf(response, "translations.zip") }
+}
+
+export async function exportSheet(input: SheetExportRequest) {
+  const response = await send("/sheet", { method: "POST", body: JSON.stringify(input) })
+  return { blob: await response.blob(), filename: filenameOf(response, `${input.name}.${input.format}`) }
 }
 
 export function download(blob: Blob, filename: string) {
