@@ -95,9 +95,9 @@ export function AppSidebar() {
       </nav>
 
       {/* Footer - developer tools only; a view without them has no footer at all. */}
-      {(can.exchangeBundles || can.manageApps) && (
+      {(can.exchangeBundles || can.exchangeSheets || can.manageApps) && (
         <div className="space-y-2 border-t border-sidebar-border p-3">
-          {can.exchangeBundles && (
+          {(can.exchangeBundles || can.exchangeSheets) && (
             <Link
               href={lang ? `/import?lang=${encodeURIComponent(lang)}` : "/import"}
               className={cn(

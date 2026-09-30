@@ -193,8 +193,8 @@ export function TemplateWorkspace({ project }: { project: Project }) {
           onSaved={refresh}
         />
       )}
-      {hasTemplates && can.exchangeBundles && (
-        <ExportDialog open={isExportOpen} onOpenChange={setExportOpen} project={project} language={language} />
+      {hasTemplates && (can.exchangeBundles || can.exchangeSheets) && (
+        <ExportDialog key={role} open={isExportOpen} onOpenChange={setExportOpen} project={project} language={language} />
       )}
     </div>
   )

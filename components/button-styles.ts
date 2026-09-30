@@ -12,3 +12,10 @@ export const iconButton =
 
 export const textButton =
   "rounded-md px-2 py-0.5 text-xs font-medium text-primary transition-colors hover:bg-accent/50"
+
+/** A choice among a few - format, rows, version. Pair with `pillIdle` or `pillActive`. */
+export const pillButton = "rounded-full border px-2.5 py-1 text-xs font-medium transition-colors"
+
+export const pillIdle = "border-border bg-card text-muted-foreground hover:bg-accent/40 hover:text-foreground"
+
+export const pillActive = "border-primary bg-primary text-primary-foreground"

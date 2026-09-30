@@ -54,13 +54,13 @@ export function WorkspaceHeader({
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
-        {canExport && can.exchangeBundles && (
+        {canExport && (can.exchangeBundles || can.exchangeSheets) && (
           <button type="button" onClick={onExport} className={outlineButton}>
             <Download className="size-4" />
             Export
           </button>
         )}
-        {canExport && can.exchangeBundles && (
+        {canExport && (can.exchangeBundles || can.exchangeSheets) && (
           <Link href={`/import?target=${targetOf(project)}`} className={outlineButton}>
             <FileUp className="size-4" />
             Import

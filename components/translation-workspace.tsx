@@ -379,8 +379,14 @@ function UiWorkspace({ project }: { project: Project }) {
       {can.manageKeys && (
         <AddKeyDialog open={isAddOpen} onOpenChange={setAddOpen} project={project} onCreated={handleCreated} />
       )}
-      {hasKeys && can.exchangeBundles && (
-        <ExportDialog open={isExportOpen} onOpenChange={setExportOpen} project={project} language={language} />
+      {hasKeys && (can.exchangeBundles || can.exchangeSheets) && (
+        <ExportDialog
+          key={role}
+          open={isExportOpen}
+          onOpenChange={setExportOpen}
+          project={project}
+          language={language}
+        />
       )}
       {can.manageKeys && (
         <DeleteKeysDialog
