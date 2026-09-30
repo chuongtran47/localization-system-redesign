@@ -65,8 +65,12 @@ export function AppTopbar() {
     }
   }
 
+  // No backdrop filter here: it would make the header a stacking context and
+  // the containing block of `fixed` children, so its menus would paint under
+  // <main> and their click-outside layer would cover the header only. Nothing
+  // scrolls behind the header anyway - <main> scrolls below it.
   return (
-    <header className="flex h-16 shrink-0 items-center gap-4 border-b border-border bg-card/60 px-6 backdrop-blur">
+    <header className="flex h-16 shrink-0 items-center gap-4 border-b border-border bg-card/60 px-6">
       {/* Global search */}
       <div className="relative max-w-xl flex-1">
         <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
