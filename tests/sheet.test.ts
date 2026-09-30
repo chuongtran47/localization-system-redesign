@@ -135,6 +135,25 @@ describe("readSheetFile", () => {
   })
 })
 
+describe("readSheetFile and legacy CSV", () => {
+  it("refuses a CSV Excel saved in a code page even when every byte is ASCII", async () => {
+    // Excel's "CSV (Comma delimited)" writes "?" for each character its code page lacks, and drops the BOM.
+    const legacy = "Key,English,Japanese (ja),Status\r\nnav.home,Home,??,Missing\r\n"
+    await expect(readSheetFile({ name: "school-portal.ja.csv", bytes: bytesOf(legacy) })).rejects.toThrow(
+      'Save it as "CSV UTF-8" and try again'
+    )
+  })
+
+  it("still reads UTF-8 without a BOM, and a question the English asks too", async () => {
+    await expect(
+      readSheetFile({ name: "a.csv", bytes: bytesOf("Key,English,Japanese (ja)\nnav.home,Home,ホーム\n") })
+    ).resolves.toMatchObject({ language: "ja" })
+    await expect(
+      readSheetFile({ name: "a.csv", bytes: bytesOf("Key,English,Malay (ms)\nnav.ready,Ready?,Sedia?\n") })
+    ).resolves.toMatchObject({ language: "ms" })
+  })
+})
+
 describe("checkRulesOf", () => {
   it("uses the project's rules for UI strings and each field's own for a template", () => {
     expect(checkRulesOf(school, "nav.home")).toEqual({ lengthBudget: 1.5, maxLength: undefined, format: "text" })

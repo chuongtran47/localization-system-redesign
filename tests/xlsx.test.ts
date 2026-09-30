@@ -90,3 +90,41 @@ break &amp; more</t></si><si><t/></si></sst>`
     await expect(readXlsx(noSheets)).rejects.toThrow(/no sheets/)
   })
 })
+
+describe("readXlsx on hostile input", () => {
+  const sheetZip = (sheet: string) =>
+    createZip([
+      {
+        name: "xl/workbook.xml",
+        data: `<workbook xmlns="${MAIN}" xmlns:r="${REL}"><sheets><sheet name="S" sheetId="1" r:id="rId1"/></sheets></workbook>`,
+      },
+      {
+        name: "xl/_rels/workbook.xml.rels",
+        data: `<Relationships><Relationship Id="rId1" Type="${REL}/worksheet" Target="worksheets/sheet1.xml"/></Relationships>`,
+      },
+      { name: "xl/worksheets/sheet1.xml", data: sheet },
+    ])
+
+  it("stops at once on tags that never close, instead of rescanning the rest of the file for each", async () => {
+    const bomb = await sheetZip(`<worksheet><sheetData>${"<row>".repeat(100_000)}</sheetData></worksheet>`)
+    const started = Date.now()
+    await expect(readXlsx(bomb)).rejects.toThrow(XlsxError)
+    expect(Date.now() - started).toBeLessThan(2000)
+  })
+
+  it("reads a character reference outside Unicode as nothing, rather than failing", async () => {
+    const grid = await readXlsx(
+      await sheetZip(`<worksheet><sheetData><row r="1"><c r="A1" t="inlineStr"><is><t>a&#99999999;b</t></is></c></row></sheetData></worksheet>`)
+    )
+    expect(grid).toEqual([["ab"]])
+  })
+
+  it("refuses rows and columns past Excel's own limits", async () => {
+    await expect(
+      readXlsx(await sheetZip(`<worksheet><sheetData><row r="1048577"><c r="A1048577"><v>1</v></c></row></sheetData></worksheet>`))
+    ).rejects.toThrow(XlsxError)
+    await expect(
+      readXlsx(await sheetZip(`<worksheet><sheetData><row r="1"><c r="XFE1"><v>1</v></c></row></sheetData></worksheet>`))
+    ).rejects.toThrow(XlsxError)
+  })
+})

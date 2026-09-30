@@ -94,7 +94,7 @@ export function ExportDialog({
         {format === "json" ? (
           <BundleExportForm key={session} project={project} language={language} onDone={done} />
         ) : (
-          <SheetExportForm key={`${session}:${format}`} project={project} language={language} format={format} onDone={done} />
+          <SheetExportForm key={session} project={project} language={language} format={format} onDone={done} />
         )}
       </DialogContent>
     </Dialog>

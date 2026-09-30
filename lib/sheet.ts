@@ -178,11 +178,26 @@ export async function readSheetFile({ name, bytes }: { name: string; bytes: Byte
     } catch {
       throw new SheetFileError('Save it as "CSV UTF-8" and try again')
     }
+    let sheet: ParsedSheet
     try {
-      return parseSheet(readCsv(text))
+      sheet = parseSheet(readCsv(text))
     } catch (cause: unknown) {
       throw cause instanceof CsvError ? new SheetFileError(cause.message) : cause
     }
+    // Excel's "CSV (Comma delimited)" drops the BOM and writes "?" for every
+    // character its code page lacks - which leaves valid, all-ASCII UTF-8. The
+    // app's own files and Excel's "CSV UTF-8" keep the BOM; a UTF-8 file from
+    // elsewhere carries its non-ASCII text. A "?" the English does not have,
+    // in a file with neither, is the code page talking.
+    const asciiOnly = !/[^\x00-\x7F]/.test(text)
+    if (
+      !text.startsWith("\uFEFF") &&
+      asciiOnly &&
+      sheet.rows.some((row) => row.translation.includes("?") && !row.english.includes("?"))
+    ) {
+      throw new SheetFileError('Save it as "CSV UTF-8" and try again')
+    }
+    return sheet
   }
 
   let grid: string[][]
