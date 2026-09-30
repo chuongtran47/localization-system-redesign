@@ -245,3 +245,8 @@ export type ExportRequest = {
 export type ApiErrorBody = {
   error: string
 }
+
+/** `POST /api/sheet` - which strings a sheet holds. `todo`: missing, outdated or failing a check. */
+export type SheetRows = "todo" | "all"
+
+export type SheetFormat = "xlsx" | "csv"

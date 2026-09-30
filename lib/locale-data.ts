@@ -219,6 +219,12 @@ export function displayedValueOf(row: {
   return row.status === "missing" && row.target === row.source ? "" : row.target
 }
 
+/** English compared the way a sheet round trip needs: line ends and surrounding space do not count. */
+export function sameSource(a: string, b: string): boolean {
+  const clean = (text: string) => text.replaceAll("\r\n", "\n").trim()
+  return clean(a) === clean(b)
+}
+
 export type GroupOption = {
   group: string
   total: number

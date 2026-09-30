@@ -56,6 +56,8 @@ export type DiffEntry = {
   source: string;
   /** What the checks say about `after` - an import can introduce them too. */
   issues: RowIssue[];
+  /** A sheet asked to keep the English: shown as such, saved as Keep English. */
+  keep?: true;
 };
 
 export type DiffCounts = Record<DiffKind, number>;
